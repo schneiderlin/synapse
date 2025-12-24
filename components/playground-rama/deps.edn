@@ -1,0 +1,4 @@
+{:paths ["src" "resources"]
+ :deps {com.rpl/rama {:mvn/version "1.2.0"}} 
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

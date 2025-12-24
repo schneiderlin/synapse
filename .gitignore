@@ -1,0 +1,51 @@
+.calva
+.clj-kondo
+.cpcache
+.nrepl-port
+test
+.shadow-cljs
+node_modules
+**/cljs-runtime
+resources/public/js/main.js
+resources/public/portfolio-js/main.js
+resources/public/js/wwjs-api.cjs
+resources/public/js/manifest.edn
+resources/public/portfolio-js/manifest.edn
+resources/public/output.css
+.lsp
+target
+__pycache__
+
+resources/public/img/screenshot/
+resources/public/log
+classes
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+dump
+node_modules/
+# Environment variables
+.env
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+.DS_Store
+
+# Task files
+# tasks.json
+# tasks/ 
+./public
+
+databases/

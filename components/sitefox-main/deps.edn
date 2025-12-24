@@ -1,0 +1,6 @@
+{:paths ["src" "resources"]
+ :deps {io.github.chr15m/sitefox {:git/url "https://github.com/chr15m/sitefox"
+                                  :git/sha "e6ea2027b5d4277917732d43d550083c8e105da9"}
+        reagent/reagent {:mvn/version "2.0.1"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

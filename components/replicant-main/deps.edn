@@ -1,0 +1,12 @@
+{:paths ["src" "resources"]
+ :deps {no.cjohansen/replicant {:mvn/version "2025.03.27"}
+        no.cjohansen/portfolio {:mvn/version "2025.01.28"}
+        integrant/integrant {:mvn/version "1.0.1"}
+        no.cjohansen/dataspex {:mvn/version "2025.06.8"}
+        org.clojure/data.xml {:mvn/version "0.2.0-alpha9"}
+        com.domkm/silk {:mvn/version "0.1.2"}
+        lambdaisland/uri {:mvn/version "1.19.155"}
+        com.taoensso/sente {:mvn/version "1.21.0"}
+        com.taoensso/telemere {:mvn/version "1.1.0"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

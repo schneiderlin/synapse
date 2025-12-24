@@ -1,0 +1,7 @@
+{:paths ["src" "resources"]
+ :deps {com.github.oliyh/martian {:mvn/version "0.2.1"}
+        com.github.oliyh/martian-test {:mvn/version "0.2.1"}
+        com.github.oliyh/martian-clj-http {:mvn/version "0.2.1"}
+        com.github.oliyh/martian-cljs-http {:mvn/version "0.2.1"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

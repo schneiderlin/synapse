@@ -1,0 +1,14 @@
+{
+  "name": "@poly/playground-drawflow",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@xyflow/react": "^12.9.3",
+    "drawflow": "^0.0.60",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "process": "^0.11.10"
+  }
+}

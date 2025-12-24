@@ -1,0 +1,18 @@
+[project]
+name = "synapse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "baml-client",
+    "textual-main"
+]
+
+[tool.uv.workspace]
+members = ["components/baml-client", "components/textual-main"]
+exclude = []
+
+[tool.uv.sources]
+baml-client = { workspace = true }
+textual-main = { workspace = true }

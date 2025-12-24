@@ -1,13 +1,13 @@
-(ns com.zihao.language-learn.scene.chessboard
+(ns com.zihao.scene.chessboard
   (:require
    [replicant.dom :as r]
-   [replicant.utils :refer [interpolate]]
-   [replicant.actions :as actions]
-   [xiangqi.render :as render]
-   [xiangqi.game-tree :as game-tree]
-   [xiangqi.fen :as fen]
-   [xiangqi.interface :as core]
-   [xiangqi.common :refer [prefix]]
+   [com.zihao.replicant-main.replicant.utils :refer [interpolate]]
+   [com.zihao.xiangqi.actions :as actions]
+   [com.zihao.xiangqi.render :as render]
+   [com.zihao.xiangqi.game-tree :as game-tree]
+   [com.zihao.xiangqi.fen :as fen]
+   [com.zihao.xiangqi.interface :as core]
+   [com.zihao.xiangqi.common :refer [prefix]]
    [portfolio.replicant :as pr :refer-macros [defscene]]))
 
 (defscene empty-board

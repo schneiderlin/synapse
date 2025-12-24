@@ -1,10 +1,10 @@
 (ns com.zihao.language-learn.fsrs.template
   (:require 
-   [linzihao.utils :refer [gen-uuid]]
+   [com.zihao.replicant-main.replicant.utils :refer [gen-uuid]]
    [com.zihao.language-learn.fsrs.core :as core]
-   [xiangqi.common :as xqc]
-   [xiangqi.fen :as fen]
-   [xiangqi.render :as xiangqi-render]))
+   [com.zihao.xiangqi.common :as xqc]
+   [com.zihao.xiangqi.fen :as fen]
+   [com.zihao.xiangqi.render :as xiangqi-render]))
 
 (defn text-card [front back]
   (core/create-card (gen-uuid) front back))

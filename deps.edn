@@ -16,8 +16,10 @@
                                poly/sitefox-main {:local/root "components/sitefox-main"}
                                poly/cljpy-main {:local/root "components/cljpy-main"}
                                poly/textual-main {:local/root "components/textual-main"}
+                               poly/scene {:local/root "components/scene"}
 
                                poly/kraken-ui {:local/root "components/kraken-ui"}
+                               poly/language-learn {:local/root "components/language-learn"}
                                poly/read-file-mcp {:local/root "components/read-file-mcp"}
                                poly/agent-tools {:local/root "components/agent-tools"}
                                poly/agent {:local/root "components/agent"}
@@ -30,7 +32,7 @@
                                poly/playground-odoyle-rules {:local/root "components/playground-odoyle-rules"}
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}
                                poly/playground-rama {:local/root "components/playground-rama"}
-                               poly/playground-drawflow {:local/root "components/playground-drawflow"}}}
+                               poly/playground-drawflow {:local/root "components/playground-drawflow"}}} 
 
             :test {:extra-paths []}
 

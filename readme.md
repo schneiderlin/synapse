@@ -6,7 +6,7 @@
 例如
 ```edn
 linzihao/replicant-main {:git/url "https://github.com/schneiderlin/synapse.git"
-                         :git/sha "7e7f42419b02019357c1b489198bc8da74a4ad2e"
+                         :git/sha "3d95a726272f64703ab9ca33b5cbd004f00d1692"
                          :deps/root "components/replicant-main"}
 ```
 

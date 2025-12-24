@@ -131,3 +131,7 @@
    (defmacro build-admin? []
      true
      #_(= "ADMIN" (System/getenv "BUILD"))))
+
+(defn gen-uuid []
+  #?(:clj (str (java.util.UUID/randomUUID))
+     :cljs (str (random-uuid))))

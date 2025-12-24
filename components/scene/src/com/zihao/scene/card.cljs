@@ -1,4 +1,4 @@
-(ns com.zihao.language-learn.scene.card
+(ns com.zihao.scene.card
   (:require 
    [com.zihao.language-learn.fsrs.render :as fsrs-render]
    [com.zihao.language-learn.fsrs.template :as template]

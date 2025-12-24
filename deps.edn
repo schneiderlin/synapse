@@ -1,6 +1,35 @@
-{:aliases  {:dev {:extra-paths ["development/src"]
+{:mvn/repos
+ {"nexus-releases" {:url "https://nexus.redplanetlabs.com/repository/maven-public-releases"}
+  "jitpack.io" {:url "https://jitpack.io"}}
+ :aliases  {:dev {:extra-paths ["development/src"]
 
-                  :extra-deps {org.clojure/clojure {:mvn/version "1.12.2"}}}
+                  :extra-deps {org.clojure/clojure {:mvn/version "1.12.2"}
+                               org.clojure/clojurescript {:mvn/version "1.12.42"}
+                               thheller/shadow-cljs {:mvn/version "3.2.1"}
+
+                               ;; fix taoensso stuff, always conflict
+                               com.taoensso/encore {:mvn/version "3.158.0"}
+                               com.taoensso/truss {:mvn/version "2.2.1"}
+
+                               poly/replicant-main {:local/root "components/replicant-main"}
+                               poly/jetty-main {:local/root "components/jetty-main"}
+                               poly/sitefox-main {:local/root "components/sitefox-main"}
+                               poly/cljpy-main {:local/root "components/cljpy-main"}
+                               poly/textual-main {:local/root "components/textual-main"}
+
+                               poly/kraken-ui {:local/root "components/kraken-ui"}
+                               poly/read-file-mcp {:local/root "components/read-file-mcp"}
+                               poly/agent-tools {:local/root "components/agent-tools"}
+                               poly/agent {:local/root "components/agent"}
+                               poly/agent-tui-cljpy {:local/root "components/agent-tui-cljpy"}
+                               poly/baml-client {:local/root "components/baml-client"}
+                               poly/agent-eval {:local/root "components/agent-eval"}
+                               poly/replicant-component {:local/root "components/replicant-component"}
+
+                               poly/playground-odoyle-rules {:local/root "components/playground-odoyle-rules"}
+                               poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}
+                               poly/playground-rama {:local/root "components/playground-rama"}
+                               poly/playground-drawflow {:local/root "components/playground-drawflow"}}}
 
             :test {:extra-paths []}
 

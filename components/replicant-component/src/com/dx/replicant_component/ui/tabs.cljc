@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.tabs)
+(ns com.zihao.replicant-component.ui.tabs)
 
 (defn tabs
   [& children]

@@ -1,4 +1,4 @@
-(ns com.dx.agent.code-executor
+(ns com.zihao.agent.code-executor
   (:require
    [clojure.string :as str]
    [clojure.stacktrace :as stacktrace]
@@ -52,9 +52,9 @@
   ;; 查看所有已加载的 namespace
   (code-executor "(all-ns)")
 
-  ;; com.dx.agent.interface 里面有哪些 function
-  (code-executor "(ns-publics 'com.dx.agent.interface)")
+  ;; com.zihao.agent.interface 里面有哪些 function
+  (code-executor "(ns-publics 'com.zihao.agent.interface)")
 
-  (ns-publics 'com.dx.replicant-main.replicant.utils)
+  (ns-publics 'com.zihao.replicant-main.replicant.utils)
 
   :rcf)

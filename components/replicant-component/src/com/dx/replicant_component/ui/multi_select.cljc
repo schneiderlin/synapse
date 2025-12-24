@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.multi-select
+(ns com.zihao.replicant-component.ui.multi-select
   (:require
    [clojure.string :as str]))
 

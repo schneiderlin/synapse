@@ -1,7 +1,7 @@
 (ns com.zihao.language-learn.scene.scenes
   (:require
    [replicant.dom :as r]
-   [com.dx.replicant-main.interface :refer [interpolate]] 
+   [com.zihao.replicant-main.interface :refer [interpolate]] 
    [portfolio.ui :as portfolio]
    [com.zihao.language-learn.scene.card :as card]
    [com.zihao.language-learn.scene.chessboard :as chessboard]))

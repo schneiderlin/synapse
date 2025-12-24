@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.ws-client
+(ns com.zihao.replicant-main.replicant.ws-client
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer [go go-loop]])
   (:require 

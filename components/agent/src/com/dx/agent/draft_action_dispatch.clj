@@ -1,8 +1,8 @@
-(ns com.dx.agent.draft-action-dispatch
+(ns com.zihao.agent.draft-action-dispatch
   (:require
-   [com.dx.agent.interface :refer [IContext execute-actions ctx->actions agent-step]]
-   [com.dx.baml-client.interface :as baml-client] 
-   [com.dx.agent.llm-function :as llm-function]))
+   [com.zihao.agent.interface :refer [IContext execute-actions ctx->actions agent-step]]
+   [com.zihao.baml-client.interface :as baml-client] 
+   [com.zihao.agent.llm-function :as llm-function]))
 
 (comment
   (baml-client/reload)

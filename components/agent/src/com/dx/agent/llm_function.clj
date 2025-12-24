@@ -1,10 +1,10 @@
-(ns com.dx.agent.llm-function
+(ns com.zihao.agent.llm-function
   (:require
    [clojure.walk :refer [keywordize-keys]]
    [libpython-clj2.python :as py]
-   [com.dx.cljpy-main.interface :as cljpy-main]
-   [com.dx.baml-client.interface :as baml-client :refer [reload]]
-   [com.dx.agent-eval.collector :as collector]))
+   [com.zihao.cljpy-main.interface :as cljpy-main]
+   [com.zihao.baml-client.interface :as baml-client :refer [reload]]
+   [com.zihao.agent-eval.collector :as collector]))
 
 (comment
   (reload)
@@ -151,7 +151,7 @@
     (process-stream stream stream-callback final-callback)))
 
 (comment
-  (require '[com.dx.agent-eval.collector :as collector])
+  (require '[com.zihao.agent-eval.collector :as collector])
   (def coll (collector/create-collector {:cljpy/python-env python-env} "chat-agent"))
 
   ;; 没有 collector

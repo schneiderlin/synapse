@@ -1,6 +1,6 @@
-(ns com.dx.agent.resolve-at.resolve-at
+(ns com.zihao.agent.resolve-at.resolve-at
   (:require
-   [com.dx.baml-client.tools.read-file :as read-file]
+   [com.zihao.baml-client.tools.read-file :as read-file]
    [babashka.process :refer [pipeline pb process check]]
    [clojure.string :as str]))
 

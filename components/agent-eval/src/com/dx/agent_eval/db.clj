@@ -1,4 +1,4 @@
-(ns com.dx.agent-eval.db
+(ns com.zihao.agent-eval.db
   (:require [next.jdbc :as jdbc]
             [honey.sql :as sql]))
 

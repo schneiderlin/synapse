@@ -1,6 +1,6 @@
-(ns com.dx.playground-odoyle-rules.interface
+(ns com.zihao.playground-odoyle-rules.interface
   (:require
-   [com.dx.playground-odoyle-rules.core :as core]))
+   [com.zihao.playground-odoyle-rules.core :as core]))
 
 (def init-board
   core/init-board)

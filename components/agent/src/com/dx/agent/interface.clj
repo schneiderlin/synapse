@@ -1,6 +1,6 @@
-(ns com.dx.agent.interface
+(ns com.zihao.agent.interface
   (:require
-   [com.dx.agent.llm-function :as llm-function]
+   [com.zihao.agent.llm-function :as llm-function]
    [taoensso.telemere :as tel]))
 
 (defn code-act-agent [ctx {:keys [messages code code-result stream-callback final-callback] :as opts}]

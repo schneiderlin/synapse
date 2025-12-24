@@ -1,10 +1,10 @@
-(ns com.dx.replicant-main.replicant.actions
+(ns com.zihao.replicant-main.replicant.actions
   (:require
    [clojure.edn :as reader]
-   [com.dx.replicant-main.replicant.utils :refer [make-interpolate]]
-   [com.dx.replicant-main.replicant.query :as query]
-   [com.dx.replicant-main.replicant.command :as command]
-   [com.dx.replicant-main.replicant.router :refer [navigate!]]))
+   [com.zihao.replicant-main.replicant.utils :refer [make-interpolate]]
+   [com.zihao.replicant-main.replicant.query :as query]
+   [com.zihao.replicant-main.replicant.command :as command]
+   [com.zihao.replicant-main.replicant.router :refer [navigate!]]))
 
 (defn query-backend [{:keys [interpolate execute-actions store base-url] :as system} query & [{:keys [on-success]}]]
   (swap! store query/send-request (js/Date.) query)

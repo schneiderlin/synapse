@@ -1,10 +1,10 @@
-(ns com.dx.agent.chat-agent
+(ns com.zihao.agent.chat-agent
   (:require
    [taoensso.telemere :as tel]
-   [com.dx.baml-client.interface :as baml-client]
-   [com.dx.agent.llm-function :as llm-function]
-   [com.dx.agent.app :refer [add-log add-assistant-output finish-streaming-output]]
-   [com.dx.agent-eval.collector :as collector]))
+   [com.zihao.baml-client.interface :as baml-client]
+   [com.zihao.agent.llm-function :as llm-function]
+   [com.zihao.agent.app :refer [add-log add-assistant-output finish-streaming-output]]
+   [com.zihao.agent-eval.collector :as collector]))
 
 (comment
   (baml-client/reload)

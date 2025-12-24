@@ -1,4 +1,4 @@
-(ns com.dx.playground-jsonrpc.simple-server
+(ns com.zihao.playground-jsonrpc.simple-server
   (:gen-class)
   (:require
    [jsonrpc4clj.io-server :as io-server]

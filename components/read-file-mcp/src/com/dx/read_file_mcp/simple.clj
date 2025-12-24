@@ -1,4 +1,4 @@
-(ns com.dx.read-file-mcp.simple
+(ns com.zihao.read-file-mcp.simple
   (:require
    [co.gaiwan.mcp :as mcp]
    [co.gaiwan.mcp.state :as state]
@@ -146,7 +146,7 @@
       (catch java.net.BindException e
         (println (str "ERROR: Port " port " is already in use. Try a different port:"))
         (println (str "  Set MCP_PORT environment variable: $env:MCP_PORT=4001"))
-        (println (str "  Or pass as argument: clj -M -m com.dx.read-file-mcp.simple 4001"))
+        (println (str "  Or pass as argument: clj -M -m com.zihao.read-file-mcp.simple 4001"))
         (System/exit 1)))))
 
 (defn stdio []

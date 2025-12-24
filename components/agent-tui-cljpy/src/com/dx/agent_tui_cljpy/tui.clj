@@ -1,9 +1,9 @@
-(ns com.dx.agent-tui-cljpy.tui
+(ns com.zihao.agent-tui-cljpy.tui
   (:require
    [libpython-clj2.python :as py :refer [py.]]
    [ai.obney.grain.behavior-tree-v2.interface :as bt]
    [ai.obney.grain.behavior-tree-v2.interface.protocol :as btp]
-   [com.dx.cljpy-main.interface :as cljpy-main]))
+   [com.zihao.cljpy-main.interface :as cljpy-main]))
 
 (comment
   (def python-env (cljpy-main/make-python-env ["./components/agent-tui-cljpy"]

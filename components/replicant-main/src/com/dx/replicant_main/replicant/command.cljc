@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.command)
+(ns com.zihao.replicant-main.replicant.command)
 
 (defn add-log-entry [log entry]
   (cons entry log))

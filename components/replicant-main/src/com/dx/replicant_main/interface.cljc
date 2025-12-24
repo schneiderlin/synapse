@@ -1,8 +1,8 @@
-(ns com.dx.replicant-main.interface
+(ns com.zihao.replicant-main.interface
   (:require
-   #?(:cljs [com.dx.replicant-main.replicant.actions :as actions])
-   [com.dx.replicant-main.replicant.query :as query]
-   [com.dx.replicant-main.replicant.utils :as utils]))
+   #?(:cljs [com.zihao.replicant-main.replicant.actions :as actions])
+   [com.zihao.replicant-main.replicant.query :as query]
+   [com.zihao.replicant-main.replicant.utils :as utils]))
 
 (defn make-execute-f
   "Creates an execution function for handling actions with optional extensions.

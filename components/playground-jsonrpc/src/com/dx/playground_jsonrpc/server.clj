@@ -1,4 +1,4 @@
-(ns com.dx.playground-jsonrpc.server
+(ns com.zihao.playground-jsonrpc.server
   (:gen-class)
   (:require
    [taoensso.telemere :as tel]

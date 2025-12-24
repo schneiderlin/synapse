@@ -1,1 +1,1 @@
-(ns com.dx.read-file-mcp.interface)
+(ns com.zihao.read-file-mcp.interface)

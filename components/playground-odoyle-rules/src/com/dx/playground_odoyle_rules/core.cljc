@@ -1,4 +1,4 @@
-(ns com.dx.playground-odoyle-rules.core
+(ns com.zihao.playground-odoyle-rules.core
   (:require 
    [odoyle.rules :as o]))
 

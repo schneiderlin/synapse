@@ -1,1 +1,1 @@
-(ns com.dx.playground-copilotkit.interface)
+(ns com.zihao.playground-copilotkit.interface)

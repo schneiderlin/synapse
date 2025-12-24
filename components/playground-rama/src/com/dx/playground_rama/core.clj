@@ -1,4 +1,4 @@
-(ns com.dx.playground-rama.core
+(ns com.zihao.playground-rama.core
   (:require
    [com.rpl.rama :as r]
    [com.rpl.rama.path :as path]

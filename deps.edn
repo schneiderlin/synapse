@@ -22,9 +22,10 @@
                                poly/agent-tools {:local/root "components/agent-tools"}
                                poly/agent {:local/root "components/agent"}
                                poly/agent-tui-cljpy {:local/root "components/agent-tui-cljpy"}
-                               poly/baml-client {:local/root "components/baml-client"}
                                poly/agent-eval {:local/root "components/agent-eval"}
+                               poly/baml-client {:local/root "components/baml-client"}
                                poly/replicant-component {:local/root "components/replicant-component"}
+                               poly/xiangqi {:local/root "components/xiangqi"}
 
                                poly/playground-odoyle-rules {:local/root "components/playground-odoyle-rules"}
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}

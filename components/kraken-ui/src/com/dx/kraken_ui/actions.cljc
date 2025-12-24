@@ -1,7 +1,7 @@
-(ns com.dx.kraken-ui.actions
+(ns com.zihao.kraken-ui.actions
   (:require
-   [com.dx.kraken-ui.common :refer [prefix]]
-   [com.dx.playground-odoyle-rules.interface :as kraken]))
+   [com.zihao.kraken-ui.common :refer [prefix]]
+   [com.zihao.playground-odoyle-rules.interface :as kraken]))
 
 (defn- update-board []
   (let [board (kraken/get-board)

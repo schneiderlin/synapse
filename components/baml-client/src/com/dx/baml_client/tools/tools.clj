@@ -1,6 +1,6 @@
-(ns com.dx.baml-client.tools.tools
+(ns com.zihao.baml-client.tools.tools
   (:require
-   [com.dx.baml-client.tools.read-file :as read-file]))
+   [com.zihao.baml-client.tools.read-file :as read-file]))
 
 (defn read-file
   "Read and return refined file content.

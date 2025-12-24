@@ -1,7 +1,7 @@
-(ns com.dx.playground-drawflow.render
+(ns com.zihao.playground-drawflow.render
   (:require
    [clojure.string :as str]
-   #?(:cljs [com.dx.playground-drawflow.core :as core])))
+   #?(:cljs [com.zihao.playground-drawflow.core :as core])))
 
 (defn render
   [state]

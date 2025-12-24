@@ -1,4 +1,4 @@
-(ns com.dx.jetty-main.logging
+(ns com.zihao.jetty-main.logging
   (:require [taoensso.telemere :as tel]
             [clojure.java.io :as io]
             [clojure.string :as str]))

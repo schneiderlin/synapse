@@ -1,7 +1,7 @@
-(ns com.dx.replicant-component.component.table-filter
+(ns com.zihao.replicant-component.component.table-filter
   (:require
    [clojure.walk :as walk]
-   [com.dx.replicant-component.ui.table :refer [table-ui]]
+   [com.zihao.replicant-component.ui.table :refer [table-ui]]
    [replicant.query :as query]))
 
 (defn get-filter-operators

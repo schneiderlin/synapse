@@ -20,7 +20,7 @@ async def start_server_and_connect(port=51234, wait_time=2):
     # Start the Clojure server
     server_cmd = [
         "clojure", "-M", "-m",
-        "com.dx.playground-jsonrpc.simple-server",
+        "com.zihao.playground-jsonrpc.simple-server",
         "--socket", "--port", str(port)
     ]
     

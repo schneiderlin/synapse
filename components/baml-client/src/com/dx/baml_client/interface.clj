@@ -1,6 +1,6 @@
-(ns com.dx.baml-client.interface
+(ns com.zihao.baml-client.interface
   (:require 
-   [com.dx.baml-client.core :as core]))
+   [com.zihao.baml-client.core :as core]))
 
 (defn reload []
   (core/reload))

@@ -1,4 +1,4 @@
-(ns com.dx.agent-tools.core
+(ns com.zihao.agent-tools.core
   (:require
    [babashka.fs :as fs]
    [babashka.process :refer [process shell]]

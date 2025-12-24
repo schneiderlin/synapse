@@ -1,6 +1,6 @@
-(ns com.dx.sitefox-main.core
+(ns com.zihao.sitefox-main.core
   (:require
-   [com.dx.whatsapp-account.interface :as whatsapp-account]
+   [com.zihao.whatsapp-account.interface :as whatsapp-account]
    [promesa.core :as p] 
    [sitefox.web :as web]
    [sitefox.logging :refer [bind-console-to-file]]

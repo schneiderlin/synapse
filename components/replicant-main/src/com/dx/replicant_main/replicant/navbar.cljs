@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.navbar)
+(ns com.zihao.replicant-main.replicant.navbar)
 
 (defn link [page-id page-name children]
   (if (nil? children)

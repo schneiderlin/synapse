@@ -1,4 +1,4 @@
-(ns com.dx.cljpy-main.bootstrap
+(ns com.zihao.cljpy-main.bootstrap
   (:require
    [babashka.process :refer [process check]]
    [babashka.fs :as fs]))

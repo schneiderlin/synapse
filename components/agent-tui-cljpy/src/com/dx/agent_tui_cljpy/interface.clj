@@ -1,5 +1,5 @@
-(ns com.dx.agent-tui-cljpy.interface
-  (:require [com.dx.agent-tui-cljpy.tui :as tui]))
+(ns com.zihao.agent-tui-cljpy.interface
+  (:require [com.zihao.agent-tui-cljpy.tui :as tui]))
 
 (defn reload []
   (tui/reload))

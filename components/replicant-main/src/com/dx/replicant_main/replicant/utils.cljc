@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.utils
+(ns com.zihao.replicant-main.replicant.utils
   (:require
    [clojure.walk :as walk]
    #?(:clj [clojure.java.io :as io]))

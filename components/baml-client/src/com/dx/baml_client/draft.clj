@@ -1,3 +1,3 @@
-(ns com.dx.baml-client.draft)
+(ns com.zihao.baml-client.draft)
 
 (System/getProperty "user.dir")

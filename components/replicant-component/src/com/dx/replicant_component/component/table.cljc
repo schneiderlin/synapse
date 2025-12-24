@@ -1,8 +1,8 @@
-(ns com.dx.replicant-component.component.table
+(ns com.zihao.replicant-component.component.table
   (:require 
    [clojure.walk :as walk]
-   [com.dx.replicant-component.ui.table :refer [table-ui]]
-   [com.dx.replicant-main.interface :as query]))
+   [com.zihao.replicant-component.ui.table :refer [table-ui]]
+   [com.zihao.replicant-main.interface :as query]))
 
 (defn- select-row [{:keys [row selected? table-id]}]
   (let [row (dissoc row :selected?)]

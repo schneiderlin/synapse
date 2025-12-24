@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.removeable-tags)
+(ns com.zihao.replicant-component.ui.removeable-tags)
 
 (defn removable-tag
   "A removable tag component for displaying active filters

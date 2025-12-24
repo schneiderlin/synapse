@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.component.app.proxy-options)
+(ns com.zihao.replicant-component.component.app.proxy-options)
 
 (defn proxy-options [state path] 
   (let [proxy-host (conj path :proxy-host)

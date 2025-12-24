@@ -1,9 +1,9 @@
-(ns com.dx.agent.code-locator-agent
+(ns com.zihao.agent.code-locator-agent
   (:require
    [taoensso.telemere :as tel]
-   [com.dx.agent.llm-function :as llm-function]
-   [com.dx.agent.app :refer [add-log console-app]]
-   [com.dx.agent-tools.interface :as agent-tools]
+   [com.zihao.agent.llm-function :as llm-function]
+   [com.zihao.agent.app :refer [add-log console-app]]
+   [com.zihao.agent-tools.interface :as agent-tools]
    [libpython-clj2.python :as py]))
 
 (defn- serialize-decision-to-json
@@ -105,7 +105,7 @@
 
 
 (comment
-  (require '[com.dx.cljpy-main.interface :as cljpy-main])
+  (require '[com.zihao.cljpy-main.interface :as cljpy-main])
   (def python-env (cljpy-main/make-python-env ["./components/baml-client"]
                                               {:built-in "builtins"
                                                :sys "sys"}))

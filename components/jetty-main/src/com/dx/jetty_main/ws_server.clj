@@ -1,4 +1,4 @@
-(ns com.dx.jetty-main.ws-server 
+(ns com.zihao.jetty-main.ws-server 
   (:require
    [taoensso.sente :as sente]
    [taoensso.sente.server-adapters.community.jetty :refer [get-sch-adapter]]

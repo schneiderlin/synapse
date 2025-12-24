@@ -1,4 +1,4 @@
-(ns com.dx.playground-jsonrpc.client
+(ns com.zihao.playground-jsonrpc.client
   (:require
    [taoensso.telemere :as tel]
    [clojure.java.io :as io]
@@ -8,7 +8,7 @@
    [babashka.process :as p]))
 
 (def server
-  (p/process ["clojure" "-M" "-m" "com.dx.playground-jsonrpc.simple-server"]
+  (p/process ["clojure" "-M" "-m" "com.zihao.playground-jsonrpc.simple-server"]
              {:err (io/file "components/playground-jsonrpc" "stderr.txt")
               :dir "components/playground-jsonrpc/"}))
 

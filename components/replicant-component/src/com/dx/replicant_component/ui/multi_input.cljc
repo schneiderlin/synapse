@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.multi-input
+(ns com.zihao.replicant-component.ui.multi-input
   (:require
    [clojure.string :as str]))
 

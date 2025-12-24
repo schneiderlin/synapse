@@ -1,12 +1,12 @@
-(ns com.dx.replicant-main.replicant.main
+(ns com.zihao.replicant-main.replicant.main
   (:require 
    [replicant.dom :as r]
    [replicant.alias :as alias]
-  ;;  [com.dx.replicant-main.replicant.utils :refer [interpolate]]
-   [com.dx.replicant-main.replicant.ws-client :as ws-client] 
+  ;;  [com.zihao.replicant-main.replicant.utils :refer [interpolate]]
+   [com.zihao.replicant-main.replicant.ws-client :as ws-client] 
    [clojure.core.async :as async]
-   [com.dx.replicant-main.replicant.timer :as timer] 
-   [com.dx.replicant-main.replicant.router :as router]))
+   [com.zihao.replicant-main.replicant.timer :as timer] 
+   [com.zihao.replicant-main.replicant.router :as router]))
 
 (defn routing-anchor [attrs children]
   (let [routes (-> attrs :replicant/alias-data :routes)]

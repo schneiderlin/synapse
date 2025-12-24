@@ -1,7 +1,7 @@
-(ns com.dx.replicant-component.interface
+(ns com.zihao.replicant-component.interface
   (:require
-   [com.dx.replicant-component.component.table :as table]
-   [com.dx.replicant-component.ui.popup :as popup]))
+   [com.zihao.replicant-component.component.table :as table]
+   [com.zihao.replicant-component.ui.popup :as popup]))
 
 (defn execute-action
   "Execute table-related actions in the system"

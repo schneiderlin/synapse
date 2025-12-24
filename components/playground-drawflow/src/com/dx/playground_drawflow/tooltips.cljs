@@ -1,4 +1,4 @@
-(ns com.dx.playground-drawflow.tooltips)
+(ns com.zihao.playground-drawflow.tooltips)
 
 (def tooltip-offset-y 12)
 (def tooltip-offset-x 15)

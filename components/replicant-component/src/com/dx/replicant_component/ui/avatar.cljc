@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.avatar)
+(ns com.zihao.replicant-component.ui.avatar)
 
 (defn base64-avatar [base64-data]
   (if base64-data

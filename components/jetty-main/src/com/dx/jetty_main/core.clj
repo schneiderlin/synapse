@@ -1,8 +1,8 @@
-(ns com.dx.jetty-main.core
+(ns com.zihao.jetty-main.core
   (:gen-class)
   (:require 
    [integrant.core :as ig] 
-   [com.dx.jetty-main.logging :as logging]
+   [com.zihao.jetty-main.logging :as logging]
    [taoensso.telemere :as tel] 
    [clojure.edn :as edn]
    [reitit.ring :as ring]

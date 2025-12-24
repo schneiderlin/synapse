@@ -1,4 +1,4 @@
-(ns com.dx.baml-client.core
+(ns com.zihao.baml-client.core
   (:require
    [libpython-clj2.python :as py]))
 

@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.component.completion-input
+(ns com.zihao.replicant-component.component.completion-input
   (:require
    [clojure.string :as str]))
 

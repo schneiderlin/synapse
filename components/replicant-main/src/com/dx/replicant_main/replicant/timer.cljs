@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.timer)
+(ns com.zihao.replicant-main.replicant.timer)
 
 (defn trigger? [last-tick interval]
   (let [now (js/Date.)]

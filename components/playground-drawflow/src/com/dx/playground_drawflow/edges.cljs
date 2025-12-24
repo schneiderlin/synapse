@@ -1,7 +1,7 @@
-(ns com.dx.playground-drawflow.edges
+(ns com.zihao.playground-drawflow.edges
   (:require
-   [com.dx.playground-drawflow.viewport :as viewport]
-   [com.dx.playground-drawflow.nodes :as nodes]))
+   [com.zihao.playground-drawflow.viewport :as viewport]
+   [com.zihao.playground-drawflow.nodes :as nodes]))
 
 (defn calculate-edge-path [source-pos target-pos edge-type]
   (let [{:keys [sx sy]} source-pos

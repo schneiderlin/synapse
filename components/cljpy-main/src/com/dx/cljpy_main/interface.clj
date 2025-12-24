@@ -1,7 +1,7 @@
-(ns com.dx.cljpy-main.interface
+(ns com.zihao.cljpy-main.interface
   (:require 
-   [com.dx.cljpy-main.python-interop :as python-interop]
-   [com.dx.cljpy-main.bootstrap :as bootstrap]))
+   [com.zihao.cljpy-main.python-interop :as python-interop]
+   [com.zihao.cljpy-main.bootstrap :as bootstrap]))
 
 (defn make-python-env [user-lib-paths modules]
   (python-interop/make-python-env user-lib-paths modules))

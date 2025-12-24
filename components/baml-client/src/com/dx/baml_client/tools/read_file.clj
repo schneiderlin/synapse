@@ -1,4 +1,4 @@
-(ns com.dx.baml-client.tools.read-file
+(ns com.zihao.baml-client.tools.read-file
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]))

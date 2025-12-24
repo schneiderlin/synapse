@@ -1,7 +1,7 @@
-(ns com.dx.playground-drawflow.nodes
+(ns com.zihao.playground-drawflow.nodes
   (:require
-   [com.dx.playground-drawflow.tooltips :as tooltips]
-   [com.dx.playground-drawflow.inputs :as inputs]))
+   [com.zihao.playground-drawflow.tooltips :as tooltips]
+   [com.zihao.playground-drawflow.inputs :as inputs]))
 
 (def default-node-width 150)
 (def default-node-height 50)

@@ -1,6 +1,6 @@
-(ns com.dx.agent-tools.interface
+(ns com.zihao.agent-tools.interface
   (:require
-   [com.dx.agent-tools.core :as core]))
+   [com.zihao.agent-tools.core :as core]))
 
 
 (defn grep-tool-fn [{:keys [pattern path type]

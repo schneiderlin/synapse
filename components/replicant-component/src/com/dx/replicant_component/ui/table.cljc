@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.table)
+(ns com.zihao.replicant-component.ui.table)
 
 (def refresh-button-classes ["btn" "btn-sm"])
 (def new-button-classes ["btn" "btn-sm" "btn-primary" "ml-2"])

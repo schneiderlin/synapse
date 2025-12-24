@@ -1,6 +1,6 @@
-(ns com.dx.kraken-ui.core
-  (:require [com.dx.kraken-ui.common :refer [prefix]]
-            [com.dx.playground-odoyle-rules.interface :as kraken]))
+(ns com.zihao.kraken-ui.core
+  (:require [com.zihao.kraken-ui.common :refer [prefix]]
+            [com.zihao.playground-odoyle-rules.interface :as kraken]))
 
 (defn piece->text [piece]
   (case piece

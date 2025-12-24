@@ -1,4 +1,4 @@
-(ns com.dx.replicant-component.ui.popup)
+(ns com.zihao.replicant-component.ui.popup)
 
 (defn popup [content & {:keys [on-cancel
                                on-confirm]}]

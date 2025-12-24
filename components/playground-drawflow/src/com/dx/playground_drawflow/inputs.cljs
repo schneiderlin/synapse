@@ -1,4 +1,4 @@
-(ns com.dx.playground-drawflow.inputs)
+(ns com.zihao.playground-drawflow.inputs)
 
 (defn default-input-component
   "Default input component for direct input mode.

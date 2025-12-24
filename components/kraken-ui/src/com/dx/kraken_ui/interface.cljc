@@ -1,6 +1,6 @@
-(ns com.dx.kraken-ui.interface
-  (:require [com.dx.kraken-ui.core :as core]
-            [com.dx.kraken-ui.actions :as actions]))
+(ns com.zihao.kraken-ui.interface
+  (:require [com.zihao.kraken-ui.core :as core]
+            [com.zihao.kraken-ui.actions :as actions]))
 
 (defn render-board [state]
   (core/render-board state))

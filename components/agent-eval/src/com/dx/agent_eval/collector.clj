@@ -1,7 +1,7 @@
-(ns com.dx.agent-eval.collector
+(ns com.zihao.agent-eval.collector
   (:require [libpython-clj2.python :as py]
             [cheshire.core :as json]
-            [com.dx.agent-eval.db :as db]))
+            [com.zihao.agent-eval.db :as db]))
 
 (defn create-collector
   "Create a BAML Collector instance.

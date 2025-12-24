@@ -1,4 +1,4 @@
-(ns com.dx.replicant-main.replicant.query)
+(ns com.zihao.replicant-main.replicant.query)
 
 (defn take-until [f xs]
   (loop [res []

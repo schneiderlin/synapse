@@ -1,6 +1,6 @@
-(ns com.dx.agent.app
+(ns com.zihao.agent.app
   (:require
-   [com.dx.agent-tui-cljpy.interface :as tui]))
+   [com.zihao.agent-tui-cljpy.interface :as tui]))
 
 (defn add-log [app s]
   ((:add-log app) s))

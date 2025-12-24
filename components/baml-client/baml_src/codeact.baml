@@ -16,7 +16,7 @@ function CodeActAgent(messages: Message[], code: string?, code_result: string?) 
 
     You can write and execute Clojure code directly to explore the codebase, read files, search for patterns, and perform any other operations you need. Use standard Clojure functions and libraries to accomplish your tasks.
 
-    IMPORTANT: You have access to predefined helper functions in the `com.dx.baml-client.tools.tools` namespace. You can use these functions in your code by requiring the namespace. The available functions are:
+    IMPORTANT: You have access to predefined helper functions in the `com.zihao.baml-client.tools.tools` namespace. You can use these functions in your code by requiring the namespace. The available functions are:
 
     ```clojure
     {{PredefinedFunctions()}}
@@ -112,7 +112,7 @@ test codeact_use_predefined_read_file {
       content "read the file /path/to/example.clj"
     }]
   }
-  @@assert({{ this.code is not none and ("read-file" in this.code or "com.dx.baml-client.tools.tools" in this.code or "baml-client.tools.tools" in this.code) }})
+  @@assert({{ this.code is not none and ("read-file" in this.code or "com.zihao.baml-client.tools.tools" in this.code or "baml-client.tools.tools" in this.code) }})
 }
 
 test codeact_use_predefined_read_file_retry {
@@ -126,7 +126,7 @@ test codeact_use_predefined_read_file_retry {
       role "assistant"
       content #"
       ```clojure
-      (require '[com.dx.baml-client.tools.tools :as tools])
+      (require '[com.zihao.baml-client.tools.tools :as tools])
       (tools/read-file "/path/to/example.clj")
       ```
       "#
@@ -137,5 +137,5 @@ test codeact_use_predefined_read_file_retry {
     }
     ]
   }
-  @@assert({{ this.code is not none and ("read-file" in this.code or "com.dx.baml-client.tools.tools" in this.code or "baml-client.tools.tools" in this.code) }})
+  @@assert({{ this.code is not none and ("read-file" in this.code or "com.zihao.baml-client.tools.tools" in this.code or "baml-client.tools.tools" in this.code) }})
 }

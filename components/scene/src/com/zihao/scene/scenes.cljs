@@ -2,8 +2,8 @@
   (:require
    [replicant.dom :as r]
    [portfolio.ui :as portfolio]
-   [com.zihao.language-learn.scene.card :as card]
-   [com.zihao.language-learn.scene.chessboard :as chessboard]))
+   [com.zihao.scene.card :as card]
+   [com.zihao.scene.chessboard :as chessboard]))
 
 (r/set-dispatch! (fn [_ event-data] (prn event-data)))
 

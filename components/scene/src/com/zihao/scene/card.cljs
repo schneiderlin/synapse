@@ -1,8 +1,10 @@
 (ns com.zihao.scene.card
+  (:require-macros
+   [portfolio.replicant :refer [defscene]])
   (:require 
    [com.zihao.language-learn.fsrs.render :as fsrs-render]
    [com.zihao.language-learn.fsrs.template :as template]
-   [portfolio.replicant :as pr :refer-macros [defscene]]))
+   [portfolio.replicant :as pr]))
 
 (defscene text-card-front
   (fsrs-render/card-ui {:card (template/text-card "front" "back")

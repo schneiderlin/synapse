@@ -53,7 +53,7 @@
                      [[:store/assoc-in [prefix] (fen/fen->state (:node node))]
                       [:store/assoc-in [prefix :game-tree] game-tree]]))}]])
 
-(defn execute-action [store action args]
+(defn execute-action [{:keys [store] :as _system} _e action args]
   (case action
     :xiangqi/move (apply move store args)
     :xiangqi/select (apply select store args)

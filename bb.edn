@@ -1,0 +1,2 @@
+{:tasks {scene-tw {:doc "tailwind watch"
+                   :task (shell "npx @tailwindcss/cli -i ./components/scene/resources/public/input.css -o ./components/scene/resources/public/output.css --watch")}}}

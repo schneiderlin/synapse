@@ -138,14 +138,14 @@
            :isError true})
         {:content [{:type "text" :text (str "Directory not found: " target_directory)}]
          :isError true})
-      {:content [{:type "text" :text (str "Access denied: Path must be within workspace root")}]
+      {:content [{:type "text" :text "Access denied: Path must be within workspace root"}]
        :isError true})
     (catch Exception e
       {:content [{:type "text" :text (str "Error listing directory: " (.getMessage e))}]
        :isError true})))
 
 (comment
-  (list-dir-tool-fn nil {:target_directory "."})
+  (list-dir-tool-fn {:target_directory "."})
   :rcf)
 
 (defn glob-tool-fn [{:keys [glob_pattern target_directory]
@@ -179,6 +179,6 @@
        :isError true})))
 
 (comment
-  (glob-tool-fn nil {:glob_pattern "**/*.clj"
-                     :target_directory "."})
+  (glob-tool-fn  {:glob_pattern "**/*.clj"
+                  :target_directory "."})
   :rcf)

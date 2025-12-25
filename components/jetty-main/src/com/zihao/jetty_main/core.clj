@@ -20,10 +20,10 @@
 (defn html-handler [_request]
   (response/redirect "index.html"))
 
-(defn make-http-query-handler [query-handler]
+(defn make-http-query-handler [system query-handler]
   (fn [request]
     (let [query (:body-params request)
-          result (query-handler query)]
+          result (query-handler system query)]
       (response/response {:success? true
                           :result result}))))
 
@@ -71,7 +71,7 @@
                        ["/api" {:middleware [params/wrap-params
                                              middleware/wrap-format
                                              my-wrap-cors]}
-                        ["/query" {:post (make-http-query-handler query-handler)}]
+                        ["/query" {:post (make-http-query-handler system query-handler)}]
                         ["/command" {:post (make-http-command-handler system command-handler)}]
                         ["/upload" {:middleware [wrap-multipart-params]
                                     :post upload-handler}]]]]

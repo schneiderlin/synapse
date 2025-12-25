@@ -5,7 +5,8 @@
    [com.zihao.replicant-main.replicant.main :as rm]
    [com.zihao.replicant-main.interface :as rm1]
    [com.zihao.replicant-main.replicant.ws-client :as ws-client]
-   [com.zihao.replicant-component.interface :as replicant-component] 
+   [com.zihao.replicant-component.interface :as replicant-component]
+   [com.zihao.xiangqi.actions :as xiangqi-actions]
    [clojure.core.async :as async]
    [integrant.core :as ig]
    [dataspex.core :as dataspex]))
@@ -80,7 +81,7 @@
    :replicant/store {:msgs [] :streaming-text "" :tool-call-active? false}
    :replicant/routes router/routes
    :replicant/get-location-load-actions router/get-location-load-actions
-   :replicant/execute-actions [replicant-component/execute-action]
+   :replicant/execute-actions [replicant-component/execute-action xiangqi-actions/execute-action]
    :ws/ws-client nil
    :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)}
    :replicant/render-loop {:system {:store (ig/ref :replicant/store)

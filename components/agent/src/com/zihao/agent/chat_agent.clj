@@ -4,7 +4,7 @@
    [com.zihao.baml-client.interface :as baml-client]
    [com.zihao.agent.llm-function :as llm-function]
    [com.zihao.agent.app :refer [add-log add-assistant-output finish-streaming-output]]
-   [com.zihao.agent-eval.collector :as collector]))
+   [com.zihao.agent-eval.interface :as agent-eval]))
 
 (comment
   (baml-client/reload)
@@ -59,11 +59,11 @@
          :chat-agent
          (if system
            ;; With system map: use Collector for logging
-           (let [coll (collector/create-collector system "chat-agent")
+           (let [coll (agent-eval/create-collector system "chat-agent")
                  result (llm-function/chat-agent args
                                                  {:kwargs {:baml_options
                                                            {"collector" coll}}})]
-             (collector/save-collector-log! coll)
+             (agent-eval/save-collector-log! coll)
              result)
            ;; Without system map: normal call (backward compatible)
            (llm-function/chat-agent args))

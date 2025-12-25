@@ -5,7 +5,13 @@
  :js-options {:js-package-dirs ["node_modules" "."]}
 
  :builds
- {:portfolio
+ {:web-app
+  {:target :browser
+   :modules {:main {:init-fn com.zihao.web-app.main/main}}
+   :output-dir "bases/web-app/resources/public/js"
+   :dev {:output-dir "bases/web-app/resources/public/js"}}
+  
+  :portfolio
   {:target :browser
    :modules {:main {:init-fn com.zihao.scene.scenes/main}}
    :dev {:output-dir "components/scene/resources/public/js"}}}}

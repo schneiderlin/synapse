@@ -11,6 +11,8 @@
                                com.taoensso/encore {:mvn/version "3.158.0"}
                                com.taoensso/truss {:mvn/version "2.2.1"}
 
+                               poly/web-app {:local/root "bases/web-app"}
+
                                poly/replicant-main {:local/root "components/replicant-main"}
                                poly/jetty-main {:local/root "components/jetty-main"}
                                poly/sitefox-main {:local/root "components/sitefox-main"}

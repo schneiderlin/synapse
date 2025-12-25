@@ -30,10 +30,10 @@
   :on-mount (fn [store]
               (r/set-dispatch!
                (fn [{:keys [replicant/dom-event]} actions]
-                 (let [execute-fn (make-execute-f [xiangqi-actions/execute-action])]
+                 (let [execute-fn (apply make-execute-f [xiangqi-actions/execute-action])]
                    (->> actions
                         (interpolate dom-event)
-                        (execute-fn store dom-event))))))
+                        (execute-fn {:store store} dom-event))))))
   [store]
   (render/chessboard @store))
 

@@ -6,12 +6,11 @@ test
 .shadow-cljs
 node_modules
 **/cljs-runtime
-resources/public/js/main.js
-resources/public/portfolio-js/main.js
-resources/public/js/wwjs-api.cjs
-resources/public/js/manifest.edn
-resources/public/portfolio-js/manifest.edn
-resources/public/output.css
+
+**/public/js/main.js
+**/public/js/manifest.edn
+**/public/output.css
+
 .lsp
 target
 __pycache__

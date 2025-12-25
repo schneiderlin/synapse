@@ -10,7 +10,7 @@
 (defn main []
   (portfolio/start!
    {:config
-    {:css-paths ["/output.css"]
+    {:css-paths ["/portfolio-output.css"]
      :viewport/defaults
      {:background/background-color "#fdeddd"}}}))
 

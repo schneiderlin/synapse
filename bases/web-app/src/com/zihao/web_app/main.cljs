@@ -83,14 +83,15 @@
    :replicant/execute-actions [replicant-component/execute-action]
    :ws/ws-client nil
    :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)}
-   :replicant/render-loop {:store (ig/ref :replicant/store)
-                           :el (ig/ref :replicant/el)
-                           :routes (ig/ref :replicant/routes)
-                           :ws-client (ig/ref :ws/ws-client)
-                           :interpolate (apply rm1/make-interpolate [])
-                           :get-location-load-actions (ig/ref :replicant/get-location-load-actions)
-                           :execute-actions (ig/ref :replicant/execute-actions)
-                           :base-url "http://localhost:3000"}})
+   :replicant/render-loop {:system {:store (ig/ref :replicant/store)
+                                    :el (ig/ref :replicant/el)
+                                    :routes (ig/ref :replicant/routes)
+                                    :ws-client (ig/ref :ws/ws-client)
+                                    :interpolate (apply rm1/make-interpolate [])
+                                    :get-location-load-actions (ig/ref :replicant/get-location-load-actions)
+                                    :execute-actions (ig/ref :replicant/execute-actions)
+                                    :base-url "http://localhost:3000"}
+                           :hash-router? true}})
 
 (defmethod ig/init-key :replicant/el [_ el]
   (rm/init-el _ el))
@@ -125,8 +126,8 @@
 (defmethod ig/halt-key! :ws/ws-handler [_ stop-ch]
   (async/put! stop-ch :stop))
 
-(defmethod ig/init-key :replicant/render-loop [_ system]
-  (rm/init-render-loop render-main system))
+(defmethod ig/init-key :replicant/render-loop [_ {:keys [system hash-router?]}]
+  (rm/init-render-loop render-main (assoc system :hash-router? hash-router?)))
 
 (defonce !system (atom nil))
 

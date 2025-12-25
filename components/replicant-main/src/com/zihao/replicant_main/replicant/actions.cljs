@@ -4,7 +4,8 @@
    [com.zihao.replicant-main.replicant.utils :refer [make-interpolate]]
    [com.zihao.replicant-main.replicant.query :as query]
    [com.zihao.replicant-main.replicant.command :as command]
-   [com.zihao.replicant-main.replicant.router :refer [navigate!]]))
+   [com.zihao.replicant-main.replicant.router :as router]
+   [com.zihao.replicant-main.replicant.hash-router :as hash-router]))
 
 (defn query-backend [{:keys [interpolate execute-actions store base-url] :as system} query & [{:keys [on-success]}]]
   (swap! store query/send-request (js/Date.) query)
@@ -92,7 +93,8 @@
                               :key/press (let [[k actions] args]
                                            (when (= (.-key e) k)
                                              (f system e actions)))
-                              :router/navigate (navigate! system (first args))
+                              :router/navigate (let [navigate-fn (if (:hash-router? system) hash-router/navigate! router/navigate!)]
+                                                 (navigate-fn system (first args)))
                               :data/query (apply query-backend system args)
                               :data/command (apply issue-command system args)
                               :data/choose-file (apply choose-file system args)

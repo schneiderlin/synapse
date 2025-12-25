@@ -22,15 +22,20 @@
 
 (defn render-frontpage []
   (page-layout
-   [:h1 "首页"]))
+   (list
+    [:h1 "首页"]
+    [:p "这是把几乎全部组件都用上, 带后端功能的页面. 如果想查看单独的前端组件, 跳转到"]
+    [:a {:href "/portfolio.html"
+         :target "_blank"
+         :rel "noopener noreferrer"
+         :class ["link" "link-primary" "font-medium"]} "前端组件页面"])))
 
 (defn render-playground-drawflow [state]
   (page-layout
    (playground-drawflow/render state)))
 
 (defn render-not-found [_]
-  (page-layout
-   [:h1 "Not found!"]))
+  (render-frontpage))
 
 (defn render-main [state]
   (let [f (case (:location/page-id (:location state))

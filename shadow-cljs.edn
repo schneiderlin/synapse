@@ -1,6 +1,8 @@
 {:deps {:aliases [:dev]}
 
- :dev-http {8000 ["components/scene/resources/public" "classpath:public"]}
+ :dev-http {8000 ["bases/web-app/resources/public"
+                  "components/scene/resources/public"
+                  "classpath:public"]}
 
  :js-options {:js-package-dirs ["node_modules" "."]}
 
@@ -14,4 +16,4 @@
   :portfolio
   {:target :browser
    :modules {:main {:init-fn com.zihao.scene.scenes/main}}
-   :dev {:output-dir "components/scene/resources/public/js"}}}}
+   :dev {:output-dir "components/scene/resources/public/portfolio-js"}}}}

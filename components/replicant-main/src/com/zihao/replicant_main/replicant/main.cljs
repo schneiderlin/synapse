@@ -6,21 +6,29 @@
    [com.zihao.replicant-main.replicant.ws-client :as ws-client] 
    [clojure.core.async :as async]
    [com.zihao.replicant-main.replicant.timer :as timer] 
-   [com.zihao.replicant-main.replicant.router :as router]))
+   [com.zihao.replicant-main.replicant.router :as router]
+   [com.zihao.replicant-main.replicant.hash-router :as hash-router]))
 
 (defn routing-anchor [attrs children]
-  (let [routes (-> attrs :replicant/alias-data :routes)]
+  (let [routes (-> attrs :replicant/alias-data :routes)
+        hash-router? (-> attrs :replicant/alias-data :hash-router?)]
     (into [:a (cond-> attrs
                 (:ui/location attrs)
-                (assoc :href (router/location->url routes
-                                                   (:ui/location attrs))))]
+                (assoc :href ((if hash-router? hash-router/location->url router/location->url)
+                              routes
+                              (:ui/location attrs))))]
           children)))
 
 (alias/register! :ui/a routing-anchor)
 
-(defn get-current-location [routes]
-  (->> js/location.href
-       (router/url->location routes)))
+(defn get-current-location [routes hash-router?]
+  (if hash-router?
+    (let [hash (.-hash js/location)]
+      (if (or (nil? hash) (= hash ""))
+        (hash-router/url->location routes "/")
+        (hash-router/url->location routes hash)))
+    (->> js/location.href
+         (router/url->location routes))))
 
 (defn init-ws-client [_ _]
   (ws-client/make-ws-client))
@@ -36,11 +44,11 @@
 (defn init-el [_ el]
   (js/document.getElementById el))
 
-(defn init-render-loop [render {:keys [store el execute-actions routes interpolate] :as system}] 
+(defn init-render-loop [render {:keys [store el execute-actions routes interpolate get-location-load-actions hash-router?] :as system}] 
   (add-watch
    store ::render
    (fn [_ _ _ state]
-     (r/render el (render state) {:alias-data {:routes routes}})))
+     (r/render el (render state) {:alias-data {:routes routes :hash-router? hash-router?}})))
 
   (add-watch
    timer/!timers :timers
@@ -56,11 +64,27 @@
   
   (js/document.body.addEventListener
    "click"
-   #(router/route-click % system))
+   (if hash-router?
+     #(hash-router/route-click % system)
+     #(router/route-click % system)))
+
+  (when hash-router?
+    ;; Listen for hash changes (browser back/forward buttons)
+    (js/window.addEventListener
+     "hashchange"
+     (fn [_]
+       (let [hash (.-hash js/location)
+             new-location (if (or (nil? hash) (= hash ""))
+                            (hash-router/url->location routes "/")
+                            (hash-router/url->location routes hash))]
+         (when new-location
+           (let [load-actions (get-location-load-actions new-location)]
+             (swap! store assoc :location new-location)
+             (execute-actions system nil load-actions)))))))
 
   (swap! store assoc
          :app/started-at (js/Date.)
-         :location (get-current-location routes)))
+         :location (get-current-location routes hash-router?)))
 
 
 

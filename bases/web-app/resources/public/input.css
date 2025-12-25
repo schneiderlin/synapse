@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@plugin "daisyui";
+@plugin "@tailwindcss/typography";
+
+/* Tell Tailwind where to find classes */
+/* Scan component files from shadcn-clj */
+/* @source "../shadcn-clj*.{cljs,cljc}"; */
+
+/* Path is relative to this CSS file location (bases/agent-web/resources/public/) */
+@source "../../../../../shadcn-clj/src/component/**/*.{cljs,cljc}";

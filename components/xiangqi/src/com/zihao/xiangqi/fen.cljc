@@ -1,7 +1,6 @@
 (ns com.zihao.xiangqi.fen
   (:require [clojure.string :as str]
-            [com.zihao.replicant-main.interface :as replicant]
-            [com.zihao.xiangqi.interface :as logic]))
+            [com.zihao.replicant-main.interface :as replicant]))
 
 (def piece-map
   {"k" :黑将, "a" :黑士, "b" :黑象, "n" :黑马, "r" :黑车, "c" :黑炮, "p" :黑卒

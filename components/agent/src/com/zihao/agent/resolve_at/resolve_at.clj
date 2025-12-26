@@ -1,6 +1,6 @@
 (ns com.zihao.agent.resolve-at.resolve-at
   (:require
-   [com.zihao.baml-client.tools.read-file :as read-file]
+   [com.zihao.baml-client.interface :as baml-client]
    [babashka.process :refer [pipeline pb process check]]
    [clojure.string :as str]))
 
@@ -29,16 +29,16 @@
               (cond
                 (string? item)
                 item
-                
+
                 (and (map? item)
                      (= (:type item) :file)
                      (:path item))
                 (let [file-path (:path item)
-                      file-content (read-file/invoke-read-file-or-throw file-path)]
+                      file-content (baml-client/invoke-read-file-or-throw file-path)]
                   (str "\n--- File: " file-path " ---\n"
                        file-content
                        "\n--- End of " file-path " ---\n"))
-                
+
                 :else
                 (str item))))
        (apply str)))
@@ -63,7 +63,7 @@
   (try
     ;; Check if git is available and workspace is a git repo
     (check (process ["git" "rev-parse" "--git-dir"] {:dir workspace-root}))
-    
+
     (if (str/blank? query)
       ;; If query is empty, use git ls-files directly (faster)
       (let [result (process ["git" "ls-files"] {:dir workspace-root :out :string})
@@ -73,12 +73,12 @@
                (take max-results)
                vec)
           []))
-      
+
       ;; Otherwise, use fzf for fuzzy filtering 
       (try
         ;; Check if fzf is available
         (check (process ["fzf" "--version"]))
-        
+
         ;; Build the pipeline: git ls-files | fzf -f query
         (let [git-proc (pb "git" "ls-files" {:dir workspace-root})
               ;; Use fzf with -f for filtering, --print0 for null-separated output,
@@ -90,7 +90,7 @@
               ;; Wait for completion and get output
               result @last-proc
               output (:out result)]
-          
+
           (if output
             (let [lines (-> output
                             slurp
@@ -100,7 +100,7 @@
                                  vec))]
               lines)
             []))
-        
+
         (catch Exception _e
           ;; If fzf is not available, fall back to simple string filtering
           (let [result (process ["git" "ls-files"] {:dir workspace-root :out :string})
@@ -112,7 +112,7 @@
                    (take max-results)
                    vec)
               [])))))
-    
+
     (catch Exception _
       ;; If git is not available, or not a git repo, return empty vector
       ;; In the future, could fall back to simple file system search
@@ -120,7 +120,7 @@
 
 (comment
   (println (resolve-at ["看一下" {:type :file :path "./readme.md"} "里面有什么未完成的"]))
-  
+
   ;; Test query-at-candidates
   (query-at-candidates "agent")
   (query-at-candidates "")

@@ -1,5 +1,8 @@
 (ns com.zihao.xiangqi.interface
-  (:require [com.zihao.xiangqi.api :as api]))
+  (:require [com.zihao.xiangqi.api :as api]
+            [com.zihao.xiangqi.common :as common]
+            [com.zihao.xiangqi.fen :as fen]
+            [com.zihao.xiangqi.render :as render]))
 
 (def state
   {:board [[:黑车 :黑马 :黑象 :黑士 :黑将 :黑士 :黑象 :黑马 :黑车]
@@ -414,3 +417,33 @@
   "Command handler for xiangqi component"
   [system command]
   (api/command-handler system command))
+
+;; Re-export functions from internal namespaces for use by other components
+(def prefix
+  "The prefix key used to access xiangqi state in a nested state map"
+  common/prefix)
+
+(defn fen->state
+  "Convert a FEN string to a xiangqi state map"
+  [fen-string]
+  (fen/fen->state fen-string))
+
+(defn move-str->coords
+  "Convert a move string (e.g. 'e0e1') to coordinate pairs [[from-row from-col] [to-row to-col]]"
+  [move-str]
+  (fen/move-str->coords move-str))
+
+(defn coords->move-str
+  "Convert coordinate pairs [[from-row from-col] [to-row to-col]] to a move string (e.g. 'e0e1')"
+  [coords]
+  (fen/coords->move-str coords))
+
+(defn state->fen
+  "Convert a xiangqi state map to a FEN string"
+  [state]
+  (fen/state->fen state))
+
+(defn chessboard
+  "Render a xiangqi chessboard from state"
+  [state]
+  (render/chessboard state))

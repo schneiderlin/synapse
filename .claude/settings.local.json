@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(poly info:*)",
+      "Bash(clj -M:poly info:*)"
+    ]
+  }
+}

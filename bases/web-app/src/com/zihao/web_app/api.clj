@@ -1,19 +1,21 @@
 (ns com.zihao.web-app.api
   (:require
    [ring.adapter.jetty :as jetty]
-   [com.zihao.jetty-main.interface :as jm] 
+   [com.zihao.jetty-main.interface :as jm]
    [com.zihao.cljpy-main.interface :as cljpy-main]
+   [com.zihao.language-learn.interface :as language-learn]
+   [com.zihao.xiangqi.interface :as xiangqi]
    [integrant.core :as ig]))
 
-(defn command-handler [system command] 
-  (or  
-      #_(script-config/command-handler command)
-      ))
+(defn command-handler [system command]
+  (or (lingq-api/command-handler system command)
+      (fsrs-api/command-handler system command)
+      (xiangqi-api/command-handler system command)))
 
-(defn query-handler [query]
-  (or  
-      #_(script-config/query-handler query)
-      ))
+(defn query-handler [system query]
+  (or (lingq-api/query-handler system query)
+      (fsrs-api/query-handler system query)
+      (xiangqi-api/query-handler system query)))
 
 (def config
   {:jetty/routes {:ws-server nil
@@ -27,7 +29,7 @@
 (defmethod ig/init-key :cljpy/python-env [_ modules]
   (cljpy-main/make-python-env [] modules))
 
-(defmethod ig/init-key :jetty/routes [_ {:keys [ws-server] :as system}] 
+(defmethod ig/init-key :jetty/routes [_ {:keys [ws-server] :as system}]
   (jm/make-routes system ws-server query-handler command-handler))
 
 (defmethod ig/init-key :jetty/handler [_ routes]

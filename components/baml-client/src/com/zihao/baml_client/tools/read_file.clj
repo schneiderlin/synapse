@@ -5,12 +5,12 @@
 
 (defn- read-file-content-impl
   "Internal implementation for reading file content.
-   
+
    Args:
    - path: Absolute file path (string)
    - line-range: Optional map with :start and :end keys (both integers, 1-indexed)
    - throw-on-error: If true, throws exceptions on errors; if false, returns error messages
-   
+
    Returns:
    - File content as string, or error message if throw-on-error is false and file doesn't exist
    - Throws exception if throw-on-error is true and file doesn't exist"
@@ -57,11 +57,11 @@
 (defn read-file-content
   "Reads file content from the given absolute path, optionally limiting to a line range.
    Returns error messages instead of throwing exceptions.
-   
+
    Args:
    - path: Absolute file path (string)
    - line-range: Optional map with :start and :end keys (both integers, 1-indexed)
-   
+
    Returns:
    - File content as string, or error message if file doesn't exist"
   [path & [line-range]]
@@ -72,11 +72,11 @@
 (defn refine-content
   "Refines file content by checking if it's too long and truncating if necessary.
    Adds helpful messages when content is truncated.
-   
+
    Args:
    - content: File content string
    - max-length: Maximum content length before truncation (default: 50000)
-   
+
    Returns:
    - Refined content string with truncation message if needed"
   ([content]
@@ -86,10 +86,10 @@
      content
      (let [truncated (subs content 0 max-length)
            message (str "\n\n[... Content truncated due to length ...]\n"
-                       "The file content is too long to display in full.\n"
-                       "To read specific sections, use the line-range parameter.\n"
-                       "Example: invoke-read-file with line-range {:start 1 :end 100}\n"
-                       "Line numbers are 1-indexed (first line is 1).")]
+                        "The file content is too long to display in full.\n"
+                        "To read specific sections, use the line-range parameter.\n"
+                        "Example: invoke-read-file with line-range {:start 1 :end 100}\n"
+                        "Line numbers are 1-indexed (first line is 1).")]
        (str truncated message)))))
 
 ;; ============================================================================
@@ -99,11 +99,11 @@
 (defn invoke-read-file
   "Read and return refined file content.
    Returns error messages instead of throwing exceptions.
-   
+
    Args:
    - path: Absolute file path (string, required)
    - line-range: Optional map with :start and :end keys (both integers, 1-indexed)
-   
+
    Returns:
    - Refined file content as string, or error message if file doesn't exist"
   [path & [line-range]]
@@ -113,14 +113,14 @@
 (defn invoke-read-file-or-throw
   "Read and return refined file content.
    Throws exceptions on errors (file not found, read errors, etc.).
-   
+
    Args:
    - path: Absolute file path (string, required)
    - line-range: Optional map with :start and :end keys (both integers, 1-indexed)
-   
+
    Returns:
    - Refined file content as string
-   
+
    Throws:
    - java.io.FileNotFoundException if file doesn't exist
    - Exception if file read fails"

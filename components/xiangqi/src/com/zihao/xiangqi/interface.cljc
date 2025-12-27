@@ -1,4 +1,6 @@
-(ns com.zihao.xiangqi.interface)
+(ns com.zihao.xiangqi.interface
+  (:require
+   #?(:clj [com.zihao.xiangqi.api :as api])))
 
 (def state
   {:board [[:黑车 :黑马 :黑象 :黑士 :黑将 :黑士 :黑象 :黑马 :黑车]
@@ -32,7 +34,7 @@
                                :黑士 :红士
                                :黑将 :红帅
                                :黑卒 :红兵
-                               
+
                                :红车 :黑车
                                :红马 :黑马
                                :红炮 :黑炮
@@ -45,7 +47,7 @@
     (assoc state
            :board reversed-board
            :next (if (= "红" (:next state)) "黑" "红")
-           :prev-move nil))) 
+           :prev-move nil)))
 
 (comment
   (flip-state state)
@@ -84,14 +86,14 @@
   (pawn-move (:board state) [5 2])
   (pawn-move (:board state) [5 4])
   (pawn-move (:board state) [5 6])
-  (pawn-move (:board state) [5 8]) 
+  (pawn-move (:board state) [5 8])
 
   ;; 黑
   (pawn-move (:board state) [3 0])
   (pawn-move (:board state) [3 2])
   (pawn-move (:board state) [3 4])
   (pawn-move (:board state) [3 6])
-  (pawn-move (:board state) [3 8]) 
+  (pawn-move (:board state) [3 8])
   :rcf)
 
 (defn cannon-move
@@ -146,14 +148,14 @@
                                (= :黑车 piece) [#{:红车 :红马 :红相 :红士 :红帅 :红炮 :红兵} true]
                                :else [nil false])
         directions [[-1 0] [1 0] [0 -1] [0 1]]  ; 上下左右
-        
+
         valid-moves (when is-chariot?
                       (mapcat (fn [[dr dc]]
                                 (loop [r (+ row dr) c (+ col dc)
                                        moves []]
                                   (cond
                                     (or (< r 0) (> r 9) (< c 0) (> c 8)) moves
-                                    
+
                                     :else
                                     (let [current (get-in board [r c])]
                                       (cond
@@ -205,16 +207,16 @@
 
   (knight-move (:board state) [0 7])
   (knight-move (:board state) [0 7])
-  
+
   (let [board (:board state)
         [row col] [9 1]
         piece (get-in board [row col])
-        
+
         [enemy? is-knight?] (cond
                               (= :红马 piece) [#{:黑车 :黑马 :黑象 :黑士 :黑将 :黑炮 :黑卒} true]
                               (= :黑马 piece) [#{:红车 :红马 :红相 :红士 :红帅 :红炮 :红兵} true]
                               :else [nil false])
-        
+
         [[dr1 dc1] [dr2 dc2]] [[-1 0] [-2 1]]
         block-point [(+ row dr1) (+ col dc1)]
         target-point [(+ row dr2) (+ col dc2)]
@@ -222,8 +224,7 @@
                     (<= 0 (target-point 0) 9)
                     (<= 0 (target-point 1) 8))
         check2 (when-let [target-piece (get-in board target-point)]
-                 (or (nil? target-piece) (enemy? target-piece)))
-        ]
+                 (or (nil? target-piece) (enemy? target-piece)))]
     check2)
   :rcf)
 
@@ -235,12 +236,12 @@
                               (= :红相 piece) [#{:黑车 :黑马 :黑象 :黑士 :黑将 :黑炮 :黑卒} #(>= % 5)]  ; 红相不过河（行号≥5）
                               (= :黑象 piece) [#{:红车 :红马 :红相 :红士 :红帅 :红炮 :红兵} #(<= % 4)]  ; 黑象不过河（行号≤4）
                               :else [nil nil])
-        
+
         directions [[[-1 -1] [-2 -2]]  ; 左上
                     [[-1 1]  [-2 2]]   ; 右上
                     [[1 -1]  [2 -2]]    ; 左下
                     [[1 1]   [2 2]]]    ; 右下
-        
+
         valid-moves (when enemy?  ; 当是象/相时处理
                       (->> directions
                            (keep (fn [[[dr-mid dc-mid] [dr-target dc-target]]]
@@ -294,7 +295,7 @@
   (advisor-move (:board state) [9 5])
 
   (advisor-move (:board state) [0 3])
-  (advisor-move (:board state) [0 5]) 
+  (advisor-move (:board state) [0 5])
   :rcf)
 
 (defn general-move
@@ -339,11 +340,11 @@
   (general-move (:board state) [0 4])
   :rcf)
 
-(defn possible-move 
+(defn possible-move
   "输入棋盘和起始位置, 返回所有合法移动位置"
   [state [row col]]
   (let [board (:board state)
-        piece (get-in board [row col]) 
+        piece (get-in board [row col])
         raw-moves (case piece
                     (:红兵 :黑卒) (pawn-move board [row col])
                     (:红车 :黑车) (chariot-move board [row col])
@@ -359,7 +360,7 @@
   ;; 测试红车初始位置移动
   (possible-move state [9 0])
   ;; 测试红炮移动
-  (possible-move state [7 1]) 
+  (possible-move state [7 1])
   :rcf)
 
 (defn move
@@ -403,3 +404,46 @@
       :board
       (get-in [7 4]))  ; 应该返回 nil
   :rcf)
+
+;; API handlers
+(defn query-handler
+  "Query handler for xiangqi component"
+  [system query]
+  #?(:clj (api/query-handler system query)
+     :cljs (throw (ex-info "query-handler only available in Clojure" {}))))
+
+(defn command-handler
+  "Command handler for xiangqi component"
+  [system command]
+  #?(:clj (api/command-handler system command)
+     :cljs (throw (ex-info "command-handler only available in Clojure" {}))))
+
+;; Re-export functions from internal namespaces for use by other components
+(def prefix
+  "The prefix key used to access xiangqi state in a nested state map"
+  :xiangqi)
+
+(defn fen->state
+  "Convert a FEN string to a xiangqi state map"
+  [fen-string]
+  #?(:clj ((requiring-resolve 'com.zihao.xiangqi.fen/fen->state) fen-string)))
+
+(defn move-str->coords
+  "Convert a move string (e.g. 'e0e1') to coordinate pairs [[from-row from-col] [to-row to-col]]"
+  [move-str]
+  #?(:clj ((requiring-resolve 'com.zihao.xiangqi.fen/move-str->coords) move-str)))
+
+(defn coords->move-str
+  "Convert coordinate pairs [[from-row from-col] [to-row to-col]] to a move string (e.g. 'e0e1')"
+  [coords]
+  #?(:clj ((requiring-resolve 'com.zihao.xiangqi.fen/coords->move-str) coords)))
+
+(defn state->fen
+  "Convert a xiangqi state map to a FEN string"
+  [state]
+  #?(:clj ((requiring-resolve 'com.zihao.xiangqi.fen/state->fen) state)))
+
+(defn chessboard
+  "Render a xiangqi chessboard from state"
+  [state]
+  #?(:clj ((requiring-resolve 'com.zihao.xiangqi.render/chessboard) state)))

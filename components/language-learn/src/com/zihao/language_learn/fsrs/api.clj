@@ -13,7 +13,7 @@
   (get-due-cards)
   :rcf)
 
-(defn query-handler [query]
+(defn query-handler [_system query]
   (case (:query/kind query)
     :query/due-cards
     (response/response {:success? true
@@ -21,10 +21,10 @@
     nil))
 
 (comment
-  (query-handler {:query/kind :query/due-cards}) 
+  (query-handler nil {:query/kind :query/due-cards}) 
   :rcf)
 
-(defn command-handler [{:command/keys [kind data]}]
+(defn command-handler [_system {:command/keys [kind data]}]
   (case kind 
     :command/repeat-card
     (let [{:keys [id rating]} data]
@@ -35,6 +35,6 @@
     nil))
 
 (comment
-  (command-handler {:command/kind :command/repeat-card,
-                    :command/data {:id 1, :rating :good}})
+  (command-handler nil {:command/kind :command/repeat-card,
+                        :command/data {:id 1, :rating :good}})
   :rcf)

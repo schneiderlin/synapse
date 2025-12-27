@@ -47,3 +47,8 @@
 
 (defn gather-form-data [form-el]
   (utils/gather-form-data form-el))
+
+(defn gen-uuid 
+  "Generates a random UUID string."
+  []
+  (utils/gen-uuid))

@@ -1,29 +1,28 @@
 (ns com.zihao.xiangqi.fen
   (:require [clojure.string :as str]
-            [com.zihao.replicant-main.replicant.utils :refer [is-digit? parse-int]]
-            [com.zihao.xiangqi.interface :as logic]))
+            [com.zihao.replicant-main.interface :as replicant]))
 
 (def piece-map
   {"k" :黑将, "a" :黑士, "b" :黑象, "n" :黑马, "r" :黑车, "c" :黑炮, "p" :黑卒
    "K" :红帅, "A" :红士, "B" :红相, "N" :红马, "R" :红车, "C" :红炮, "P" :红兵})
 
 (defn fen-row->board-row [row]
-  (loop [chars (seq row) 
+  (loop [chars (seq row)
          acc []]
     (if (empty? chars)
       acc
       (let [c (first chars)]
-        (if (is-digit? c)
-          (recur (rest chars) (into acc (repeat (parse-int c) nil)))
+        (if (replicant/is-digit? c)
+          (recur (rest chars) (into acc (repeat (replicant/parse-int c) nil)))
           (recur (rest chars) (conj acc (piece-map (str c)))))))))
 
 (comment
-  (parse-int "c")
-  (is-digit? "c")
+  (replicant/parse-int "c")
+  (replicant/is-digit? "c")
   (fen-row->board-row "1c5c1")
 
   (seq "1c5c1")
-  (parse-int "5")
+  (replicant/parse-int "5")
   (repeat 5 nil)
   :rcf)
 
@@ -69,22 +68,22 @@
     nil
     (let [[[from-row from-col] [to-row to-col]] coords
           row->rank #(case %
-                      9 \0
-                      8 \1
-                      7 \2
-                      6 \3
-                      5 \4
-                      4 \5
-                      3 \6
-                      2 \7
-                      1 \8
-                      0 \9)]
+                       9 \0
+                       8 \1
+                       7 \2
+                       6 \3
+                       5 \4
+                       4 \5
+                       3 \6
+                       2 \7
+                       1 \8
+                       0 \9)]
       (str (col->file from-col)
            (row->rank from-row)
            (col->file to-col)
            (row->rank to-row)))))
 
-(comment 
+(comment
   (move-str->coords nil)
   (move-str->coords "i1i0")
   (coords->move-str [[8 8] [9 8]])
@@ -107,7 +106,7 @@
             (if x
               (conj acc (piece-rev-map x))
               (if (and (seq acc) (re-matches #"\d+" (last acc)))
-                (conj (pop acc) (str (inc (parse-int (last acc)))))
+                (conj (pop acc) (str (inc (replicant/parse-int (last acc)))))
                 (conj acc "1"))))]
     (apply str (reduce f [] row))))
 
@@ -123,7 +122,7 @@
   (-> logic/state
       state->fen
       fen->state)
-  
+
   (fen->state "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1")
   :rcf)
 

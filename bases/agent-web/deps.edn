@@ -1,0 +1,6 @@
+{:paths ["src" "resources"]
+ :deps {linzihao/shadcn-clj {:git/url "https://github.com/schneiderlin/shadcn-clj"
+                             :git/sha "6e5de0c3aa4764b211826d0ab2ca9574b6b66ef6"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}
+

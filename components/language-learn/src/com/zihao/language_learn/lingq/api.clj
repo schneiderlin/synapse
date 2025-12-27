@@ -24,7 +24,7 @@
     (response/response {:success? true
                         :result tokens})))
 
-(defn query-handler [query]
+(defn query-handler [_system query]
   (case (:query/kind query)
     :query/tokenize-text
     (let [{:keys [language text]} (:query/data query)]
@@ -52,7 +52,7 @@ Teknologi membuat hidup lebih mudah, tapi kami tetap ingat berbicara langsung, b
   (query-handler {:query/kind :query/get-word-rating})
   :rcf)
 
-(defn command-handler [{:command/keys [kind data]}]
+(defn command-handler [_system {:command/keys [kind data]}]
   (case kind
     :command/update-word-rating
     (let [{:keys [word rating]} data]

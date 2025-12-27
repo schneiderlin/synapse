@@ -4,7 +4,7 @@
    [libpython-clj2.python :as py]
    [com.zihao.cljpy-main.interface :as cljpy-main]
    [com.zihao.baml-client.interface :as baml-client :refer [reload]]
-   [com.zihao.agent-eval.collector :as collector]))
+   [com.zihao.agent-eval.interface :as agent-eval]))
 
 (comment
   (reload)
@@ -151,8 +151,8 @@
     (process-stream stream stream-callback final-callback)))
 
 (comment
-  (require '[com.zihao.agent-eval.collector :as collector])
-  (def coll (collector/create-collector {:cljpy/python-env python-env} "chat-agent"))
+  (require '[com.zihao.agent-eval.interface :as agent-eval])
+  (def coll (agent-eval/create-collector {:cljpy/python-env python-env} "chat-agent"))
 
   ;; 没有 collector
   (def res (chat-agent {:messages [{:role "user" :content "hello"}]}))
@@ -160,9 +160,9 @@
   (def res (chat-agent {:messages [{:role "user" :content "hello"}]}
                        {:kwargs {:baml_options
                                  {"collector" coll}}}))
-  
-  (collector/extract-log-data coll)
-  (collector/extract-http-request-response coll)
+
+  (agent-eval/extract-log-data coll)
+  (agent-eval/extract-http-request-response coll)
 
   (def last-log (py/py.- coll "last"))
   (py/py.- last-log "raw_llm_response")
@@ -186,7 +186,7 @@
   ([ctx function-name args stream-callback final-callback]
    (case function-name
      :choose-tool (apply choose-tool ctx args)
-     :decide-action (apply decide-action ctx args) 
+     :decide-action (apply decide-action ctx args)
      nil)))
 
 (comment

@@ -2,6 +2,7 @@
   (:require-macros [com.zihao.replicant-main.replicant.utils :refer [build-admin?]])
   (:require
    [com.zihao.playground-drawflow.interface :as playground-drawflow]
+   [com.zihao.xiangqi.render :as xiangqi-render]
    [com.zihao.replicant-main.replicant.navbar :refer [navbar]]))
 
 (comment
@@ -12,7 +13,7 @@
   (navbar "Web App"
           [{:page-id :pages/frontpage :page-name "首页"}
            {:page-id :pages/playground-drawflow :page-name "Playground Drawflow"}
-           ]))
+           {:page-id :pages/xiangqi :page-name "象棋"}]))
 
 (defn page-layout [content]
   [:div {:class ["min-h-screen" "bg-base-100"]}
@@ -34,12 +35,16 @@
   (page-layout
    (playground-drawflow/render state)))
 
+(defn render-xiangqi [state]
+  (xiangqi-render/main state))
+
 (defn render-not-found [_]
   (render-frontpage))
 
 (defn render-main [state]
   (let [f (case (:location/page-id (:location state))
-            :pages/frontpage render-frontpage 
+            :pages/frontpage render-frontpage
             :pages/playground-drawflow render-playground-drawflow
+            :pages/xiangqi render-xiangqi
             render-not-found)]
     (f state)))

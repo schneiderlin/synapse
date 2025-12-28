@@ -79,11 +79,17 @@
   (render-article context page))
 
 (defn render-page [context page]
-  (case (:page/kind page)
-    :page.kind/frontpage (render-frontpage context page)
-    :page.kind/blog-post (render-blog-post context page)
-    :page.kind/article (render-article context page)))
-
+  (let [{:keys [uri]} context] 
+    (or
+     ;; static pages. 添加新的 page 需要修改 content/static-pages.edn
+     ;; 这样才会把 uri ingest 到数据库. 否则会 404
+     (case uri
+       "/test" [:h1 "hello"]
+       nil)
+     (case (:page/kind page)
+       :page.kind/frontpage (render-frontpage context page)
+       :page.kind/blog-post (render-blog-post context page)
+       :page.kind/article (render-article context page)))))
 
 (def config
   {:site/title "The Powerblog"

@@ -2,7 +2,6 @@
  {"nexus-releases" {:url "https://nexus.redplanetlabs.com/repository/maven-public-releases"}
   "jitpack.io" {:url "https://jitpack.io"}}
  :aliases  {:dev {:extra-paths ["development/src"]
-
                   :extra-deps {org.clojure/clojure {:mvn/version "1.12.2"}
                                org.clojure/clojurescript {:mvn/version "1.12.42"}
                                thheller/shadow-cljs {:mvn/version "3.2.1"}

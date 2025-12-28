@@ -34,7 +34,8 @@
                                poly/playground-odoyle-rules {:local/root "components/playground-odoyle-rules"}
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}
                                poly/playground-rama {:local/root "components/playground-rama"}
-                               poly/playground-drawflow {:local/root "components/playground-drawflow"}}} 
+                               poly/playground-drawflow {:local/root "components/playground-drawflow"}
+                               poly/playground-stasis {:local/root "components/playground-stasis"}}} 
 
             :test {:extra-paths []}
 

@@ -1,7 +1,8 @@
 {:paths ["src" "resources"]
  :deps {obneyai/grain-core {:git/url "https://github.com/ObneyAI/grain.git"
                             :sha "1263323fa0946c68266981a43772aaf4b70de364"
-                            :deps/root "projects/grain-core"}
+                            :deps/root "projects/grain-core"
+                            :exclusions [com.widdindustries/time-literals]}
         babashka/process {:mvn/version "0.6.23"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

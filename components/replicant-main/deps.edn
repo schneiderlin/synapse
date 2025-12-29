@@ -6,7 +6,9 @@
         org.clojure/data.xml {:mvn/version "0.2.0-alpha9"}
         com.domkm/silk {:mvn/version "0.1.2"}
         lambdaisland/uri {:mvn/version "1.19.155"}
-        com.taoensso/sente {:mvn/version "1.21.0"}
-        com.taoensso/telemere {:mvn/version "1.1.0"}}
+        com.taoensso/sente {:mvn/version "1.21.0"
+                            :exclusions [com.taoensso/encore]}
+        com.taoensso/telemere {:mvn/version "1.1.0"
+                               :exclusions [com.taoensso/encore]}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

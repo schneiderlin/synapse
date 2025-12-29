@@ -1,0 +1,11 @@
+{:deps {org.clojure/clojure {:mvn/version "1.12.3"}
+        
+        poly/web-app {:local/root "../../bases/web-app"}
+
+        poly/replicant-main {:local/root "../../components/replicant-main"}
+        poly/jetty-main {:local/root "../../components/jetty-main"}
+        poly/cljpy-main {:local/root "../../components/cljpy-main"}}
+
+ :aliases {:test {:extra-paths []
+                  :extra-deps  {}}
+           :uberjar {:main com.zihao.web-app.api}}}

@@ -1,5 +1,8 @@
 {:paths ["src" "resources"]
  :deps {schneiderlin/cljc-fsrs {:git/url "https://github.com/schneiderlin/cljc-fsrs.git"
-                                :git/sha "f4e6a7d81453da16a9e212a6f229062f8e41b240"}}
+                                :git/sha "f4e6a7d81453da16a9e212a6f229062f8e41b240"
+                                :exclusions [com.widdindustries/time-literals]}
+        datalevin/datalevin {:mvn/version "0.9.22"
+                             :exclusions [com.widdindustries/time-literals]}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

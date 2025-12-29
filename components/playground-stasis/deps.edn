@@ -1,4 +1,4 @@
 {:paths ["src" "resources"]
- :deps {no.cjohansen/powerpack {:mvn/version "2025.10.22"}}
+ :deps {stasis/stasis {:mvn/version "2023.11.21"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

@@ -6,7 +6,7 @@
    [com.zihao.language-learn.fsrs.template :as template]
    [datalevin.core :as d]))
 
-(def db-uri "fsrs.db")
+(def db-uri "databases/fsrs.db")
 (def schema
   {:card/title {:db/valueType :db.type/string
                 :db/cardinality :db.cardinality/one

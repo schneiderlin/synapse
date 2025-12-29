@@ -9,7 +9,7 @@
                                       (into #{} new-items)
                                       (into items new-items)))]]))
 
-(defn execute-action [store event action args]
+(defn execute-action [{:keys [store] :as system} event action args]
   (case action
     :multi-input/paste-value (let [[items-path value] args]
                                (paste-value items-path value))

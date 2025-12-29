@@ -11,7 +11,7 @@
     {:on-success [[:store/assoc-in [:login :success?] true]
                   [:router/navigate {:location/page-id :pages/frontpage}]]}]])
 
-(defn execute-action [store event action args] 
+(defn execute-action [{:keys [store] :as system} event action args] 
   (case action
     :login/login (login args)
     nil))

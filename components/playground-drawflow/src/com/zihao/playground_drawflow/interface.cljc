@@ -7,6 +7,6 @@
   (render/render state))
 
 #?(:cljs
-   (defn execute-action [{:keys [store]} event action args]
-     (actions/execute-action store event action args)))
+   (defn execute-action [system event action args]
+     (actions/execute-action system event action args)))
 

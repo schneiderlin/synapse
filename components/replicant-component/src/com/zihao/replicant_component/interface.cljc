@@ -5,8 +5,8 @@
 
 (defn execute-action
   "Execute table-related actions in the system"
-  [store event action args]
-  (table/execute-action store event action args))
+  [system event action args]
+  (table/execute-action system event action args))
 
 (defn table-filter
   "Render table filter UI components based on filter specifications"

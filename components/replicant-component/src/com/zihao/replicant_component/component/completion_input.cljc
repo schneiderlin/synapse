@@ -13,7 +13,7 @@
                 :event-data {:value value}}]
    [:store/assoc-in input-path value]])
 
-(defn execute-action [store event action args]
+(defn execute-action [{:keys [store] :as system} event action args]
   (case action
     :completion-input/input-change (let [[input-path options-path value] args]
                                      (input-change input-path options-path value))

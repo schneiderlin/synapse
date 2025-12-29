@@ -2,10 +2,10 @@
   (:require
    [clojure.string :as str]))
 
-(defn execute-action [store event action args]
+(defn execute-action [{:keys [store] :as system} event action args]
   (case action
     :multi-select/toggle-selection (let [[selections-path option-value] args]
-                                     [[:store/update-in selections-path 
+                                     [[:store/update-in selections-path
                                        (fn [selections]
                                          (if (contains? selections option-value)
                                            (disj selections option-value)

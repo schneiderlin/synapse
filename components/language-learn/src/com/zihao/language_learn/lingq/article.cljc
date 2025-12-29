@@ -1,7 +1,7 @@
 (ns com.zihao.language-learn.lingq.article
   (:require
    [lingq.common :refer [prefix]]
-   [replicant.query :as query]
+   [com.zihao.replicant-main.replicant.query :as query]
    [clojure.string :as str]))
 
 (defn get-word-class [rating]

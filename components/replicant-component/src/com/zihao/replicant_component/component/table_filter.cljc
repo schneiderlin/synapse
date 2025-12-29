@@ -2,7 +2,7 @@
   (:require
    [clojure.walk :as walk]
    [com.zihao.replicant-component.ui.table :refer [table-ui]]
-   [replicant.query :as query]))
+   [com.zihao.replicant-main.replicant.query :as query]))
 
 (defn get-filter-operators
   "Get available filter operators based on field type"

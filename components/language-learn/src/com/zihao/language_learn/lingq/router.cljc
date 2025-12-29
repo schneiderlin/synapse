@@ -1,6 +1,6 @@
 (ns com.zihao.language-learn.lingq.router
   (:require
-   [replicant.query :as query]))
+   [com.zihao.replicant-main.replicant.query :as query]))
 
 (def routes
   [[:pages/lingq [["lingq"]]]])

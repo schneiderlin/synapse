@@ -1,5 +1,5 @@
 (ns com.zihao.login.login
-  (:require [replicant.command :as command]))
+  (:require [com.zihao.replicant-main.replicant.command :as command]))
 
 (defn login-form [state] 
   [:div {:class ["min-h-screen" "flex" "items-center" "justify-center" "bg-gray-50" "py-12" "px-4" "sm:px-6" "lg:px-8"]}

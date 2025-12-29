@@ -1,6 +1,6 @@
 (ns com.zihao.language-learn.lingq.render
   (:require 
-   [replicant.query :as query]
+   [com.zihao.replicant-main.replicant.query :as query]
    [clojure.string :as str]
    [lingq.common :refer [prefix]]
    [lingq.article :refer [article-ui]] 

@@ -3,8 +3,7 @@
    [cljs.core.async.macros :as asyncm :refer [go go-loop]])
   (:require 
    [cljs.core.async :as async :refer [<!]]
-   [taoensso.sente  :as sente]
-   [com.brunobonacci.mulog :as u]))
+   [taoensso.sente  :as sente]))
 
 ;; (defmethod ig/init-key :adapter/ws-client [_ _]
 ;;   (ws-client/make-ws-client))

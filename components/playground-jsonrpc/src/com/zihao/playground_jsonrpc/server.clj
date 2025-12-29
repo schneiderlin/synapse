@@ -1,7 +1,7 @@
 (ns com.zihao.playground-jsonrpc.server
   (:gen-class)
   (:require
-   [taoensso.telemere :as tel]
+   [com.brunobonacci.mulog :as u]
    [clojure.core.async :as async]
    [jsonrpc4clj.coercer :as coercer]
    [jsonrpc4clj.io-server :as io-server]
@@ -10,12 +10,12 @@
 ;; a notification; return value is ignored
 (defmethod server/receive-notification "textDocument/didOpen"
   [_ context {:keys [text-document]}]
-  (tel/log! {:level :info :data {:context context :text-document text-document}}))
+  (u/log ::log :data {:context context :text-document text-document}))
 
 ;; a request; return value is converted to a response
 (defmethod server/receive-request "textDocument/definition"
   [_ context params]
-  (tel/log! {:level :info :data {:context context :params params}})
+  (u/log ::log :data {:context context :params params})
   (::coercer/location params))
 
 (defn -main [& _args]

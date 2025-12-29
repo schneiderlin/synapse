@@ -1,7 +1,7 @@
 (ns com.dx.agent-tui.core 
   (:gen-class)
   (:require 
-   [taoensso.telemere :as tel]
+   [com.brunobonacci.mulog :as u]
    [clojure.core :exclude [println print]]
    [com.dx.cljpy-main.interface :as cljpy-main]
    [com.dx.agent-tui-cljpy.interface :as tui]
@@ -19,7 +19,7 @@
 (defonce store (atom {:msgs []}))
 
 (defn -main [& args]
-  (tel/stop-handlers!)
+  #_(tel/stop-handlers!)
   (reset! store {:msgs []})
   (let [;; Create query candidates function that can be called from Python
         query-candidates-fn (fn [query]
@@ -51,7 +51,7 @@
 
 (comment
   (tui/reload)
-  (tel/stop-handlers!)
+  #_(tel/stop-handlers!)
 
   (-main)
 

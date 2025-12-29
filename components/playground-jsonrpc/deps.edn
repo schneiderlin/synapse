@@ -1,6 +1,5 @@
 {:paths ["src" "resources"]
  :deps {com.github.clojure-lsp/jsonrpc4clj {:mvn/version "1.0.2"}
-        com.taoensso/telemere {:mvn/version "1.1.0"
-                               :exclusions [com.taoensso/encore]}}
+        com.brunobonacci/mulog {:mvn/version "0.10.0"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

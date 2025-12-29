@@ -3,7 +3,7 @@
    [taoensso.sente :as sente]
    [taoensso.sente.server-adapters.community.jetty :refer [get-sch-adapter]]
    [clojure.core.async :as async :refer [go-loop go <! <!!]]
-   [taoensso.telemere :as tel]))
+   [com.brunobonacci.mulog :as u]))
 
 ;; (defmethod ig/init-key :adapter/ws-server [_ _]
 ;;   (ws-server/make-ws-server))
@@ -54,5 +54,5 @@
                   :data/command (ws-command-handler event-msg)
                   nil)
                 (catch Exception e
-                  (tel/error! e))))
+                  (u/log ::error :exception e))))
             (recur)))))))

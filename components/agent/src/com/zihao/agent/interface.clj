@@ -1,7 +1,7 @@
 (ns com.zihao.agent.interface
   (:require
    [com.zihao.agent.llm-function :as llm-function]
-   [taoensso.telemere :as tel]))
+   [com.brunobonacci.mulog :as u]))
 
 (defn code-act-agent [ctx {:keys [messages code code-result stream-callback final-callback] :as opts}]
   (llm-function/code-act-agent ctx opts))
@@ -40,7 +40,7 @@
    - The context (for chaining)"
   [context]
   (let [actions (ctx->actions context)]
-    (tel/log! {:level :info :msg "actions" :data actions})
+    (u/log ::actions :data actions)
     (execute-actions context actions)))
 
 (defn agent-loop

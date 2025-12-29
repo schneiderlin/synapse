@@ -3,7 +3,7 @@
   (:require 
    [integrant.core :as ig] 
    [com.zihao.jetty-main.logging :as logging]
-   [taoensso.telemere :as tel] 
+   [com.brunobonacci.mulog :as u] 
    [clojure.edn :as edn]
    [reitit.ring :as ring]
    [ring.util.response :as response]
@@ -98,7 +98,7 @@
                 :data/command ((make-ws-command-handler command-handler) event-msg)
                 nil)
               (catch Exception e
-                (tel/error! e))))
+                (u/log ::error :exception e))))
           (recur))))))
 
 (defn make-handler [routes & {:keys [public-dir]}]

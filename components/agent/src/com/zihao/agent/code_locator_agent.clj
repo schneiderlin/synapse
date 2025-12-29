@@ -1,6 +1,6 @@
 (ns com.zihao.agent.code-locator-agent
   (:require
-   [taoensso.telemere :as tel]
+   [com.brunobonacci.mulog :as u]
    [com.zihao.agent.llm-function :as llm-function]
    [com.zihao.agent.app :refer [add-log console-app]]
    [com.zihao.agent-tools.interface :as agent-tools]
@@ -93,7 +93,7 @@
 
 (defn execute-actions [{:keys [store app] :as ctx} actions]
   (doseq [action actions]
-    (tel/log! {:level :info :msg "execute-action" :data action})
+    (u/log ::execute-action :data action)
     (let [[action-type & args] action]
       (case action-type
         :code-locator-agent (llm-function/code-locator (first args))

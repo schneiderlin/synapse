@@ -7,7 +7,7 @@
    [com.dx.cljpy-main.interface :as cljpy-main]
    [com.dx.agent.code-executor :refer [code-executor]]
    [clojure.core.async :as async :refer [go-loop]]
-   [taoensso.telemere :as tel]
+   [com.brunobonacci.mulog :as u]
    [integrant.core :as ig]))
 
 (defn command-handler [_ _]
@@ -80,7 +80,7 @@
                                             (?reply-fn {:status :received})))
                   nil)
                 (catch Exception e
-                  (tel/error! e))))
+                  (u/log ::error :exception e))))
             (recur)))))))
 
 (def config

@@ -1,6 +1,6 @@
 (ns com.zihao.agent.chat-agent
   (:require
-   [taoensso.telemere :as tel]
+   [com.brunobonacci.mulog :as u]
    [com.zihao.baml-client.interface :as baml-client]
    [com.zihao.agent.llm-function :as llm-function]
    [com.zihao.agent.app :refer [add-log add-assistant-output finish-streaming-output]]
@@ -29,7 +29,7 @@
                                    (let [text (:content (:message partial-result))]
                                      (add-assistant-output app text))))
               :final-callback (fn [{:keys [message] :as final-result}]
-                                (tel/log! {:level :info :msg "final-callback" :data final-result})
+                                (u/log ::final-callback :data final-result)
                                 (when app
                                   (add-log app (str "[INFO] Final callback received:" (pr-str final-result)))
                                   (finish-streaming-output app))
@@ -53,7 +53,7 @@
   ([ctx actions] (execute-actions nil ctx actions))
   ([system {:keys [store app] :as ctx} actions]
    (doseq [action actions]
-     (tel/log! {:level :info :msg "execute-action" :data action})
+     (u/log ::execute-action :data action)
      (let [[action-type & args] action]
        (case action-type
          :chat-agent

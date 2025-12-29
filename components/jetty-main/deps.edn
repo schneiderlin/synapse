@@ -7,8 +7,7 @@
         metosin/reitit-ring {:mvn/version "0.7.2"}
         metosin/muuntaja {:mvn/version "0.6.11"}
         buddy/buddy-hashers {:mvn/version "2.0.167"}
-        com.taoensso/telemere {:mvn/version "1.1.0"
-                               :exclusions [com.taoensso/encore]}
+        com.brunobonacci/mulog {:mvn/version "0.10.0"} 
         cheshire/cheshire {:mvn/version "5.13.0"}
         integrant/integrant {:mvn/version "1.0.1"}}
  :aliases {:test {:extra-paths ["test"]

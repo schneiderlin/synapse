@@ -4,7 +4,7 @@
   (:require 
    [cljs.core.async :as async :refer [<!]]
    [taoensso.sente  :as sente]
-   [taoensso.telemere :as tel]))
+   [com.brunobonacci.mulog :as u]))
 
 ;; (defmethod ig/init-key :adapter/ws-client [_ _]
 ;;   (ws-client/make-ws-client))
@@ -32,7 +32,7 @@
               :subscribe/event (println 111)
               nil)
             (catch :default e
-              (tel/error! e))))
+              (u/log ::error :exception e))))
         (recur)))))
 
 (comment

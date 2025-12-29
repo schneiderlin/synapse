@@ -1,5 +1,5 @@
 (ns com.zihao.jetty-main.logging
-  (:require [taoensso.telemere :as tel]
+  (:require [com.brunobonacci.mulog :as u]
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
@@ -25,7 +25,7 @@
 
 (defn init []
   (ensure-logs-dir)
-  (tel/add-handler!
+  #_(tel/add-handler!
    :dispatch-udid-file
    (fn
      ([signal]

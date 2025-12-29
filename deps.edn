@@ -20,6 +20,7 @@
                                poly/scene {:local/root "components/scene"}
 
                                poly/kraken-ui {:local/root "components/kraken-ui"}
+                               poly/login {:local/root "components/login"}
                                poly/language-learn {:local/root "components/language-learn"}
                                poly/read-file-mcp {:local/root "components/read-file-mcp"}
                                poly/agent-tools {:local/root "components/agent-tools"}

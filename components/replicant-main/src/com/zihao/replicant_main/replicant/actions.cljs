@@ -102,7 +102,7 @@
                               :debug/print (js/console.log (clj->js args))
                               :clipboard/copy (js/navigator.clipboard.writeText (first args))
                               ;;  :timer/register (apply timer/register-timer args) 
-                              nil))]
+                              (throw (js/Error. (str "No matching action type found: " action ". Did you forget to register the action handler?")))))]
                 (when (vector? result)
                   (f system e result)))))]
     f))

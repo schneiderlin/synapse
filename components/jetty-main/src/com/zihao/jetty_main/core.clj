@@ -10,6 +10,7 @@
    [ring.adapter.jetty :as jetty]
    [ring.middleware.params :as params]
    [ring.middleware.file :refer [wrap-file]]
+   [ring.middleware.resource :refer [wrap-resource]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
    [ring.middleware.session :refer [wrap-session]]
    [ring.middleware.multipart-params :refer [wrap-multipart-params]]
@@ -102,7 +103,7 @@
           (recur))))))
 
 (defn make-handler [routes & {:keys [public-dir]}]
-  (wrap-file
+  (wrap-resource
    (ring/ring-handler
     (ring/router routes))
-   (or public-dir "resources/public")))
+   (or public-dir "public")))

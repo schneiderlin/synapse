@@ -1,7 +1,8 @@
 (ns powerblog.core
   (:require
    [datomic.api :as d]
-   [powerpack.markdown :as md]))
+   [powerpack.markdown :as md]
+   [powerblog.static.with-replicant :as with-replicant]))
 
 
 (comment
@@ -85,12 +86,14 @@
      ;; 这样才会把 uri ingest 到数据库. 否则会 404
      (case uri
        "/test" [:h1 "hello"]
+       "/with-replicant" with-replicant/page
        nil)
      (case (:page/kind page)
        :page.kind/frontpage (render-frontpage context page)
        :page.kind/blog-post (render-blog-post context page)
        :page.kind/article (render-article context page)))))
 
+;; 这里面的内容修改了, 需要去 dev namespace reset 才能生效
 (def config
   {:site/title "The Powerblog"
    :datomic/schema-file "bases/web-app/resources/web-app/schema.edn" 
@@ -99,4 +102,18 @@
    :powerpack/render-page #'render-page
    :powerpack/create-ingest-tx #'create-tx
    :powerpack/source-dirs ["bases/web-app/src"]
-   :powerpack/resource-dirs ["bases/web-app/resources"]})
+   :powerpack/resource-dirs ["bases/web-app/resources"] 
+   ;; 注意这里不需要 bases/web-app/resources 前缀, 因为 optimus 是通过 io/resource 加载资源的, polylith 已经把各个项目的 resources 目录加到 classpath 了
+   ;; 这个加载不到应该至少有个 warning 之类的东西
+   :optimus/bundles {"test.js"
+                     {:public-dir "public"
+                      :paths ["/js/test.js"]}}})
+
+(comment
+  (require '[powerpack.assets :as pa])
+  (pa/load-bundles (assoc config
+                          :optimus/bundles {"test.js"
+                                            {:public-dir "wrong"
+                                             :paths ["/js/test.js"]}})) 
+  :rcf)
+

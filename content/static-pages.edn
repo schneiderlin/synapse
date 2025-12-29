@@ -1,2 +1,4 @@
 [{:page/uri "/test"
+  :page/locale :zh-CN}
+ {:page/uri "/with-replicant"
   :page/locale :zh-CN}]

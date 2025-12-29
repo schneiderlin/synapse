@@ -32,7 +32,7 @@
               :subscribe/event (println 111)
               nil)
             (catch :default e
-              (u/log ::error :exception e))))
+              (println "error" e))))
         (recur)))))
 
 (comment

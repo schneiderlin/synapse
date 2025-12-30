@@ -3,6 +3,7 @@
   (:require
    [com.zihao.playground-drawflow.interface :as playground-drawflow]
    [com.zihao.xiangqi.render :as xiangqi-render]
+   [com.zihao.login.login :as login]
    [com.zihao.replicant-main.replicant.navbar :refer [navbar]]))
 
 (comment
@@ -38,6 +39,12 @@
 (defn render-xiangqi [state]
   (xiangqi-render/main state))
 
+(defn render-login [state]
+  (login/login-form state))
+
+(defn render-change-password [state]
+  (login/change-password-form state))
+
 (defn render-not-found [_]
   (render-frontpage))
 
@@ -46,5 +53,7 @@
             :pages/frontpage render-frontpage
             :pages/playground-drawflow render-playground-drawflow
             :pages/xiangqi render-xiangqi
+            :pages/login render-login
+            :pages/change-password render-change-password
             render-not-found)]
     (f state)))

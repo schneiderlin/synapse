@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(poly info:*)",
-      "Bash(clj -M:poly info:*)"
+      "Bash(clj -M:poly info:*)",
+      "Skill(task-manager)",
+      "Skill(clojure-eval)",
+      "Bash(clj-nrepl-eval:*)"
     ]
   }
 }

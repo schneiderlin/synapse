@@ -96,18 +96,21 @@
 ;; 这里面的内容修改了, 需要去 dev namespace reset 才能生效
 (def config
   {:site/title "The Powerblog"
-   :datomic/schema-file "bases/web-app/resources/web-app/schema.edn" 
+   :datomic/schema-file "bases/web-app/resources/web-app/schema.edn"
    :powerpack/port 8000
    :powerpack/log-level :debug
    :powerpack/render-page #'render-page
    :powerpack/create-ingest-tx #'create-tx
    :powerpack/source-dirs ["bases/web-app/src"]
-   :powerpack/resource-dirs ["bases/web-app/resources"] 
+   :powerpack/resource-dirs ["bases/web-app/resources"]
    ;; 注意这里不需要 bases/web-app/resources 前缀, 因为 optimus 是通过 io/resource 加载资源的, polylith 已经把各个项目的 resources 目录加到 classpath 了
    ;; 这个加载不到应该至少有个 warning 之类的东西
    :optimus/bundles {"test.js"
                      {:public-dir "public"
-                      :paths ["/js/test.js"]}}})
+                      :paths ["/js/test.js"]}
+                     "progressive-enhancement.js"
+                     {:public-dir "public"
+                      :paths ["/js/progressive-enhancement.js"]}}})
 
 (comment
   (require '[powerpack.assets :as pa])

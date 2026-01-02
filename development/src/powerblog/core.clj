@@ -107,10 +107,7 @@
    ;; 这个加载不到应该至少有个 warning 之类的东西
    :optimus/bundles {"test.js"
                      {:public-dir "public"
-                      :paths ["/js/test.js"]}
-                     "progressive-enhancement.js"
-                     {:public-dir "public"
-                      :paths ["/js/progressive-enhancement.js"]}}})
+                      :paths ["/js/test.js"]}}})
 
 (comment
   (require '[powerpack.assets :as pa])

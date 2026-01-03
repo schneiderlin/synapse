@@ -2,7 +2,7 @@
   (:require
    [com.zihao.web-app.render :as render :refer [render-main]]
    [com.zihao.playground-drawflow.node :as node]
-   [com.zihao.language-learn.fsrs.actions :as fsrs-actions]
+   [com.zihao.language-learn.fsrs.idxdb-actions :as fsrs-actions]
    [com.zihao.web-app.router :as router]
    [com.zihao.replicant-main.replicant.main :as rm]
    [com.zihao.replicant-main.interface :as rm1]
@@ -106,9 +106,10 @@
    :replicant/store {:msgs [] :streaming-text "" :tool-call-active? false}
    :replicant/routes router/routes
    :replicant/get-location-load-actions router/get-location-load-actions
-   :replicant/execute-actions [replicant-component/execute-action 
-                               xiangqi-actions/execute-action 
-                               fsrs-actions/execute-action]
+   :replicant/execute-actions [replicant-component/execute-action
+                               xiangqi-actions/execute-action
+                               fsrs-actions/execute-action
+                               fsrs-actions/execute-effect]
    :ws/ws-client nil
    :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)}
    :replicant/render-loop {:system {:store (ig/ref :replicant/store)

@@ -1,8 +1,7 @@
 (ns com.zihao.language-learn.fsrs.api
   (:require
    [datalevin.core :as d]
-   [com.zihao.language-learn.fsrs.db :as db]
-   [ring.util.response :as response]))
+   [com.zihao.language-learn.fsrs.db :as db]))
 
 (defn get-due-cards []
   (let [ids (db/due-card-ids)]
@@ -15,9 +14,7 @@
 
 (defn query-handler [_system query]
   (case (:query/kind query)
-    :query/due-cards
-    (response/response {:success? true
-                        :result (get-due-cards)}) 
+    :query/due-cards (get-due-cards) 
     nil))
 
 (comment
@@ -29,8 +26,7 @@
     :command/repeat-card
     (let [{:keys [id rating]} data]
       (db/repeat-card! id rating)
-      (response/response {:success? true
-                          :result {:message "Card reviewed successfully"}}))
+      {:message "Card reviewed successfully"})
 
     nil))
 

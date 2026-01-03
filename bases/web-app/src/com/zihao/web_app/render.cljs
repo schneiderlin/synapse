@@ -4,6 +4,7 @@
    [com.zihao.playground-drawflow.interface :as playground-drawflow]
    [com.zihao.xiangqi.render :as xiangqi-render]
    [com.zihao.login.login :as login]
+   [com.zihao.language-learn.fsrs.render :as fsrs-render]
    [com.zihao.replicant-main.replicant.navbar :refer [navbar]]))
 
 (comment
@@ -46,6 +47,10 @@
 (defn render-change-password [state]
   (login/change-password-form state))
 
+(defn render-language-learn [state]
+  (page-layout
+   (fsrs-render/flashcard-page state)))
+
 (defn render-not-found [_]
   (render-frontpage))
 
@@ -56,5 +61,6 @@
             :pages/xiangqi render-xiangqi
             :pages/login render-login
             :pages/change-password render-change-password
+            :pages/language-learn render-language-learn
             render-not-found)]
     (f state)))

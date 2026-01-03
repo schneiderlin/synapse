@@ -1,7 +1,6 @@
 (ns com.zihao.replicant-main.replicant.actions
   (:require
-   [clojure.edn :as reader]
-   [com.zihao.replicant-main.replicant.utils :refer [make-interpolate]]
+   [clojure.edn :as reader] 
    [com.zihao.replicant-main.replicant.query :as query]
    [com.zihao.replicant-main.replicant.command :as command]
    [com.zihao.replicant-main.replicant.router :as router]

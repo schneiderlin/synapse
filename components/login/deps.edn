@@ -1,5 +1,4 @@
 {:paths ["src" "resources"]
- :deps {datalevin/datalevin {:mvn/version "0.9.22"
-                             :exclusions [com.widdindustries/time-literals]}}
+ :deps {datalevin/datalevin {:mvn/version "0.9.22"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

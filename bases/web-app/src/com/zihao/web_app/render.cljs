@@ -13,6 +13,7 @@
 (defn my-navbar []
   (navbar "Web App"
           [{:page-id :pages/frontpage :page-name "首页"}
+           {:page-id :pages/language-learn :page-name "FSRS 重复间隔"}
            {:page-id :pages/playground-drawflow :page-name "Playground Drawflow"}
            {:page-id :pages/xiangqi :page-name "象棋"}]))
 

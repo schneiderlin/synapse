@@ -1,6 +1,5 @@
 {:paths ["src" "resources"]
- :deps {ring/ring-core {:mvn/version "1.12.1"}
-        ring/ring-jetty-adapter {:mvn/version "1.12.1"}
+ :deps {ring/ring {:mvn/version "1.15.3"}
         ring/ring-json {:mvn/version "0.5.1"}
         ring-cors/ring-cors {:mvn/version "0.1.13"}
         metosin/reitit {:mvn/version "0.7.0"}

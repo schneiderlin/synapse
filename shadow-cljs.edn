@@ -1,8 +1,9 @@
 {:deps {:aliases [:dev]}
 
- :dev-http {8000 ["bases/web-app/resources/public"
-                  "components/scene/resources/public"
-                  "classpath:public"]}
+ :dev-http {8000 {:roots ["bases/web-app/resources/public"
+                          "components/scene/resources/public"
+                          "classpath:public"]
+                  :proxy-url "http://localhost:3000"}}
 
  :js-options {:js-package-dirs ["node_modules" "."]}
 

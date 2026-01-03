@@ -18,6 +18,10 @@
       (fsrs-api/query-handler system query)
       (xiangqi/query-handler system query)))
 
+(comment
+  (query-handler nil {:query/kind :query/due-cards})
+  :rcf)
+
 (def config
   {:jetty/routes {:ws-server nil
                   :cljpy/python-env (ig/ref :cljpy/python-env)}
@@ -34,7 +38,7 @@
   (jm/make-routes system ws-server query-handler command-handler))
 
 (defmethod ig/init-key :jetty/handler [_ routes]
-  (jm/make-handler routes :public-dir "bases/web-app/resources/public"))
+  (jm/make-handler routes :public-dir "public"))
 
 (defmethod ig/init-key :adapter/jetty [_ {:keys [port handler]}]
   (jetty/run-jetty handler {:port port :join? false}))

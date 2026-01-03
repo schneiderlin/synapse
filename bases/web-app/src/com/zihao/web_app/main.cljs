@@ -118,7 +118,7 @@
                                     :interpolate (apply rm1/make-interpolate [])
                                     :get-location-load-actions (ig/ref :replicant/get-location-load-actions)
                                     :execute-actions (ig/ref :replicant/execute-actions)
-                                    :base-url "http://localhost:3000"}
+                                    :base-url ""}
                            :hash-router? true}})
 
 (defmethod ig/init-key :replicant/el [_ el]

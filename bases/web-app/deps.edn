@@ -1,5 +1,5 @@
 {:paths ["src" "resources"]
- :deps {no.cjohansen/powerpack {:git/sha "5fa1144c1f8bdec9208ec716cd46d863eab1ee4f"
+ :deps {#_#_no.cjohansen/powerpack {:git/sha "5fa1144c1f8bdec9208ec716cd46d863eab1ee4f"
                                 :git/url "https://github.com/schneiderlin/powerpack.git"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

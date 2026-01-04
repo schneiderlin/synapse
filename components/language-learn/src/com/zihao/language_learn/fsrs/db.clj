@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [clojure.java.io :as io]
+   [clojure.edn :as edn]
    [com.zihao.language-learn.fsrs.core :as core]
    [com.zihao.language-learn.fsrs.template :as template]
    [datalevin.core :as d]))
@@ -113,23 +114,20 @@
                             :card/id-word "Halo")])
   :rcf)
 
-;; 象棋测试
-(comment
-  (template/xiangqi-card "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w"
-                         "a0a1")
-  
-  (save-card! (assoc (template/xiangqi-card "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w"
-                                     "h2e2")
-                     :db/id 149))
+;; Migration: export all cards to EDN file
+(defn export-all-cards-to-edn [output-file]
+  (let [all-ids (d/q '[:find [?e ...]
+                       :where
+                       [?e :card/id-word]]
+                     (d/db conn))
+        cards (d/pull-many @conn '[*] all-ids)]
+    (spit output-file (pr-str cards))
+    (count cards)))
 
-  (d/q '[:find [?e ...]
-         :where
-         [?e :card/fen]]
-       (d/db conn))
-  
-  (d/pull @conn '[:db/id :fsrs/due] 149)
-  (d/transact! conn [(assoc (d/pull @conn '[*] 149) 
-                            :fsrs/due (java.util.Date.))])
-  
+
+(comment
+  (export-all-cards-to-edn "fsrs_cards_export.edn")
   :rcf)
+
+
 

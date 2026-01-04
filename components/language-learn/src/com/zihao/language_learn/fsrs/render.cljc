@@ -70,14 +70,33 @@
     [:div {:class ["text-6xl" "mb-4"]} "🎉"]
     [:h2 {:class ["text-2xl" "font-bold" "text-green-800" "mb-2"]} "All caught up!"]
     [:p {:class ["text-green-600"]} "No cards are due for review right now."]
-    [:button {:class ["btn" "btn-primary" "mt-4"]
-              :on {:click [[:card/load-due-cards]]}}
-     "Refresh"]]])
+    [:div {:class ["flex" "gap-3" "justify-center" "mt-4"]}
+     [:button {:class ["btn" "btn-primary"]
+               :on {:click [[:card/load-due-cards]]}}
+      "Refresh"]
+     [:button {:class ["btn" "btn-secondary"]
+               :on {:click [[:card/import-edn-file]]}}
+      "Import EDN File"]]]])
+
+(defn import-status-message [form-state]
+  (cond
+    (:import-success? form-state)
+    [:div {:class ["alert" "alert-success" "mb-4"]}
+     [:span "Cards imported successfully!"]]
+    
+    (:import-error? form-state)
+    [:div {:class ["alert" "alert-error" "mb-4"]}
+     [:span "Error importing cards. Please check the console for details."]]
+    
+    :else nil))
 
 (defn flashcard-page [state]
   (let [form-state (prefix state)
         {:keys [due-cards loading?]} form-state]
-    [:div {:class ["container" "mx-auto" "p-4"]} 
+    [:div {:class ["container" "mx-auto" "p-4"]}
+     ;; Import status message
+     (import-status-message form-state)
+     
      (cond
        loading?
        [:div {:class ["flex" "justify-center" "items-center" "h-64"]}

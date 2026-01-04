@@ -1,5 +1,7 @@
 (ns com.zihao.language-learn.fsrs.indexeddb
-  (:require [com.zihao.language-learn.fsrs.core :as core]))
+  (:require 
+   [clojure.edn :as edn]
+   [com.zihao.language-learn.fsrs.core :as core]))
 
 ;; Database configuration
 (def db-name "fsrs")
@@ -184,7 +186,7 @@
    (mapv by-id ids)))
 
 (comment
-  
+
   (-> (core/create-card "test" "front" "back")
       (card->js)
       (js->card)
@@ -198,4 +200,16 @@
 
   (.then (get-cards [1])
          prn)
+  :rcf)
+
+;; Migration: import cards from EDN file (exported from DataLevin)
+(defn import-cards-from-edn [edn-content]
+  (let [cards (edn/read-string edn-content)]
+    (js/Promise.all
+     (mapv (fn [card]
+             (save-card! (assoc card :db/id nil)))  ;; Clear db/id to let IndexedDB generate new ones
+           cards))))
+
+(comment
+  
   :rcf)

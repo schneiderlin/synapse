@@ -1,6 +1,5 @@
 (ns com.zihao.language-learn.fsrs.indexeddb
-  (:require [clojure.string :as str]
-            [com.zihao.language-learn.fsrs.core :as core]))
+  (:require [com.zihao.language-learn.fsrs.core :as core]))
 
 ;; Database configuration
 (def db-name "fsrs")
@@ -32,24 +31,62 @@
                      (.createIndex store "due" "due" #js{})
                      (.createIndex store "id_word" "id_word" #js{:unique true}))))))))))
 
-;; Helper: convert Clojure card to JS object for IndexedDB
-;; Flattens namespaced keywords to plain keys for IndexedDB
+;; Helper: convert #time/instant (JS object with _nanos and _seconds) to JS Date
+(defn- instant->js-date [instant]
+  (when instant
+    (cond
+      ;; Already a JS Date
+      (instance? js/Date instant)
+      instant
+      
+      ;; ClojureScript #time/instant becomes JS object with _nanos and _seconds
+      (and (object? instant)
+           (some? (.-_seconds instant))
+           (some? (.-_nanos instant)))
+      (js/Date. (* 1000 (+ (.-_seconds instant)
+                           (/ (.-_nanos instant) 1000000000))))
+      
+      ;; Number (timestamp in milliseconds)
+      (number? instant)
+      (js/Date. instant)
+      
+      ;; Fallback: try to construct from value
+      :else
+      (js/Date. instant))))
+
+;; Helper: convert JS Date to #time/instant representation
+(defn- js-date->instant [js-date]
+  (when js-date
+    (let [date (if (instance? js/Date js-date)
+                 js-date
+                 (js/Date. js-date))
+          timestamp-ms (.getTime date)
+          seconds (Math/floor (/ timestamp-ms 1000))
+          nanos (* (mod timestamp-ms 1000) 1000000)]
+      ;; Return as JS object matching #time/instant structure
+      #js{:_seconds seconds
+          :_nanos nanos})))
+
+(comment
+  (js-date->instant (js/Date. 1767491716200))
+  :rcf)
+
 (defn- card->js [card]
-  (clj->js
-    (cond-> {:title (:card/title card)
-             :id_word (:card/id-word card)
-             :front (:card/front card)
-             :back (:card/back card)
-             :lapses (:fsrs/lapses card 0)
-             :stability (:fsrs/stability card 0.0)
-             :difficulty (:fsrs/difficulty card 5.0)
-             :last-repeat (:fsrs/last-repeat card)
-             :reps (:fsrs/reps card 0)
-             :state (name (:fsrs/state card :new))  ; Keyword -> string for JSON
-             :due (:fsrs/due card)
-             :elapsed-days (:fsrs/elapsed-days card 0)
-             :scheduled-days (:fsrs/scheduled-days card 0)}
-      (:db/id card) (assoc :db_id (:db/id card)))))
+  (let [base-map (cond-> {:title (:card/title card)
+                          :id_word (:card/id-word card)
+                          :front (:card/front card)
+                          :back (:card/back card)
+                          :lapses (:fsrs/lapses card 0)
+                          :stability (:fsrs/stability card 0.0)
+                          :difficulty (:fsrs/difficulty card 5.0)
+                          :reps (:fsrs/reps card 0)
+                          :state (name (:fsrs/state card :new))  ; Keyword -> string for JSON
+                          :elapsed-days (:fsrs/elapsed-days card 0)
+                          :scheduled-days (:fsrs/scheduled-days card 0)}
+                   (:db/id card) (assoc :db_id (:db/id card))
+                   (:fsrs/last-repeat card) (assoc :last-repeat (instant->js-date (:fsrs/last-repeat card)))
+                   (:fsrs/due card) (assoc :due (instant->js-date (:fsrs/due card))))]
+    (clj->js base-map)))
 
 ;; Helper: convert JS object to Clojure card map
 ;; Restores namespaced keywords to match Datalevin schema
@@ -86,23 +123,6 @@
                       (fn [e]
                         ;; Return the generated :db/id
                         (resolve (.. e -target -result))))
-                (set! (.-onerror req) reject)))))))
-
-;; Get :db/id by :card/id-word
-;; Returns promise that resolves to :db/id (long) or nil
-(defn by-id-word [id-word]
-  (.then db-promise
-         (fn [db]
-           (js/Promise.
-            (fn [resolve reject]
-              (let [tx (.transaction db #js [store-name] "readonly")
-                    store (.objectStore tx store-name)
-                    index (.index store "id_word")
-                    req (.get index id-word)]
-                (set! (.-onsuccess req)
-                      (fn [e]
-                        (let [result (.. e -target -result)]
-                          (resolve (when result (:db/id (js->card result)))))))
                 (set! (.-onerror req) reject)))))))
 
 ;; Get full card by :db/id
@@ -157,15 +177,6 @@
                (save-card! updated-card))
              (throw (ex-info "Card not found" {:db/id id}))))))
 
-;; Repeat card by :card/id-word
-;; Returns promise that resolves to updated card's :db/id
-(defn repeat-word! [id-word rating]
-  (.then (by-id-word id-word)
-         (fn [id]
-           (if id
-             (repeat-card! id rating)
-             (throw (ex-info "Card not found" {:card/id-word id-word}))))))
-
 ;; Get full cards by :db/ids
 ;; Helper similar to datalevin's pull-many for use in api layer
 (defn get-cards [ids]
@@ -173,25 +184,16 @@
    (mapv by-id ids)))
 
 (comment
-  (def card 
-    {:card/title "Hello"
-     :card/id-word "hello"
-     :card/front "Hello"
-     :card/back "你好"
-     :fsrs/due (js/Date.)
-     :fsrs/state :new})
   
-  (card->js card)
+  (-> (core/create-card "test" "front" "back")
+      (card->js)
+      (js->card)
+      #_(core/repeat-card :good))
 
   (defn add-test-card []
-    (.then (save-card! {:card/title "Hello"
-                        :card/id-word "hello"
-                        :card/front "Hello"
-                        :card/back "你好"
-                        :fsrs/due (js/Date.)
-                        :fsrs/state :new})
+    (.then (save-card! (core/create-card "test" "front" "back"))
            (fn [db-id] (js/console.log "Saved card with db/id:" db-id))))
-  
+
   (add-test-card)
 
   (.then (get-cards [1])

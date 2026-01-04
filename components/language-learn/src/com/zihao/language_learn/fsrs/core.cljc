@@ -91,11 +91,11 @@
            :card/back back)))
 
 (defn repeat-card [card rating]
-  (let [fsrs-card (card->fsrs-card card)]
+  (let [fsrs-card (card->fsrs-card card)] 
     (-> fsrs-card
         (fsrs/repeat-card! rating)
         fsrs-card->card)))
 
 (comment
-  (repeat-card (create-card "test" "front" "back") :good)
+  (repeat-card (create-card "test" "front" "back") :good) 
   :rcf)

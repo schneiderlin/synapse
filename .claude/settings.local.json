@@ -5,7 +5,10 @@
       "Bash(clj -M:poly info:*)",
       "Skill(task-manager)",
       "Skill(clojure-eval)",
-      "Bash(clj-nrepl-eval:*)"
+      "Bash(clj-nrepl-eval:*)",
+      "Skill(beads:stats)",
+      "Bash(beads stats:*)",
+      "Bash(bd:*)"
     ]
   }
 }

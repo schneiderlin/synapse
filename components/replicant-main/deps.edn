@@ -1,5 +1,5 @@
 {:paths ["src" "resources"]
- :deps {no.cjohansen/replicant {:mvn/version "2025.03.27"}
+ :deps {no.cjohansen/replicant {:mvn/version "2025.12.1"}
         no.cjohansen/portfolio {:mvn/version "2025.01.28"}
         integrant/integrant {:mvn/version "1.0.1"}
         no.cjohansen/dataspex {:mvn/version "2025.06.8"}

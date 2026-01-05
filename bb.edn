@@ -1,4 +1,5 @@
-{:tasks {scene-tw {:doc "tailwind watch"
+{:paths ["bb"]
+ :tasks {scene-tw {:doc "tailwind watch"
                    :task (shell "npx @tailwindcss/cli -i ./components/scene/resources/public/input.css -o ./components/scene/resources/public/portfolio-output.css --watch")}
          web-app-tw {:doc "tailwind watch"
                      :task (shell "npx @tailwindcss/cli -i ./bases/web-app/resources/public/input.css -o ./bases/web-app/resources/public/output.css --watch")}}}

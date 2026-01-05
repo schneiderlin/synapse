@@ -3,19 +3,16 @@
    [ring.adapter.jetty :as jetty]
    [com.zihao.jetty-main.interface :as jm]
    [com.zihao.cljpy-main.interface :as cljpy-main]
-   [com.zihao.language-learn.fsrs.api :as fsrs-api]
-   [com.zihao.language-learn.lingq.api :as lingq-api]
+   [com.zihao.language-learn.interface :as language-learn]
    [com.zihao.xiangqi.interface :as xiangqi]
    [integrant.core :as ig]))
 
 (defn command-handler [system command]
-  (or (lingq-api/command-handler system command)
-      (fsrs-api/command-handler system command)
+  (or (language-learn/command-handler system command)
       (xiangqi/command-handler system command)))
 
 (defn query-handler [system query]
-  (or (lingq-api/query-handler system query)
-      (fsrs-api/query-handler system query)
+  (or (language-learn/query-handler system query)
       (xiangqi/query-handler system query)))
 
 (comment

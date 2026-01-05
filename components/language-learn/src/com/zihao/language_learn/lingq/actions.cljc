@@ -1,6 +1,6 @@
 (ns com.zihao.language-learn.lingq.actions
   (:require
-   [lingq.common :refer [prefix]]))
+   [com.zihao.language-learn.lingq.common :refer [prefix]]))
 
 (defn click-unknown-word [_store {:keys [word]}]
   [[:data/command {:command/kind :command/add-new-word
@@ -18,7 +18,7 @@
                    {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
                                  [:store/assoc-in [prefix :tokens] :query/result]]}]]}]])
 
-(defn execute-action [store action args]
+(defn execute-action [{:keys [store]} event action args]
   (case action
     :lingq/click-unknown-word (click-unknown-word store args)
     :lingq/clean-text (clean-text store) 

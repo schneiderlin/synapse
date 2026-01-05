@@ -20,8 +20,7 @@
   :rcf)
 
 (def config
-  {:jetty/routes {:ws-server nil
-                  :cljpy/python-env (ig/ref :cljpy/python-env)}
+  {:jetty/routes {:cljpy/python-env (ig/ref :cljpy/python-env)}
    :jetty/handler (ig/ref :jetty/routes)
    :adapter/jetty {:port (Integer. (or (System/getenv "PORT") "3000"))
                    :handler (ig/ref :jetty/handler)}

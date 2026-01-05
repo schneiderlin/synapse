@@ -8,16 +8,13 @@
 
                                ;; fix taoensso stuff, always conflict
                                com.taoensso/encore {:mvn/version "3.158.0"}
-                               com.taoensso/truss {:mvn/version "2.2.1"}
-
-                               poly/web-app {:local/root "bases/web-app"}
+                               com.taoensso/truss {:mvn/version "2.2.1"} 
 
                                poly/replicant-main {:local/root "components/replicant-main"}
                                poly/jetty-main {:local/root "components/jetty-main"}
                                poly/sitefox-main {:local/root "components/sitefox-main"}
                                poly/cljpy-main {:local/root "components/cljpy-main"}
-                               poly/textual-main {:local/root "components/textual-main"}
-                               poly/scene {:local/root "components/scene"}
+                               poly/textual-main {:local/root "components/textual-main"} 
 
                                poly/kraken-ui {:local/root "components/kraken-ui"}
                                poly/login {:local/root "components/login"}
@@ -35,7 +32,10 @@
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}
                                poly/playground-rama {:local/root "components/playground-rama"}
                                poly/playground-drawflow {:local/root "components/playground-drawflow"}
-                               poly/playground-stasis {:local/root "components/playground-stasis"}}} 
+                               poly/playground-stasis {:local/root "components/playground-stasis"}}}
+            
+            :dev-webapp {:extra-deps {poly/web-app {:local/root "bases/web-app"}}}
+            :dev-scene {:extra-deps {poly/scene {:local/root "bases/scene"}}}
 
             :test {:extra-paths []}
 

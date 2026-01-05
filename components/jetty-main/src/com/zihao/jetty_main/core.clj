@@ -1,15 +1,12 @@
 (ns com.zihao.jetty-main.core
   (:gen-class)
   (:require 
-   [integrant.core :as ig] 
-   [com.zihao.jetty-main.logging :as logging]
    [com.brunobonacci.mulog :as u] 
-   [clojure.edn :as edn]
+   [clojure.edn :as edn] 
    [reitit.ring :as ring]
-   [ring.util.response :as response]
-   [ring.adapter.jetty :as jetty]
-   [ring.middleware.params :as params]
-   [ring.middleware.file :refer [wrap-file]]
+   [ring.util.response :as response] 
+   [ring.middleware.params :as params] 
+   [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.resource :refer [wrap-resource]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
    [ring.middleware.session :refer [wrap-session]]
@@ -103,7 +100,7 @@
           (recur))))))
 
 (defn make-handler [routes & {:keys [public-dir]}]
-  (wrap-resource
-   (ring/ring-handler
-    (ring/router routes))
-   (or public-dir "public")))
+  (-> (ring/ring-handler
+       (ring/router routes))
+      (wrap-resource (or public-dir "public"))
+      (wrap-content-type)))

@@ -45,7 +45,11 @@
                           []) 
         suggested-moves (get xiangqi-state :suggested-moves []) ;; list of coords [[start-pos end-pos]]
         ]
-    [:div {:class ["relative" "bg-[url('/image/Xiangqi_board.svg')]" "bg-contain" "w-[900px]" "h-[1200px]"]}
+    [:div {:class ["relative" "w-[900px]" "h-[1200px]"]
+           :style {:background-image "url('/image/Xiangqi_board.svg')"
+                   :background-size "contain"
+                   :background-repeat "no-repeat"
+                   :background-position "center"}}
 
      ;; 棋子
      (for [row (range 10)]

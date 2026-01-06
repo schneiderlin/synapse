@@ -418,6 +418,25 @@
   #?(:clj (api/command-handler system command)
      :cljs (throw (ex-info "command-handler only available in Clojure" {}))))
 
+(defn ws-event-handler
+  "WebSocket event handler for xiangqi component"
+  [system event-msg]
+  #?(:clj (api/ws-event-handler system event-msg)
+     :cljs (throw (ex-info "ws-event-handler only available in Clojure" {}))))
+
+(defn ws-event-handler-frontend
+  "Frontend WebSocket event handler for xiangqi component"
+  [system event-msg]
+  #?(:cljs
+     (let [{:keys [id ?data]} event-msg]
+       (case id
+         :xiangqi/game-state-update
+         (let [store (:replicant/store system)]
+           (swap! store assoc :xiangqi/state ?data)
+           true)  ; Return truthy to indicate handled
+         nil))
+     :clj nil))
+
 ;; Re-export functions from internal namespaces for use by other components
 (def prefix
   "The prefix key used to access xiangqi state in a nested state map"

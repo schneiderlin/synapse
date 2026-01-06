@@ -127,8 +127,8 @@ Create a new `make-ws-handler` that accepts extension functions, matching the pa
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Code compiles: `clojure-eval (require 'com.zihao.jetty-main.core :reload)`
-- [ ] New function is accessible via interface: `clojure-eval (com.zihao.jetty-main.interface/make-ws-handler-with-extensions)`
+- [x] Code compiles: `clojure-eval (require 'com.zihao.jetty-main.core :reload)`
+- [x] New function is accessible via interface: `clojure-eval (com.zihao.jetty-main.interface/make-ws-handler-with-extensions)`
 
 #### Manual Verification:
 - Review the code follows the same pattern as `make-execute-f`
@@ -174,8 +174,8 @@ Add `ws-event-handler` functions to component interfaces, starting with a simple
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Code compiles: `clojure-eval (require 'com.zihao.xiangqi.interface :reload)`
-- [ ] Function exists: `clojure-eval (com.zihao.xiangqi.interface/ws-event-handler)`
+- [x] Code compiles: `clojure-eval (require 'com.zihao.xiangqi.interface :reload)`
+- [x] Function exists: `clojure-eval (com.zihao.xiangqi.interface/ws-event-handler)`
 
 #### Manual Verification:
 - Review handler returns `nil` for unhandled events
@@ -240,8 +240,8 @@ Update `web-app/api.clj` to compose component WebSocket handlers like it does fo
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Code compiles: `clojure-eval (require 'com.zihao.web-app.api :reload)`
-- [ ] System initializes: `clojure-eval (integrant.core/init com.zihao.web-app.api/config)`
+- [x] Code compiles: `clojure-eval (require 'com.zihao.web-app.api :reload)`
+- [x] System initializes: `clojure-eval (integrant.core/init com.zihao.web-app.api/config)`
 
 #### Manual Verification:
 - WebSocket server starts without errors
@@ -299,7 +299,7 @@ Create `make-ws-handler-with-extensions` in replicant-main following the `make-e
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] ClojureScript compiles: Check browser console for errors
+- [x] ClojureScript compiles: Check browser console for errors
 
 #### Manual Verification:
 - Code pattern matches `make-execute-f`
@@ -336,7 +336,7 @@ Add `ws-event-handler` to component interfaces (xiangqi as example).
 ### Success Criteria:
 
 #### Automated Verification:
-- ClojureScript compiles without errors
+- [x] ClojureScript compiles without errors
 
 #### Manual Verification:
 - Handler returns `nil` for unhandled events
@@ -408,8 +408,8 @@ Update `web-app/main.cljs` to use the new extension-based WebSocket handler.
 ### Success Criteria:
 
 #### Automated Verification:
-- ClojureScript compiles
-- No console errors on page load
+- [x] ClojureScript compiles
+- [x] No console errors on page load
 
 #### Manual Verification:
 - WebSocket connection established

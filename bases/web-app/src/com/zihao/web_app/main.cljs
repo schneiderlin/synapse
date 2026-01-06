@@ -6,11 +6,14 @@
    [com.zihao.language-learn.lingq.actions :as lingq-actions]
    [com.zihao.web-app.router :as router]
    [com.zihao.replicant-main.replicant.main :as rm]
+   [com.zihao.replicant-main.replicant.ws-client :as ws-client]
    [com.zihao.replicant-main.interface :as rm1]
    [com.zihao.replicant-component.interface :as replicant-component]
    [com.zihao.xiangqi.actions :as xiangqi-actions]
+   [com.zihao.xiangqi.interface :as xiangqi]
    [integrant.core :as ig]
-   [dataspex.core :as dataspex]))
+   [dataspex.core :as dataspex]
+   [cljs.core.async :as async]))
 
 (def example-state1
   {:playground-drawflow/canvas
@@ -45,6 +48,10 @@
                                fsrs-actions/execute-action
                                fsrs-actions/execute-effect
                                lingq-actions/execute-action]
+   :ws/ws-client true
+   :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)
+                   :ws-event-handlers (ig/ref :ws/event-handlers)}
+   :ws/event-handlers [xiangqi/ws-event-handler-frontend]
    :replicant/render-loop {:system {:store (ig/ref :replicant/store)
                                     :el (ig/ref :replicant/el)
                                     :routes (ig/ref :replicant/routes)
@@ -71,6 +78,27 @@
 
 (defmethod ig/init-key :replicant/render-loop [_ {:keys [system hash-router?]}]
   (rm/init-render-loop render-main (assoc system :hash-router? hash-router?)))
+
+(defmethod ig/init-key :ws/ws-client [_ enabled?]
+  (when enabled?
+    (ws-client/make-ws-client)))
+
+(defmethod ig/halt-key! :ws/ws-client [_ _]
+  nil)
+
+(defmethod ig/init-key :ws/event-handlers [_ handlers]
+  handlers)
+
+(defmethod ig/init-key :ws/ws-handler [_ {:keys [ws-client ws-event-handlers]}]
+  (when ws-client
+    (let [stop-ch (async/chan)
+          handler (apply rm1/make-ws-handler-with-extensions ws-event-handlers)
+          store (:replicant/store @!system)]
+      (handler stop-ch (assoc ws-client :system {:replicant/store store}))
+      {:stop-ch stop-ch})))
+
+(defmethod ig/halt-key! :ws/ws-handler [_ {:keys [stop-ch]}]
+  (async/put! stop-ch :stop))
 
 (defonce !system (atom nil))
 

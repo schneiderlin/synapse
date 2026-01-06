@@ -6,3 +6,10 @@
 
 (defn make-handler [routes & {:keys [public-dir]}]
   (core/make-handler routes :public-dir public-dir))
+
+(defn make-ws-handler-with-extensions
+  "Creates a WebSocket handler with extension functions.
+   Extension functions are tried first before built-in event handling.
+   Each extension should accept [system event-msg] and return non-nil if handled."
+  [& extension-fns]
+  (apply core/make-ws-handler-with-extensions extension-fns))

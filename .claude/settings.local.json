@@ -9,6 +9,9 @@
       "Skill(beads:stats)",
       "Bash(beads stats:*)",
       "Bash(bd:*)"
+    ],
+    "additionalDirectories": [
+      "..\\..\\work\\shadcn-clj"
     ]
   }
 }

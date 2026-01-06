@@ -5,8 +5,6 @@
    [cljs.core.async :as async :refer [<!]]
    [taoensso.sente  :as sente]))
 
-;; (defmethod ig/init-key :adapter/ws-client [_ _]
-;;   (ws-client/make-ws-client))
 (defn make-ws-client []
   (let [{:keys [chsk ch-recv send-fn state]}
         (sente/make-channel-socket-client!

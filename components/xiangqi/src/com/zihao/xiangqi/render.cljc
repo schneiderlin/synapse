@@ -1,6 +1,6 @@
 (ns com.zihao.xiangqi.render
   (:require
-   [com.zihao.xiangqi.interface :as logic]
+   [com.zihao.xiangqi.core :as logic]
    [com.zihao.xiangqi.common :refer [prefix]]
    [com.zihao.xiangqi.game-tree :as game-tree]
    [com.zihao.xiangqi.fen :as fen]))

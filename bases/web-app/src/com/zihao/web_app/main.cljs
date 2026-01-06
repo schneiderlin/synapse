@@ -15,32 +15,9 @@
    [dataspex.core :as dataspex]
    [cljs.core.async :as async]))
 
-(def example-state1
-  {:playground-drawflow/canvas
-   {:nodes {"node-2" {:id "node-2"
-                      :type "custom-card"
-                      :position {:x 400 :y 100}
-                      :data {:label "Card Node"
-                             :content "Another custom body example"
-                             :body-component node/custom-card-node-body}
-                      :selected? false}
-            "node-3" {:id "node-3"
-                      :type "custom-card"
-                      :position {:x 700 :y 100}
-                      :data {:label "Card Node"
-                             :content "Another custom body example"
-                             :body-component node/custom-card-node-body}
-                      :selected? false}}
-    :edges []
-    :viewport {:x 0 :y 0 :zoom 1}
-    :handle-offsets {"node-2" {"input" {:target {:x 0 :y 65}}
-                               "output" {:source {:x 150 :y 65}}}
-                     "node-3" {"input" {:target {:x 0 :y 65}}
-                               "output" {:source {:x 150 :y 65}}}}}})
-
 (def config
   {:replicant/el "app"
-   :replicant/store {:msgs [] :streaming-text "" :tool-call-active? false}
+   :replicant/store {}
    :replicant/routes router/routes
    :replicant/get-location-load-actions router/get-location-load-actions
    :replicant/execute-actions [replicant-component/execute-action
@@ -50,7 +27,8 @@
                                lingq-actions/execute-action]
    :ws/ws-client true
    :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)
-                   :ws-event-handlers (ig/ref :ws/event-handlers)}
+                   :ws-event-handlers (ig/ref :ws/event-handlers)
+                   :store (ig/ref :replicant/store)}
    :ws/event-handlers [xiangqi/ws-event-handler-frontend]
    :replicant/render-loop {:system {:store (ig/ref :replicant/store)
                                     :el (ig/ref :replicant/el)
@@ -83,17 +61,13 @@
   (when enabled?
     (ws-client/make-ws-client)))
 
-(defmethod ig/halt-key! :ws/ws-client [_ _]
-  nil)
-
 (defmethod ig/init-key :ws/event-handlers [_ handlers]
   handlers)
 
-(defmethod ig/init-key :ws/ws-handler [_ {:keys [ws-client ws-event-handlers]}]
+(defmethod ig/init-key :ws/ws-handler [_ {:keys [store ws-client ws-event-handlers]}]
   (when ws-client
     (let [stop-ch (async/chan)
-          handler (apply rm1/make-ws-handler-with-extensions ws-event-handlers)
-          store (:replicant/store @!system)]
+          handler (apply rm1/make-ws-handler-with-extensions ws-event-handlers)]
       (handler stop-ch (assoc ws-client :system {:replicant/store store}))
       {:stop-ch stop-ch})))
 

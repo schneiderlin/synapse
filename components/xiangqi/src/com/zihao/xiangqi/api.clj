@@ -2,7 +2,7 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [com.zihao.xiangqi.interface :as interface]))
+   [com.zihao.xiangqi.core :as core]))
 
 (defn query-handler [_system query]
   (case (:query/kind query)
@@ -30,7 +30,7 @@
     :xiangqi/move
     (let [{:keys [from to]} ?data]
       (when ?reply-fn
-        (let [new-state (interface/move interface/state from to)]
+        (let [new-state (core/move core/state from to)]
           (?reply-fn {:success? true
                      :new-state new-state}))))
     nil))

@@ -1,12 +1,8 @@
 (ns com.zihao.jetty-main.ws-server 
   (:require
    [taoensso.sente :as sente]
-   [taoensso.sente.server-adapters.community.jetty :refer [get-sch-adapter]]
-   [clojure.core.async :as async :refer [go-loop go <! <!!]]
-   [com.brunobonacci.mulog :as u]))
+   [taoensso.sente.server-adapters.community.jetty :refer [get-sch-adapter]]))
 
-;; (defmethod ig/init-key :adapter/ws-server [_ _]
-;;   (ws-server/make-ws-server))
 (defn make-ws-server []
   (let [{:keys [ch-recv send-fn connected-uids
                 ajax-post-fn ajax-get-or-ws-handshake-fn]}
@@ -22,37 +18,3 @@
      :ch-chsk ch-recv
      :chsk-send! send-fn
      :connected-uids connected-uids}))
-
-(defn make-ws-command-handler [{:keys [command-handler] :as system}]
-  (fn [{:keys [event uid client-id ?data id ?reply-fn]}]
-    (let [command ?data
-          result (command-handler system command)]
-      (when ?reply-fn
-        (?reply-fn result)))))
-
-(defn make-ws-query-handler [{:keys [query-handler] :as system}]
-  (fn [{:keys [event uid client-id ?data id ?reply-fn]}]
-    (let [query ?data
-          result (query-handler system query)]
-      (println "result" query result)
-      (when ?reply-fn
-        (?reply-fn result)))))
-
-(defn make-ws-handler [system]
-  (fn [stop-ch {:keys [ch-chsk] :as ws-server-arg}]
-    (let [ws-command-handler (make-ws-command-handler system)
-          ws-query-handler (make-ws-query-handler system)]
-      (go-loop []
-        (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
-          (when (= port ch-chsk)
-            (let [{:keys [event uid client-id ?data id ?reply-fn]} event-msg]
-              (try
-                (case id
-                  :chsk/ws-ping nil
-                  :test/echo (?reply-fn [id ?data])
-                  :data/query (ws-query-handler event-msg)
-                  :data/command (ws-command-handler event-msg)
-                  nil)
-                (catch Exception e
-                  (u/log ::error :exception e))))
-            (recur)))))))

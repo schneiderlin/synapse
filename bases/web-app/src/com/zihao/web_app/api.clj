@@ -44,9 +44,6 @@
   (when enabled?
     (ws-server/make-ws-server)))
 
-(defmethod ig/halt-key! :ws/ws-server [_ ws-server]
-  nil)
-
 (defmethod ig/init-key :ws/event-handler [_ _]
   (fn [event-msg]
     (ws-event-handler nil event-msg)))
@@ -78,6 +75,26 @@
 
 (comment
   (def system (-main))
+
+  (def ws-server (:ws/ws-server system))
+  (def send-fn (:chsk-send! ws-server))
+
+  (require '[taoensso.sente :as sente])
+
+  ;; server send
+  (send-fn
+   "uid" ;; user id 
+   [:subscribe/event 1] ; Event
+   8000 ; Timeout
+   )
+
+  ;; client send
+  (send-fn
+   [:test/echo {:name "Rich Hickey" :type "Awesome"}] ; Event
+   8000 ; Timeout
+   (fn [reply] ; Reply is arbitrary Clojure data 
+     (when (sente/cb-success? reply)
+       (println reply))))
 
   (def python-env (:cljpy/python-env system))
   :rcf)

@@ -34,6 +34,29 @@
               (println "error" e))))
         (recur)))))
 
+(defn make-ws-handler-with-extensions
+  "Creates a WebSocket event handler with extension functions.
+   Extension functions are tried first before built-in event handling.
+   Each extension should accept [ws-client event-msg] and return non-nil if handled."
+  [& extension-fns]
+  (fn [stop-ch {:keys [ch-chsk chsk-send!] :as ws-client}]
+    (go-loop []
+      (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
+        (when (= port ch-chsk)
+          (let [{:keys [event ?data id]} event-msg]
+            (try
+              ;; Try extension functions first
+              (or (some #(when-let [result (% ws-client event-msg)]
+                           result)
+                       extension-fns)
+                  ;; Fallback to built-in events
+                  (case id
+                    :chsk/ws-ping nil
+                    nil))
+              (catch :default e
+                (js/console.error "WebSocket handler error:" e)))
+            (recur)))))))
+
 (comment
   (def stop-ch (async/chan))
   (ws-handler stop-ch nil)

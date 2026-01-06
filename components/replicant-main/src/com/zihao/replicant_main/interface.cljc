@@ -1,6 +1,7 @@
 (ns com.zihao.replicant-main.interface
   (:require
    #?(:cljs [com.zihao.replicant-main.replicant.actions :as actions])
+   #?(:cljs [com.zihao.replicant-main.replicant.ws-client :as ws-client])
    [com.zihao.replicant-main.replicant.query :as query]
    [com.zihao.replicant-main.replicant.utils :as utils]))
 
@@ -48,7 +49,15 @@
 (defn gather-form-data [form-el]
   (utils/gather-form-data form-el))
 
-(defn gen-uuid 
+(defn gen-uuid
   "Generates a random UUID string."
   []
   (utils/gen-uuid))
+
+(defn make-ws-handler-with-extensions
+  "Creates a WebSocket handler with extension functions (cljs only).
+   Extension functions are tried first before built-in event handling.
+   Each extension should accept [ws-client event-msg] and return non-nil if handled."
+  [& extension-fns]
+  #?(:cljs (apply ws-client/make-ws-handler-with-extensions extension-fns)
+     :clj (throw (ex-info "make-ws-handler-with-extensions only available in ClojureScript" {}))))

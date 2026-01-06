@@ -1,6 +1,4 @@
-(ns com.zihao.language-learn.lingq.router
-  (:require
-   [com.zihao.replicant-main.replicant.query :as query]))
+(ns com.zihao.language-learn.lingq.router)
 
 (def routes
   [[:pages/lingq [["lingq"]]]])

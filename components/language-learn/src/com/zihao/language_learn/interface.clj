@@ -2,12 +2,14 @@
   (:require
    [com.zihao.language-learn.fsrs.actions :as fsrs-actions]
    [com.zihao.language-learn.fsrs.api :as fsrs-api]
-   [com.zihao.language-learn.lingq.api :as lingq-api]))
+   [com.zihao.language-learn.lingq.api :as lingq-api]
+   [com.zihao.language-learn.lingq.actions :as lingq-actions]))
 
 (defn execute-action
-  "Execute action for language-learn component"
-  [{:keys [store]} _event action args]
-  (fsrs-actions/execute-action store action args))
+  "Execute action for language-learn component (fsrs + lingq)"
+  [system event action args]
+  (or (fsrs-actions/execute-action system event action args)
+      (lingq-actions/execute-action system event action args)))
 
 (defn query-handler
   "Query handler for language-learn component (fsrs + lingq)"

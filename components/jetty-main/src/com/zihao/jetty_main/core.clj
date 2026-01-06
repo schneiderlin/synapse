@@ -1,15 +1,12 @@
 (ns com.zihao.jetty-main.core
   (:gen-class)
   (:require 
-   [integrant.core :as ig] 
-   [com.zihao.jetty-main.logging :as logging]
    [com.brunobonacci.mulog :as u] 
-   [clojure.edn :as edn]
+   [clojure.edn :as edn] 
    [reitit.ring :as ring]
-   [ring.util.response :as response]
-   [ring.adapter.jetty :as jetty]
-   [ring.middleware.params :as params]
-   [ring.middleware.file :refer [wrap-file]]
+   [ring.util.response :as response] 
+   [ring.middleware.params :as params] 
+   [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.resource :refer [wrap-resource]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
    [ring.middleware.session :refer [wrap-session]]
@@ -85,6 +82,34 @@
                                       :post ring-ajax-post}]))
       common-routes)))
 
+(defn make-ws-handler-with-extensions
+  "Creates a WebSocket event handler with extension functions.
+   Extension functions are tried first before built-in event handling.
+   Each extension should accept [system event-msg] and return non-nil if handled.
+   System map includes: :chsk-send!, :connected-uids, :ws-server"
+  [& extension-fns]
+  (fn [stop-ch {:keys [ch-chsk chsk-send! connected-uids] :as ws-server}]
+    (go-loop []
+      (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
+        (when (= port ch-chsk)
+          (let [{:keys [event uid client-id ?data id ?reply-fn]} event-msg]
+            (try
+              ;; Try extension functions first
+              (or (some #(when-let [result (% {:chsk-send! chsk-send!
+                                               :connected-uids connected-uids
+                                               :ws-server ws-server}
+                                              event-msg)]
+                           result)
+                       extension-fns)
+                  ;; Fallback to built-in events
+                  (case id
+                    :chsk/ws-ping nil
+                    :test/echo (?reply-fn [id ?data])
+                    nil))
+              (catch Exception e
+                (u/log ::error :exception e))))
+          (recur))))))
+
 (defn make-ws-handler [query-handler command-handler]
   (fn [stop-ch {:keys [ch-chsk] :as ws-server}]
     (go-loop []
@@ -103,7 +128,7 @@
           (recur))))))
 
 (defn make-handler [routes & {:keys [public-dir]}]
-  (wrap-resource
-   (ring/ring-handler
-    (ring/router routes))
-   (or public-dir "public")))
+  (-> (ring/ring-handler
+       (ring/router routes))
+      (wrap-resource (or public-dir "public"))
+      (wrap-content-type)))

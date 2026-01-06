@@ -1,10 +1,10 @@
 (ns com.zihao.language-learn.lingq.render
-  (:require 
-   [com.zihao.replicant-main.replicant.query :as query]
+  (:require
+   [com.zihao.replicant-main.interface :as rm]
    [clojure.string :as str]
-   [lingq.common :refer [prefix]]
-   [lingq.article :refer [article-ui]] 
-   [lingq.word-rating :refer [word-rating-ui]]))
+   [com.zihao.language-learn.lingq.common :refer [prefix]]
+   [com.zihao.language-learn.lingq.article :refer [article-ui]]
+   [com.zihao.language-learn.lingq.word-rating :refer [word-rating-ui]]))
 
 (defn textarea-ui []
   [:div {:class ["flex" "flex-col" "space-y-4" "w-full" "max-w-2xl"]}
@@ -18,10 +18,10 @@
               :on {:click [[:lingq/clean-text]]}}
      "Clear Text"]]])
 
-(defn main [state] 
+(defn main [state]
   (let [{:keys [selected-word tokens]} (prefix state)
         word-rating-query {:query/kind :query/get-word-rating}
-        word->rating (query/get-result state word-rating-query)
+        word->rating (rm/get-result state word-rating-query)
         has-text? (seq tokens)]
     [:div {:class ["flex" "place-content-evenly"]} 
      (if has-text?

@@ -1,0 +1,4 @@
+{:paths ["src" "resources"]
+ :deps {no.cjohansen/portfolio {:mvn/version "2025.01.28"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

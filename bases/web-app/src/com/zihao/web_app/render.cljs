@@ -5,6 +5,7 @@
    [com.zihao.xiangqi.render :as xiangqi-render]
    [com.zihao.login.login :as login]
    [com.zihao.language-learn.fsrs.render :as fsrs-render]
+   [com.zihao.language-learn.lingq.render :as lingq-render]
    [com.zihao.replicant-main.replicant.navbar :refer [navbar]]))
 
 (comment
@@ -15,6 +16,7 @@
   (navbar "Web App"
           [{:page-id :pages/frontpage :page-name "首页"}
            {:page-id :pages/language-learn :page-name "FSRS 重复间隔"}
+           {:page-id :pages/lingq :page-name "Lingq 阅读器"}
            {:page-id :pages/playground-drawflow :page-name "Playground Drawflow"}
            {:page-id :pages/xiangqi :page-name "象棋"}]))
 
@@ -51,6 +53,10 @@
   (page-layout
    (fsrs-render/flashcard-page state)))
 
+(defn render-lingq [state]
+  (page-layout
+   (lingq-render/main state)))
+
 (defn render-not-found [_]
   (render-frontpage))
 
@@ -62,5 +68,6 @@
             :pages/login render-login
             :pages/change-password render-change-password
             :pages/language-learn render-language-learn
+            :pages/lingq render-lingq
             render-not-found)]
     (f state)))

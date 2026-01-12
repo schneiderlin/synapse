@@ -1,8 +1,8 @@
-;; (ns powerblog.export
-;;   (:require [powerblog.core :as blog]
-;;             [powerpack.export :as export]))
+(ns powerblog.export
+  (:require [powerblog.core :as blog]
+            [powerpack.export :as export]))
 
-;; (defn ^:export export! [& args]
-;;   (-> blog/config
-;;       (assoc :site/base-url "https://schneiderlin.github.io")
-;;       export/export!))
+(defn ^:export export! [& args]
+  (-> blog/config
+      (assoc :site/base-url "https://schneiderlin.github.io")
+      export/export!))

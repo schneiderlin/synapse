@@ -1,5 +1,8 @@
 {:paths ["src" "resources"]
- :deps {#_#_no.cjohansen/powerpack {:git/sha "5fa1144c1f8bdec9208ec716cd46d863eab1ee4f"
-                                :git/url "https://github.com/schneiderlin/powerpack.git"}}
+ :deps {no.cjohansen/powerpack {#_#_:git/url "https://github.com/cjohansen/powerpack.git"
+                                #_#_:git/tag "v2026.01.1"
+                                :mvn/version "2026.01.1"
+                                :exclusions [ring/ring java-time-literals/java-time-literals]}
+        ring/ring {:mvn/version "1.15.3"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

@@ -8,6 +8,7 @@
         buddy/buddy-hashers {:mvn/version "2.0.167"}
         com.brunobonacci/mulog {:mvn/version "0.10.0"} 
         cheshire/cheshire {:mvn/version "5.13.0"}
-        integrant/integrant {:mvn/version "1.0.1"}}
+        integrant/integrant {:mvn/version "1.0.1"} 
+        org.clojure/core.async {:mvn/version "1.8.741"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

@@ -4,6 +4,7 @@
    [com.brunobonacci.mulog :as u] 
    [com.zihao.jetty-main.ring-ws :as ring-ws]
    [clojure.edn :as edn] 
+   [cheshire.core :as json]
    [reitit.ring :as ring]
    [ring.util.response :as response] 
    [ring.middleware.params :as params] 
@@ -185,6 +186,15 @@
    :type :sente
    :raw sente-server})
 
+(defn- serialize-data
+  "Serialize data according to format. Supports :edn and :json."
+  [data format]
+  (case format
+    :json (json/generate-string data)
+    :edn (pr-str data)
+    ;; default to edn
+    (pr-str data)))
+
 (defn make-ring-ws-adapter
   "Creates a unified WebSocket context from a Ring WebSocket server.
    Returns a map with:
@@ -192,8 +202,12 @@
    - :broadcast! (fn [event data]) - send to all clients
    - :clients - deref-able collection of connected client IDs
    - :ch-recv - channel for incoming messages
-   - :type - :ring-ws"
-  [{:keys [sockets ch-recv] :as ring-ws-server}]
+   - :type - :ring-ws
+   - :format - serialization format (:edn or :json)
+   
+   Options:
+   - :format - :edn (default) or :json for message serialization"
+  [{:keys [sockets ch-recv] :as ring-ws-server} & {:keys [format] :or {format :edn}}]
   {:send! (fn [client-id event data]
             (ring-ws/send! ring-ws-server client-id event data))
    :broadcast! (fn [event data]
@@ -202,6 +216,7 @@
               (deref [_] {:any (ring-ws/connected-clients ring-ws-server)}))
    :ch-recv ch-recv
    :type :ring-ws
+   :format format
    :raw ring-ws-server})
 
 (defn- normalize-message
@@ -214,7 +229,8 @@
     :reply!   fn         - (fn [data]) reply to this message}"
   [ws-ctx event-msg]
   (let [{:keys [id ?data ?reply-fn client-id socket]} event-msg
-        ws-type (:type ws-ctx)]
+        ws-type (:type ws-ctx)
+        format (get ws-ctx :format :edn)]
     {:event id
      :data ?data
      :client-id client-id
@@ -225,7 +241,7 @@
                :ring-ws (fn [data]
                           (when socket
                             (try
-                              (ws/send socket (pr-str {:event :reply :data data}))
+                              (ws/send socket (serialize-data {:event :reply :data data} format))
                               (catch Exception _ nil))))
                (fn [_] nil))}))
 

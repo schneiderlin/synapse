@@ -17,7 +17,8 @@ import WebSocket from 'ws';
 import readline from 'readline';
 
 const clientId = process.argv[2] || `client-${Date.now()}`;
-const url = `ws://localhost:3333/ws?client-id=${clientId}`;
+const WS_PORT = process.env.WS_PORT || 3333;
+const url = `ws://localhost:${WS_PORT}/ws?client-id=${clientId}`;
 
 console.log('');
 console.log('=================================================');

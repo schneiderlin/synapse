@@ -5,6 +5,7 @@
   ;;  [com.zihao.replicant-main.replicant.utils :refer [interpolate]]
    [com.zihao.replicant-main.replicant.ws-client :as ws-client] 
    [clojure.core.async :as async]
+   [taoensso.truss :refer [have]]
    [com.zihao.replicant-main.replicant.timer :as timer] 
    [com.zihao.replicant-main.replicant.router :as router]
    [com.zihao.replicant-main.replicant.hash-router :as hash-router]))
@@ -44,7 +45,12 @@
 (defn init-el [_ el]
   (js/document.getElementById el))
 
-(defn init-render-loop [render {:keys [store el execute-actions routes interpolate get-location-load-actions hash-router?] :as system}] 
+(defn init-render-loop [render {:keys [store el 
+                                       execute-actions interpolate
+                                       routes get-location-load-actions 
+                                       hash-router?] :as system}]
+  ;; must have all these keys
+  (have identity store el execute-actions interpolate routes get-location-load-actions)
   (add-watch
    store ::render
    (fn [_ _ _ state]

@@ -9,6 +9,7 @@
    [ring.util.response :as response] 
    [ring.middleware.params :as params] 
    [ring.middleware.content-type :refer [wrap-content-type]]
+   [ring.websocket.keepalive :refer [wrap-websocket-keepalive]]
    [ring.middleware.resource :refer [wrap-resource]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
    [ring.middleware.session :refer [wrap-session]]
@@ -161,7 +162,8 @@
   (-> (ring/ring-handler
        (ring/router routes))
       (wrap-resource (or public-dir "public"))
-      (wrap-content-type)))
+      (wrap-content-type)
+      (wrap-websocket-keepalive)))
 
 ;; =============================================================================
 ;; Unified WebSocket Abstraction

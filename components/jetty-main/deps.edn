@@ -2,6 +2,7 @@
  :deps {ring/ring {:mvn/version "1.15.3"}
         ring/ring-json {:mvn/version "0.5.1"}
         ring-cors/ring-cors {:mvn/version "0.1.13"}
+        org.ring-clojure/ring-websocket-middleware {:mvn/version "0.2.1"}
         metosin/reitit {:mvn/version "0.7.0"}
         metosin/reitit-ring {:mvn/version "0.7.2"}
         metosin/muuntaja {:mvn/version "0.6.11"}

@@ -41,9 +41,12 @@
    Returns a map with:
    - :sockets - atom of {client-id socket}
    - :ch-recv - core.async channel for incoming messages
-   - :type - :ring-ws"
-  []
-  (ring-ws/make-ring-ws-server))
+   - :type - :ring-ws
+   
+   Options:
+   - :format - :edn (default) or :json for message serialization"
+  [& {:keys [format] :as config}]
+  (ring-ws/make-ring-ws-server config))
 
 (defn ws-adapter
   "Auto-detect and create the appropriate WebSocket adapter.

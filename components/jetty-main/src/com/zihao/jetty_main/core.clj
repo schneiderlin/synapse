@@ -2,6 +2,7 @@
   (:gen-class)
   (:require 
    [com.brunobonacci.mulog :as u] 
+   [com.zihao.jetty-main.ring-ws :as ring-ws]
    [clojure.edn :as edn] 
    [reitit.ring :as ring]
    [ring.util.response :as response] 
@@ -12,7 +13,8 @@
    [ring.middleware.session :refer [wrap-session]]
    [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [ring.middleware.cors :refer [wrap-cors]]
-   [clojure.core.async :as async :refer [go-loop go <! <!!]]
+   [ring.websocket :as ws]
+   [clojure.core.async :as async :refer [go-loop]]
    [muuntaja.middleware :as middleware]))
 
 (defn html-handler [_request]
@@ -63,7 +65,27 @@
   (wrap-cors handler :access-control-allow-origin [#"http://localhost:8000"]
              :access-control-allow-methods [:get :put :post :delete]))
 
-(defn make-routes [system ws-server query-handler command-handler]
+(defn- ws-server-type
+  "Detect the type of WebSocket server."
+  [ws-server]
+  (cond
+    (nil? ws-server) nil
+    (:chsk-send! ws-server) :sente
+    (:sockets ws-server) :ring-ws
+    ;; Legacy check for Sente
+    (:ring-ajax-get-or-ws-handshake ws-server) :sente
+    :else nil))
+
+(defn make-routes 
+  "Creates routes for the web application.
+   
+   Supports both Sente and Ring WebSocket servers:
+   - Sente: adds /chsk endpoint
+   - Ring WS: adds /ws endpoint
+   
+   Options:
+   - :ws-path - custom path for Ring WS (default: \"/ws\")"
+  [system ws-server query-handler command-handler & {:keys [ws-path] :or {ws-path "/ws"}}]
   (let [common-routes [["/" {:get html-handler
                              :post html-handler}]
                        ["/api" {:middleware [params/wrap-params
@@ -73,13 +95,20 @@
                         ["/command" {:post (make-http-command-handler system command-handler)}]
                         ["/upload" {:middleware [wrap-multipart-params]
                                     :post upload-handler}]]]]
-    (if ws-server
+    (case (ws-server-type ws-server)
+      :sente
       (let [{:keys [ring-ajax-get-or-ws-handshake ring-ajax-post]} ws-server]
         (conj common-routes ["/chsk" {:middleware [params/wrap-params
                                                    wrap-keyword-params
                                                    wrap-session]
                                       :get ring-ajax-get-or-ws-handshake
                                       :post ring-ajax-post}]))
+      
+      :ring-ws
+      (conj common-routes [ws-path {:get (ring-ws/make-ring-ws-handler ws-server)
+                                    :post (ring-ws/make-ring-ws-handler ws-server)}])
+      
+      ;; No WebSocket server
       common-routes)))
 
 (defn make-ws-handler-with-extensions
@@ -132,3 +161,118 @@
        (ring/router routes))
       (wrap-resource (or public-dir "public"))
       (wrap-content-type)))
+
+;; =============================================================================
+;; Unified WebSocket Abstraction
+;; =============================================================================
+
+(defn make-sente-adapter
+  "Creates a unified WebSocket context from a Sente server.
+   Returns a map with:
+   - :send! (fn [client-id event data]) - send to specific client
+   - :broadcast! (fn [event data]) - send to all clients
+   - :clients - deref-able collection of connected client IDs
+   - :ch-recv - channel for incoming messages
+   - :type - :sente"
+  [{:keys [chsk-send! connected-uids ch-chsk] :as sente-server}]
+  {:send! (fn [client-id event data]
+            (chsk-send! client-id [event data]))
+   :broadcast! (fn [event data]
+                 (doseq [uid (:any @connected-uids)]
+                   (chsk-send! uid [event data])))
+   :clients connected-uids
+   :ch-recv ch-chsk
+   :type :sente
+   :raw sente-server})
+
+(defn make-ring-ws-adapter
+  "Creates a unified WebSocket context from a Ring WebSocket server.
+   Returns a map with:
+   - :send! (fn [client-id event data]) - send to specific client
+   - :broadcast! (fn [event data]) - send to all clients
+   - :clients - deref-able collection of connected client IDs
+   - :ch-recv - channel for incoming messages
+   - :type - :ring-ws"
+  [{:keys [sockets ch-recv] :as ring-ws-server}]
+  {:send! (fn [client-id event data]
+            (ring-ws/send! ring-ws-server client-id event data))
+   :broadcast! (fn [event data]
+                 (ring-ws/broadcast! ring-ws-server event data))
+   :clients (reify clojure.lang.IDeref
+              (deref [_] {:any (ring-ws/connected-clients ring-ws-server)}))
+   :ch-recv ch-recv
+   :type :ring-ws
+   :raw ring-ws-server})
+
+(defn- normalize-message
+  "Normalize an incoming message to unified format.
+   
+   Unified message format:
+   {:event    keyword    - event identifier
+    :data     any        - message payload
+    :client-id string    - sender ID (may be nil for Sente)
+    :reply!   fn         - (fn [data]) reply to this message}"
+  [ws-ctx event-msg]
+  (let [{:keys [id ?data ?reply-fn client-id socket]} event-msg
+        ws-type (:type ws-ctx)]
+    {:event id
+     :data ?data
+     :client-id client-id
+     :reply! (case ws-type
+               :sente (fn [data]
+                        (when ?reply-fn
+                          (?reply-fn data)))
+               :ring-ws (fn [data]
+                          (when socket
+                            (try
+                              (ws/send socket (pr-str {:event :reply :data data}))
+                              (catch Exception _ nil))))
+               (fn [_] nil))}))
+
+(defn make-unified-ws-handler
+  "Creates a unified WebSocket event handler.
+   
+   Arguments:
+   - handler-fn: (fn [ws-ctx message]) - your business logic handler
+     - ws-ctx has: :send!, :broadcast!, :clients
+     - message has: :event, :data, :client-id, :reply!
+   
+   Returns a function (fn [stop-ch ws-adapter]) that starts the event loop.
+   
+   Example:
+   ```
+   (defn my-handler [ws-ctx msg]
+     (case (:event msg)
+       :user/ping ((:reply! msg) {:pong true})
+       :user/chat ((:broadcast! ws-ctx) :chat/message (:data msg))
+       nil))
+   
+   (def handler (make-unified-ws-handler my-handler))
+   (handler stop-ch (make-ring-ws-adapter ws-server))
+   ```"
+  [handler-fn]
+  (fn [stop-ch ws-adapter]
+    (let [{:keys [ch-recv type]} ws-adapter]
+      (go-loop []
+        (let [[event-msg port] (async/alts! [ch-recv stop-ch] :priority true)]
+          (when (= port ch-recv)
+            (let [{:keys [id]} event-msg]
+              (try
+                ;; Skip internal ping events
+                (when-not (#{:chsk/ws-ping :ws/open :ws/close} id)
+                  (let [normalized-msg (normalize-message ws-adapter event-msg)]
+                    (handler-fn ws-adapter normalized-msg)))
+                (catch Exception e
+                  (u/log ::error :exception e))))
+            (recur)))))))
+
+(defn ws-adapter
+  "Auto-detect and create the appropriate WebSocket adapter.
+   Works with both Sente servers and Ring WebSocket servers."
+  [ws-server]
+  (cond
+    ;; Sente server has these keys
+    (:chsk-send! ws-server) (make-sente-adapter ws-server)
+    ;; Ring WS server has :sockets atom
+    (:sockets ws-server) (make-ring-ws-adapter ws-server)
+    :else (throw (ex-info "Unknown WebSocket server type" {:server ws-server}))))

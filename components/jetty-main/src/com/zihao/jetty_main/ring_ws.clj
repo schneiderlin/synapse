@@ -5,18 +5,32 @@
    [ring.websocket :as ws]
    [clojure.edn :as edn]
    [clojure.string :as str]
-   [clojure.core.async :as async]))
+   [clojure.core.async :as async]
+   [cheshire.core :as json]))
+
+(defn- serialize-data
+  "Serialize data according to format. Supports :edn and :json."
+  [data format]
+  (case format
+    :json (json/generate-string data)
+    :edn (pr-str data)
+    (pr-str data)))
 
 (defn make-ring-ws-server
   "Creates a Ring WebSocket server state.
    Returns a map with:
    - :sockets - atom of {client-id socket}
    - :ch-recv - core.async channel for incoming messages
-   - :type - :ring-ws (to distinguish from Sente)"
-  []
+   - :type - :ring-ws (to distinguish from Sente)
+   - :format - serialization format (:edn or :json)
+   
+   Options:
+   - :format - :edn (default) or :json for message serialization"
+  [& {:keys [format] :or {format :edn}}]
   {:sockets (atom {})
    :ch-recv (async/chan 100)
-   :type :ring-ws})
+   :type :ring-ws
+   :format format})
 
 (defn- parse-client-id
   "Extract client-id from request query string.
@@ -90,19 +104,20 @@
 
 (defn send!
   "Send a message to a specific client.
-   Message will be serialized as EDN with :event and :data keys."
-  [{:keys [sockets]} client-id event data]
+   Message will be serialized according to :format (:edn or :json)."
+  [{:keys [sockets format] :or {format :edn}} client-id event data]
   (when-let [socket (get @sockets client-id)]
     (try
-      (ws/send socket (pr-str {:event event :data data}))
+      (ws/send socket (serialize-data {:event event :data data} format))
       (catch Exception _
         ;; Socket may have closed, remove it
         (swap! sockets dissoc client-id)))))
 
 (defn broadcast!
-  "Send a message to all connected clients."
-  [{:keys [sockets]} event data]
-  (let [message (pr-str {:event event :data data})]
+  "Send a message to all connected clients.
+   Message will be serialized according to :format (:edn or :json)."
+  [{:keys [sockets format] :or {format :edn}} event data]
+  (let [message (serialize-data {:event event :data data} format)]
     (doseq [[client-id socket] @sockets]
       (try
         (ws/send socket message)

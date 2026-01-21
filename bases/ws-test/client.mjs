@@ -2,7 +2,10 @@
  * WebSocket Test Client
  * 
  * Usage:
- *   node bases/ws-test/client.mjs [client-id]
+ *   node bases/ws-test/client.mjs [client-id] [--format edn|json]
+ * 
+ * Options:
+ *   --format edn|json  - Message format (default: edn)
  * 
  * Interactive commands (type and press Enter):
  *   ping              - Send a ping, expect pong reply
@@ -16,7 +19,23 @@
 import WebSocket from 'ws';
 import readline from 'readline';
 
-const clientId = process.argv[2] || `client-${Date.now()}`;
+// Parse command-line arguments
+let clientId = `client-${Date.now()}`;
+let format = 'edn'; // default to EDN
+
+for (let i = 2; i < process.argv.length; i++) {
+  const arg = process.argv[i];
+  if (arg === '--format' && i + 1 < process.argv.length) {
+    format = process.argv[++i];
+    if (format !== 'edn' && format !== 'json') {
+      console.error('Error: --format must be "edn" or "json"');
+      process.exit(1);
+    }
+  } else if (!arg.startsWith('--')) {
+    clientId = arg;
+  }
+}
+
 const WS_PORT = process.env.WS_PORT || 3333;
 const url = `ws://localhost:${WS_PORT}/ws?client-id=${clientId}`;
 
@@ -26,6 +45,7 @@ console.log('  WebSocket Test Client');
 console.log('=================================================');
 console.log('');
 console.log(`Client ID: ${clientId}`);
+console.log(`Format: ${format.toUpperCase()}`);
 console.log(`Connecting to: ${url}`);
 console.log('');
 
@@ -46,9 +66,15 @@ ws.on('open', () => {
 
 ws.on('message', (data) => {
   try {
-    // Parse EDN-like format (simple case)
     const str = data.toString();
-    console.log('\n← Received:', str);
+    // Try to parse based on format
+    if (format === 'json') {
+      const parsed = JSON.parse(str);
+      console.log('\n← Received (JSON):', JSON.stringify(parsed, null, 2));
+    } else {
+      // EDN format - just display as-is
+      console.log('\n← Received (EDN):', str);
+    }
     rl.prompt();
   } catch (e) {
     console.log('\n← Raw:', data.toString());
@@ -121,10 +147,16 @@ rl.on('line', (line) => {
   }
 
   if (message) {
-    // Send as EDN-like format (Clojure can parse this)
-    const edn = toEdn(message);
-    console.log('→ Sending:', edn);
-    ws.send(edn);
+    // Serialize based on format
+    let serialized;
+    if (format === 'json') {
+      serialized = JSON.stringify(message);
+      console.log('→ Sending (JSON):', serialized);
+    } else {
+      serialized = toEdn(message);
+      console.log('→ Sending (EDN):', serialized);
+    }
+    ws.send(serialized);
   }
   
   rl.prompt();

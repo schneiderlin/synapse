@@ -208,12 +208,15 @@
    The input map can include:
    - :format - :edn (default) or :json for message serialization"
   [{:keys [sockets ch-recv format] :or {format :edn} :as ring-ws-server}]
+  (println "[adapter] Creating adapter with format:" format "sockets atom:" (System/identityHashCode sockets))
   {:send! (fn [client-id event data]
             (ring-ws/send! ring-ws-server client-id event data))
    :broadcast! (fn [event data]
                  (ring-ws/broadcast! ring-ws-server event data))
    :clients (reify clojure.lang.IDeref
-              (deref [_] {:any (ring-ws/connected-clients ring-ws-server)}))
+              (deref [_] 
+                (println "[adapter] Checking clients, sockets atom:" (System/identityHashCode sockets) "value:" @sockets)
+                {:any (ring-ws/connected-clients ring-ws-server)}))
    :ch-recv ch-recv
    :type :ring-ws
    :format format

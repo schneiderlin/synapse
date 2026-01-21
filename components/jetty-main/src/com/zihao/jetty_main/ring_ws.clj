@@ -46,6 +46,19 @@
 (defn- generate-client-id []
   (str (java.util.UUID/randomUUID)))
 
+(defn- parse-message
+  "Parse incoming message according to format. Supports :edn and :json.
+   For JSON, event values like \"test/ping\" are converted to keywords :test/ping."
+  [message format]
+  (case format
+    :json (let [parsed (json/parse-string message true)] ; true = keywordize keys
+            ;; Convert event string to keyword (e.g., "test/ping" -> :test/ping)
+            (if-let [event-str (:event parsed)]
+              (assoc parsed :event (keyword event-str))
+              parsed))
+    :edn (edn/read-string message)
+    (edn/read-string message)))
+
 (defn make-ring-ws-handler
   "Creates a Ring handler for WebSocket upgrade requests.
    
@@ -56,14 +69,19 @@
    - Upgrades HTTP requests to WebSocket connections
    - Tracks connected clients in the :sockets atom
    - Puts received messages onto :ch-recv channel as normalized events"
-  [{:keys [sockets ch-recv]}]
+  [{:keys [sockets ch-recv format] :or {format :edn} :as ws-server}]
+  (println "[ring-ws] Creating handler with format:" format "sockets atom:" (System/identityHashCode sockets))
   (fn [request]
+    (println "[ring-ws] Request to /ws, upgrade?" (ws/upgrade-request? request))
     (if (ws/upgrade-request? request)
       (let [client-id (or (parse-client-id request) (generate-client-id))]
+        (println "[ring-ws] Client ID:" client-id)
         {::ws/listener
          {:on-open
           (fn [socket]
+            (println "[ring-ws] on-open called for" client-id "sockets atom:" (System/identityHashCode sockets))
             (swap! sockets assoc client-id socket)
+            (println "[ring-ws] After swap, sockets:" @sockets)
             (async/put! ch-recv {:id :ws/open
                                  :client-id client-id
                                  :socket socket}))
@@ -71,7 +89,7 @@
           :on-message
           (fn [socket message]
             (try
-              (let [parsed (edn/read-string message)
+              (let [parsed (parse-message message format)
                     event-id (or (:event parsed) :ws/message)]
                 (async/put! ch-recv {:id event-id
                                      :client-id client-id

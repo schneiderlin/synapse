@@ -46,7 +46,7 @@
    Options:
    - :format - :edn (default) or :json for message serialization"
   [& {:keys [format] :as config}]
-  (ring-ws/make-ring-ws-server config))
+  (apply ring-ws/make-ring-ws-server (mapcat identity config)))
 
 (defn ws-adapter
   "Auto-detect and create the appropriate WebSocket adapter.

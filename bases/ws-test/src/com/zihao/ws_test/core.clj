@@ -89,7 +89,7 @@
    Returns the Jetty server instance."
   [& {:keys [port] :or {port 3333}}]
   ;; Create Ring WebSocket server
-  (let [ws-server (jm/make-ring-ws-server)
+  (let [ws-server (jm/make-ring-ws-server :format #_:json :edn)
         _ (reset! !ws-server ws-server)
         
         ;; Create adapter and start handler
@@ -121,8 +121,9 @@
     ;; Start Jetty
     (jetty/run-jetty ring-handler {:port port :join? false})))
 
-(defn stop-server [server]
+(defn stop-server 
   "Stop the server and cleanup."
+  [server]
   (when @!stop-ch
     (async/put! @!stop-ch :stop))
   (.stop server)

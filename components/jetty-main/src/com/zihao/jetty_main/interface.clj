@@ -79,6 +79,11 @@
      - ws-ctx has: :send!, :broadcast!, :clients
      - message has: :event, :data, :client-id, :reply!
    
+   Options (keyword arguments):
+   - :heartbeat-enabled? - enable server-initiated heartbeat (default: true)
+     The server will send :heartbeat/ping events to all connected clients periodically.
+   - :heartbeat-interval-ms - heartbeat interval in milliseconds (default: 30000)
+   
    Returns a function (fn [stop-ch ws-adapter]) that starts the event loop.
    
    Example:
@@ -89,16 +94,25 @@
        :user/chat ((:broadcast! ws-ctx) :chat/message (:data msg))
        nil))
    
-   ;; Using Ring WebSocket
+   ;; Using Ring WebSocket (with default heartbeat - 30s interval)
    (def ws-server (jm/make-ring-ws-server))
    (def adapter (jm/ws-adapter ws-server))
    (def handler (jm/make-unified-ws-handler my-handler))
    (handler stop-ch adapter)
+   
+   ;; With custom heartbeat settings
+   (def handler (jm/make-unified-ws-handler my-handler
+                                            :heartbeat-enabled? true
+                                            :heartbeat-interval-ms 10000))
+   
+   ;; Disable heartbeat
+   (def handler (jm/make-unified-ws-handler my-handler
+                                            :heartbeat-enabled? false))
    
    ;; Using Sente (same handler works!)
    (def ws-server (ws-server/make-ws-server))
    (def adapter (jm/ws-adapter ws-server))
    (handler stop-ch adapter)
    ```"
-  [handler-fn]
-  (core/make-unified-ws-handler handler-fn))
+  [handler-fn & {:keys [heartbeat-enabled? heartbeat-interval-ms] :as opts}]
+  (apply core/make-unified-ws-handler handler-fn (mapcat identity opts)))

@@ -255,6 +255,9 @@
    - handler-fn: (fn [ws-ctx message]) - your business logic handler
      - ws-ctx has: :send!, :broadcast!, :clients
      - message has: :event, :data, :client-id, :reply!
+   - Options (keyword arguments):
+     - :heartbeat-enabled? - enable server-initiated heartbeat (default: true)
+     - :heartbeat-interval-ms - heartbeat interval in milliseconds (default: 30000)
    
    Returns a function (fn [stop-ch ws-adapter]) that starts the event loop.
    
@@ -268,10 +271,34 @@
    
    (def handler (make-unified-ws-handler my-handler))
    (handler stop-ch (make-ring-ws-adapter ws-server))
+   
+   ;; With custom heartbeat settings:
+   (def handler (make-unified-ws-handler my-handler 
+                                         :heartbeat-enabled? true
+                                         :heartbeat-interval-ms 30000))
    ```"
-  [handler-fn]
+  [handler-fn & {:keys [heartbeat-enabled? heartbeat-interval-ms]
+                 :or {heartbeat-enabled? true heartbeat-interval-ms 30000}}]
   (fn [stop-ch ws-adapter]
-    (let [{:keys [ch-recv type]} ws-adapter]
+    (let [{:keys [ch-recv broadcast! clients]} ws-adapter]
+      ;; Start heartbeat loop if enabled
+      (when heartbeat-enabled?
+        (go-loop []
+          (let [[_ port] (async/alts! [stop-ch (async/timeout heartbeat-interval-ms)] :priority true)]
+            (cond
+              (= port stop-ch)
+              nil  ; Stop heartbeat
+              
+              :else
+              ;; Timeout occurred - send heartbeat
+              (do
+                (let [connected-clients (:any @clients)]
+                  (when (seq connected-clients)
+                    (u/log ::heartbeat-ping :clients (count connected-clients))
+                    (broadcast! :heartbeat/ping {:timestamp (System/currentTimeMillis)})))
+                (recur))))))
+      
+      ;; Main event loop
       (go-loop []
         (let [[event-msg port] (async/alts! [ch-recv stop-ch] :priority true)]
           (when (= port ch-recv)
@@ -283,6 +310,9 @@
                   :ws/close (u/log ::ws-client-disconnected :client-id client-id)
                   :ws/error (u/log ::ws-client-error :client-id client-id :error error)
                   :ws/parse-error (u/log ::ws-parse-error :client-id client-id :error error)
+                  
+                  ;; Heartbeat pong - log it
+                  :heartbeat/pong (u/log ::heartbeat-pong :client-id client-id)
                   
                   ;; Internal pings - ignore silently
                   :chsk/ws-ping nil

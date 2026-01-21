@@ -1,14 +1,14 @@
 {:mvn/repos
  {"nexus-releases" {:url "https://nexus.redplanetlabs.com/repository/maven-public-releases"}
   "jitpack.io" {:url "https://jitpack.io"}}
- :aliases  {:dev {:extra-paths ["development/src"]
+ :aliases  {:dev {:extra-paths [#_"development/src"]
                   :extra-deps {org.clojure/clojure {:mvn/version "1.12.2"}
                                org.clojure/clojurescript {:mvn/version "1.12.42"}
                                thheller/shadow-cljs {:mvn/version "3.2.1"}
 
                                ;; fix taoensso stuff, always conflict
                                com.taoensso/encore {:mvn/version "3.158.0"}
-                               com.taoensso/truss {:mvn/version "2.2.1"} 
+                               com.taoensso/truss {:mvn/version "2.2.1"}
 
                                poly/replicant-main {:local/root "components/replicant-main"}
                                poly/jetty-main {:local/root "components/jetty-main"}
@@ -32,8 +32,10 @@
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}
                                poly/playground-rama {:local/root "components/playground-rama"}
                                poly/playground-drawflow {:local/root "components/playground-drawflow"}
-                               poly/playground-stasis {:local/root "components/playground-stasis"}}}
-            
+                               poly/playground-stasis {:local/root "components/playground-stasis"}
+
+                               poly/ws-test {:local/root "bases/ws-test"}}}
+
             :dev-webapp {:extra-deps {poly/web-app {:local/root "bases/web-app"}}}
             :dev-scene {:extra-deps {poly/scene {:local/root "bases/scene"}}}
 
@@ -42,7 +44,7 @@
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :jvm-opts ["--enable-native-access=ALL-UNNAMED"]
                    :extra-deps {polylith/clj-poly {:mvn/version "0.3.30"}}}
-            
+
             :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}
                            org.clojure/tools.deps {:mvn/version "0.16.1281"}}
                     :paths ["build/resources"]

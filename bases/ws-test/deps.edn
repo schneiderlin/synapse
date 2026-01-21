@@ -1,0 +1,5 @@
+{:paths ["src" "resources"]
+ :deps {ring/ring-jetty-adapter {:mvn/version "1.15.3"}
+        org.clojure/core.async {:mvn/version "1.8.741"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}

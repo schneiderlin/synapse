@@ -205,9 +205,9 @@
    - :type - :ring-ws
    - :format - serialization format (:edn or :json)
    
-   Options:
+   The input map can include:
    - :format - :edn (default) or :json for message serialization"
-  [{:keys [sockets ch-recv] :as ring-ws-server} & {:keys [format] :or {format :edn}}]
+  [{:keys [sockets ch-recv format] :or {format :edn} :as ring-ws-server}]
   {:send! (fn [client-id event data]
             (ring-ws/send! ring-ws-server client-id event data))
    :broadcast! (fn [event data]

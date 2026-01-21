@@ -256,14 +256,23 @@
       (go-loop []
         (let [[event-msg port] (async/alts! [ch-recv stop-ch] :priority true)]
           (when (= port ch-recv)
-            (let [{:keys [id]} event-msg]
+            (let [{:keys [id client-id error]} event-msg]
               (try
-                ;; Skip internal ping events
-                (when-not (#{:chsk/ws-ping :ws/open :ws/close} id)
+                (case id
+                  ;; Lifecycle events - log them
+                  :ws/open (u/log ::ws-client-connected :client-id client-id)
+                  :ws/close (u/log ::ws-client-disconnected :client-id client-id)
+                  :ws/error (u/log ::ws-client-error :client-id client-id :error error)
+                  :ws/parse-error (u/log ::ws-parse-error :client-id client-id :error error)
+                  
+                  ;; Internal pings - ignore silently
+                  :chsk/ws-ping nil
+                  
+                  ;; Business events - pass to handler
                   (let [normalized-msg (normalize-message ws-adapter event-msg)]
                     (handler-fn ws-adapter normalized-msg)))
                 (catch Exception e
-                  (u/log ::error :exception e))))
+                  (u/log ::handler-error :exception e))))
             (recur)))))))
 
 (defn ws-adapter

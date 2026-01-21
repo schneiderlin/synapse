@@ -91,9 +91,122 @@ handler 可以根据 action 的数据修改 store, 或者使用 system 中的其
 
 ## websocket
 
-WebSocket 通信使用 extension function 模式, 允许各个模块定义自己的事件处理函数, 最后在 base 中统一注册.
+`jetty-main` component 提供两种 WebSocket API:
+1. **Unified API (推荐)** - 统一抽象层, 同时支持 Sente 和 Ring WebSocket
+2. **Sente API (Legacy)** - 直接使用 Sente 的 extension function 模式
 
-### 模块定义 WebSocket Extension Function
+### Unified WebSocket API (推荐)
+
+统一 API 抽象了 Sente 和 Ring WebSocket 的差异, 业务逻辑只需要写一次.
+
+#### 统一消息格式
+
+```clojure
+;; 收到的消息 (message)
+{:event     :user/ping      ; 事件类型 (keyword)
+ :data      {:foo "bar"}    ; 消息数据
+ :client-id "alice"         ; 发送者 ID
+ :reply!    (fn [data] ...) ; 回复函数
+}
+
+;; WebSocket 上下文 (ws-ctx)
+{:send!      (fn [client-id event data] ...)  ; 发送给指定客户端
+ :broadcast! (fn [event data] ...)            ; 广播给所有客户端
+ :clients    (deref) -> {:any #{...}}         ; 已连接的客户端 IDs
+}
+```
+
+#### 定义业务 Handler
+
+```clojure
+(defn my-ws-handler
+  "WebSocket 业务处理函数.
+   同一份代码可以用于 Sente 或 Ring WebSocket."
+  [ws-ctx msg]
+  (let [{:keys [event data client-id reply!]} msg
+        {:keys [send! broadcast! clients]} ws-ctx]
+    (case event
+      :user/ping
+      (reply! {:pong true :time (System/currentTimeMillis)})
+      
+      :chat/send
+      (broadcast! :chat/message {:text data :from client-id})
+      
+      :chat/whisper
+      (let [{:keys [to text]} data]
+        (send! to :chat/private {:text text :from client-id}))
+      
+      nil)))
+```
+
+#### 使用 Ring WebSocket
+
+```clojure
+(require '[com.zihao.jetty-main.interface :as jm])
+
+;; 1. 创建 Ring WS server
+(def ws-server (jm/make-ring-ws-server))
+
+;; 2. 创建 adapter (自动检测类型)
+(def adapter (jm/ws-adapter ws-server))
+
+;; 3. 启动 handler
+(def stop-ch (async/chan))
+(def handler (jm/make-unified-ws-handler my-ws-handler))
+(handler stop-ch adapter)
+
+;; 4. 创建 routes (自动添加 /ws endpoint)
+(def routes (jm/make-routes {} ws-server query-handler command-handler))
+```
+
+#### 使用 Sente (同样的 handler!)
+
+```clojure
+(require '[com.zihao.jetty-main.ws-server :as ws-server])
+
+;; 1. 创建 Sente server
+(def sente-server (ws-server/make-ws-server))
+
+;; 2. 同样使用 ws-adapter
+(def adapter (jm/ws-adapter sente-server))
+
+;; 3. 同一个 handler 代码!
+(def handler (jm/make-unified-ws-handler my-ws-handler))
+(handler stop-ch adapter)
+
+;; 4. 创建 routes (自动添加 /chsk endpoint)
+(def routes (jm/make-routes {} sente-server query-handler command-handler))
+```
+
+#### Integrant 配置示例
+
+```clojure
+(def config
+  {:ws/ws-server nil                              ; Ring WS 或 Sente
+   :ws/ws-handler {:ws-server (ig/ref :ws/ws-server)}
+   :jetty/routes {:ws-server (ig/ref :ws/ws-server)}
+   :jetty/handler (ig/ref :jetty/routes)
+   :adapter/jetty {:port 3000
+                   :handler (ig/ref :jetty/handler)}})
+
+(defmethod ig/init-key :ws/ws-server [_ _]
+  (jm/make-ring-ws-server))  ; 或 (ws-server/make-ws-server) for Sente
+
+(defmethod ig/init-key :ws/ws-handler [_ {:keys [ws-server]}]
+  (let [stop-ch (async/chan)
+        adapter (jm/ws-adapter ws-server)
+        handler (jm/make-unified-ws-handler my-ws-handler)]
+    (handler stop-ch adapter)
+    stop-ch))
+```
+
+---
+
+### Sente API (Legacy)
+
+原有的 Sente 专用 API, 使用 extension function 模式.
+
+#### 模块定义 WebSocket Extension Function
 
 各个 component 可以在自己的 interface namespace 中定义 WebSocket 事件处理函数:
 
@@ -130,7 +243,7 @@ WebSocket 通信使用 extension function 模式, 允许各个模块定义自己
       nil)))  ; 返回 nil 表示未处理
 ```
 
-### 在 Base 中注册 Extension Functions
+#### 在 Base 中注册 Extension Functions
 
 **后端注册** (`bases/web-app/src/com/zihao/web_app/api.clj`):
 ```clojure
@@ -179,7 +292,7 @@ WebSocket 通信使用 extension function 模式, 允许各个模块定义自己
       {:stop-ch stop-ch})))
 ```
 
-### 发送 WebSocket 消息
+#### 发送 WebSocket 消息 (Sente)
 
 发送 WebSocket 消息需要从 system 中获取 `:ws/ws-server` (后端) 或 `:ws/ws-client` (前端), 它们都包含 `:chsk-send!` 这个 key.
 

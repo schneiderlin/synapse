@@ -53,4 +53,5 @@ node_modules/
 databases/
 
 # opencode
-.opencode
+.opencode/logs/
+.opencode/eval_dataset.jsonl

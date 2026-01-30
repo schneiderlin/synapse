@@ -2,7 +2,6 @@
 .clj-kondo
 .cpcache
 .nrepl-port
-test
 .shadow-cljs
 node_modules
 **/cljs-runtime
@@ -52,3 +51,6 @@ node_modules/
 ./public
 
 databases/
+
+# opencode
+.opencode

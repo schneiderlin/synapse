@@ -6,7 +6,7 @@
   (case (:command/kind cmd)
     :query/evaluations
     (let [data (:command/data cmd)
-          filters (:filters data {})
+          filters (or (:filter data) {})
           page (or (:page data) 1)
           size (or (:size data) 50)
           sort-field (or (get-in data [:sort :field]) :timestamp)

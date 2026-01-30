@@ -6,6 +6,7 @@
    [com.zihao.login.login :as login]
    [com.zihao.language-learn.fsrs.render :as fsrs-render]
    [com.zihao.language-learn.lingq.render :as lingq-render]
+   [com.zihao.llm-eval.interface :as llm-eval]
    [com.zihao.replicant-main.replicant.navbar :refer [navbar]]))
 
 (comment
@@ -17,6 +18,8 @@
           [{:page-id :pages/frontpage :page-name "首页"}
            {:page-id :pages/language-learn :page-name "FSRS 重复间隔"}
            {:page-id :pages/lingq :page-name "Lingq 阅读器"}
+           {:page-id :pages/llm-eval-dashboard :page-name "LLM Eval Dashboard"}
+           {:page-id :pages/llm-eval-dataset :page-name "LLM Eval Dataset"}
            {:page-id :pages/playground-drawflow :page-name "Playground Drawflow"}
            {:page-id :pages/xiangqi :page-name "象棋"}]))
 
@@ -57,6 +60,23 @@
   (page-layout
    (lingq-render/main state)))
 
+(defn render-llm-eval-dashboard [state]
+  (page-layout
+   (llm-eval/render-dashboard state)))
+
+(defn render-llm-eval-dataset [state]
+  (page-layout
+   (llm-eval/render-dataset state)))
+
+(defn render-llm-eval-detail [state]
+  (page-layout
+   (llm-eval/render-detail state)))
+
+(defn render-llm-eval-workflow [state]
+  (page-layout
+   [:div {:class ["alert" "alert-info"]}
+    [:span "Workflow editor coming soon!"]]))
+
 (defn render-not-found [_]
   (render-frontpage))
 
@@ -69,5 +89,9 @@
             :pages/change-password render-change-password
             :pages/language-learn render-language-learn
             :pages/lingq render-lingq
+            :pages/llm-eval-dashboard render-llm-eval-dashboard
+            :pages/llm-eval-dataset render-llm-eval-dataset
+            :pages/llm-eval-detail render-llm-eval-detail
+            :pages/llm-eval-workflow render-llm-eval-workflow
             render-not-found)]
     (f state)))

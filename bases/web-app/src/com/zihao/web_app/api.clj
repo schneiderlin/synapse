@@ -6,16 +6,19 @@
    [com.zihao.cljpy-main.interface :as cljpy-main]
    [com.zihao.language-learn.interface :as language-learn]
    [com.zihao.xiangqi.interface :as xiangqi]
+   [com.zihao.llm-eval.interface :as llm-eval]
    [integrant.core :as ig]
    [clojure.core.async :as async]))
 
 (defn command-handler [system command]
   (or (language-learn/command-handler system command)
-      (xiangqi/command-handler system command)))
+      (xiangqi/command-handler system command)
+      (llm-eval/command-handler system command)))
 
 (defn query-handler [system query]
   (or (language-learn/query-handler system query)
-      (xiangqi/query-handler system query)))
+      (xiangqi/query-handler system query)
+      (llm-eval/query-handler system query)))
 
 (defn ws-event-handler [system event-msg]
   (or (xiangqi/ws-event-handler system event-msg)))

@@ -4,7 +4,8 @@
    [com.zihao.playground-drawflow.router :as playground-drawflow-router]
    [com.zihao.language-learn.router :as language-learn-router]
    [com.zihao.xiangqi.router :as xiangqi-router]
-   [com.zihao.login.router :as login-router]))
+   [com.zihao.login.router :as login-router]
+   [com.zihao.llm-eval.router :as llm-eval-router]))
 
 (def routes
   (silk/routes
@@ -13,10 +14,12 @@
     language-learn-router/routes
     xiangqi-router/routes
     login-router/routes
+    llm-eval-router/routes
     [[:pages/frontpage [["home"]]]])))
 
 (defn get-location-load-actions [location]
   (or (playground-drawflow-router/get-location-load-actions location)
       (language-learn-router/get-location-load-actions location)
       (xiangqi-router/get-location-load-actions location)
-      (login-router/get-location-load-actions location)))
+      (login-router/get-location-load-actions location)
+      (llm-eval-router/get-location-load-actions location)))

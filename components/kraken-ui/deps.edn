@@ -1,4 +1,4 @@
 {:paths ["src" "resources"]
- :deps {}
+ :deps {poly/playground-odoyle-rules {:local/root "../playground-odoyle-rules"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}

@@ -1,0 +1,8 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.11.4"}
+        org.clojure/clojurescript {:mvn/version "1.11.132"}
+        datalevin/datalevin {:mvn/version "0.9.22"}
+        com.zihao/jetty-main {:local/root "../jetty-main"}
+        com.zihao/replicant-component {:local/root "../replicant-component"}}
+ :aliases {:test {:extra-paths ["test"]
+                 :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}}}

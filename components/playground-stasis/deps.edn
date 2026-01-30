@@ -1,4 +1,4 @@
 {:paths ["src" "resources"]
  :deps {stasis/stasis {:mvn/version "2023.11.21"}}
  :aliases {:test {:extra-paths ["test"]
-                  :extra-deps {}}}}
+                  :extra-deps {ring/ring-jetty-adapter {:mvn/version "1.9.5"}}}}}

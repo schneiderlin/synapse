@@ -9,15 +9,15 @@
       ;; Board should be reversed - original [0 0] becomes [9 0] after flip
       (is (= (get-in (:board original) [0 0]) :黑车))
       (is (= (get-in (:board flipped) [9 0]) :红车))
-      
+
       ;; Original [9 0] becomes [0 0] after flip
       (is (= (get-in (:board original) [9 0]) :红车))
       (is (= (get-in (:board flipped) [0 0]) :黑车))
-      
+
       ;; Next player should swap
       (is (= (:next original) "红"))
       (is (= (:next flipped) "黑"))
-      
+
       ;; prev-move should be reset
       (is (nil? (:prev-move flipped))))))
 
@@ -25,7 +25,7 @@
   (testing "红兵 forward movement"
     (let [board (:board core/state)]
       (is (= (core/pawn-move board [6 0]) [[5 0]]))))
-  
+
   (testing "黑卒 forward movement"
     (let [board (:board core/state)]
       (is (= (core/pawn-move board [3 0]) [[4 0]])))))

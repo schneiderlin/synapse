@@ -21,27 +21,28 @@
   (let [reversed-board
         (->> (:board state)
              reverse  ; Reverse row
-             (map reverse)  ; Reverse column
-             (map (fn [row]  ; Reverse piece
-                    (map (fn [piece]
-                           (when piece
-                             ({:黑车 :红车
-                               :黑马 :红马
-                               :黑炮 :红炮
-                               :黑象 :红相
-                               :黑士 :红士
-                               :黑将 :红帅
-                               :黑卒 :红兵
+             vec  ; Convert to vector
+             (mapv reverse)  ; Reverse column and keep as vector
+             (mapv (fn [row]  ; Reverse piece and keep as vector
+                     (mapv (fn [piece]
+                             (when piece
+                               ({:黑车 :红车
+                                 :黑马 :红马
+                                 :黑炮 :红炮
+                                 :黑象 :红相
+                                 :黑士 :红士
+                                 :黑将 :红帅
+                                 :黑卒 :红兵
 
-                               :红车 :黑车
-                               :红马 :黑马
-                               :红炮 :黑炮
-                               :红相 :黑象
-                               :红士 :黑士
-                               :红帅 :黑将
-                               :红兵 :黑卒}
-                              piece)))
-                         row))))]
+                                 :红车 :黑车
+                                 :红马 :黑马
+                                 :红炮 :黑炮
+                                 :红相 :黑象
+                                 :红士 :黑士
+                                 :红帅 :黑将
+                                 :红兵 :黑卒}
+                                piece)))
+                           row))))]
     (assoc state
            :board reversed-board
            :next (if (= "红" (:next state)) "黑" "红")

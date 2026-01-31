@@ -1,4 +1,5 @@
 (ns com.zihao.replicant-main.interface
+  "Public API for replicant-main. Functions carry {:malli/schema} for static lint (clj-kondo) and optional runtime checks (malli.dev)."
   (:require
    #?(:cljs [com.zihao.replicant-main.replicant.actions :as actions])
    #?(:cljs [com.zihao.replicant-main.replicant.ws-client :as ws-client])
@@ -12,6 +13,7 @@
    - extension-fns: Optional functions to extend the execution behavior
    
    Returns: An execution function that can be used to process actions"
+  {:malli/schema [:=> [:cat [:* :any]] :any]}
   [& extension-fns]
   #?(:cljs (apply actions/make-execute-f extension-fns)))
 
@@ -23,6 +25,7 @@
    - query: The query to execute against the state
    
    Returns: The result of executing the query against the state"
+  {:malli/schema [:=> [:cat :map :map] :any]}
   [state query]
   (query/get-result state query))
 
@@ -34,23 +37,35 @@
                     Each function should take (event case-key) and return a value if handled, nil otherwise.
    
    Returns: An interpolation function that can be used to process event data"
+  {:malli/schema [:=> [:cat [:* :any]] :any]}
   [& extension-fns]
   (apply utils/make-interpolate extension-fns))
 
-(defn interpolate [event data]
+(defn interpolate
+  {:malli/schema [:=> [:cat :any :any] :any]}
+  [event data]
   (utils/interpolate event data))
 
-(defn parse-int [s]
+(defn parse-int
+  "Parses string or number to int. Returns int or throws."
+  {:malli/schema [:=> [:cat :string] :int]}
+  [s]
   (utils/parse-int s))
 
-(defn is-digit? [c]
+(defn is-digit?
+  {:malli/schema [:=> [:cat :any] :boolean]}
+  [c]
   (utils/is-digit? c))
 
-(defn gather-form-data [form-el]
+(defn gather-form-data
+  "Returns form fields as a map (keyword keys, string values). form-el is a DOM form element."
+  {:malli/schema [:=> [:cat :any] :map]}
+  [form-el]
   (utils/gather-form-data form-el))
 
 (defn gen-uuid
   "Generates a random UUID string."
+  {:malli/schema [:=> [:cat] :string]}
   []
   (utils/gen-uuid))
 
@@ -58,6 +73,7 @@
   "Creates a WebSocket handler with extension functions (cljs only).
    Extension functions are tried first before built-in event handling.
    Each extension should accept [ws-client event-msg] and return non-nil if handled."
+  {:malli/schema [:=> [:cat [:* :any]] :any]}
   [& extension-fns]
   #?(:cljs (apply ws-client/make-ws-handler-with-extensions extension-fns)
      :clj (throw (ex-info "make-ws-handler-with-extensions only available in ClojureScript" {}))))

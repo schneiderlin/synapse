@@ -10,4 +10,6 @@
                             :exclusions [com.taoensso/encore]}
         com.brunobonacci/mulog {:mvn/version "0.10.0"}}
  :aliases {:test {:extra-paths ["test"]
-                  :extra-deps {}}}}
+                  :extra-deps {}}
+           :export {:extra-deps {metosin/malli {:mvn/version "0.13.0"}}
+                    :main-opts ["-e" "(require 'com.zihao.replicant-main.export) (com.zihao.replicant-main.export/export-types)"]}}}

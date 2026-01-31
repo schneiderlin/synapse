@@ -108,3 +108,29 @@ This architecture enables:
 ## Built-in Actions
 
 For detailed documentation of built-in actions (state management, navigation, data operations, etc.), see [actions-reference.md](actions-reference.md).
+
+## Lint (clj-kondo types)
+
+The public API in `com.zihao.replicant-main.interface` carries Malli `{:malli/schema}` metadata so that:
+
+- **Static lint**: Exported clj-kondo config gives consumers type hints (args/return) for interface functions.
+- **Optional runtime**: Consumers can enable `malli.dev/start!` to validate calls at runtime.
+
+### Regenerating the export
+
+From this component directory:
+
+```bash
+clj -M:export
+```
+
+This runs Malli instrumentation, writes `.clj-kondo/metosin/malli-types-clj/config.edn`, and copies it to `resources/clj-kondo/clj-kondo.exports/com/zihao/replicant-main/config.edn`. Commit that file so dependents get the types.
+
+### Using the types as a consumer
+
+1. Add this component as a dependency.
+2. Copy configs: `clj-kondo --lint "$(clojure -Spath)" --copy-configs --skip-lint`
+3. In your `.clj-kondo/config.edn`: `{:config-paths ["com.zihao/replicant-main"]}`
+4. Lint: `clj-kondo --lint "$(clojure -Spath)" --dependencies --parallel`
+
+See [Take your linting game to the next level](https://tonitalksdev.com/take-your-linting-game-to-the-next-level) for the pattern.

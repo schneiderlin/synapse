@@ -8,8 +8,8 @@
    [com.zihao.replicant-main.interface :as interface]))
 
 (def export-dir
-  "Target path under resources for clj-kondo export. Consumers run --copy-configs and get types automatically (configs under .clj-kondo/* are auto-loaded)."
-  "resources/clj-kondo/clj-kondo.exports/com/zihao/replicant-main")
+  "Target path under resources for clj-kondo export. Use namespace as single path segment (com.zihao.replicant-main) so --copy-configs lands at .clj-kondo/imports/com.zihao.replicant-main/ (two levels) and is auto-loaded."
+  "resources/clj-kondo/clj-kondo.exports/com.zihao.replicant-main")
 
 (defn export-types
   "Collect :malli/schema from interface, run Malli instrumentation to generate

@@ -124,14 +124,14 @@ From this component directory:
 clj -M:export
 ```
 
-This runs Malli instrumentation, writes `.clj-kondo/metosin/malli-types-clj/config.edn`, and copies it to `resources/clj-kondo/clj-kondo.exports/com/zihao/replicant-main/config.edn`. Commit that file so dependents get the types.
+This runs Malli instrumentation, writes `.clj-kondo/metosin/malli-types-clj/config.edn`, and copies it to `resources/clj-kondo/clj-kondo.exports/com.zihao.replicant-main/config.edn`. Commit that file so dependents get the types.
 
 ### Using the types as a consumer
 
 1. Add this component as a dependency.
 2. Ensure a `.clj-kondo` directory exists, then copy configs from dependencies:  
    `clj-kondo --lint "$(clojure -Spath)" --copy-configs --skip-lint`  
-   Configs are copied into `.clj-kondo/com/zihao/replicant-main/` and are **auto-loaded** (no `:config-paths` needed).
+   Configs are copied into `.clj-kondo/imports/com.zihao.replicant-main/` (two levels, so **auto-loaded**; no `:config-paths` needed).
 3. Enrich the cache: `clj-kondo --lint "$(clojure -Spath)" --dependencies --parallel`
 4. Lint as usual, e.g. `clj-kondo --lint src`.
 

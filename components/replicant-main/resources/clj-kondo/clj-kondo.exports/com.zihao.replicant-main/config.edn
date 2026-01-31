@@ -3,7 +3,7 @@
                                                                                                                           :spec :any}],
                                                                                                                   :ret :any,
                                                                                                                   :min-arity 0}}},
-                                                                            is-digit? {:arities {1 {:args [:string],
+                                                                            is-digit? {:arities {1 {:args [:any],
                                                                                                     :ret :boolean}}},
                                                                             gather-form-data {:arities {1 {:args [:any],
                                                                                                            :ret {:op :keys}}}},

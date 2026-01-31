@@ -8,7 +8,7 @@
    [com.zihao.replicant-main.interface :as interface]))
 
 (def export-dir
-  "Target path under resources for clj-kondo export (consumers add com.zihao/replicant-main to :config-paths)."
+  "Target path under resources for clj-kondo export. Consumers run --copy-configs and get types automatically (configs under .clj-kondo/* are auto-loaded)."
   "resources/clj-kondo/clj-kondo.exports/com/zihao/replicant-main")
 
 (defn export-types

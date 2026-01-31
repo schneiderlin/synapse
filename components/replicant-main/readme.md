@@ -129,8 +129,10 @@ This runs Malli instrumentation, writes `.clj-kondo/metosin/malli-types-clj/conf
 ### Using the types as a consumer
 
 1. Add this component as a dependency.
-2. Copy configs: `clj-kondo --lint "$(clojure -Spath)" --copy-configs --skip-lint`
-3. In your `.clj-kondo/config.edn`: `{:config-paths ["com.zihao/replicant-main"]}`
-4. Lint: `clj-kondo --lint "$(clojure -Spath)" --dependencies --parallel`
+2. Ensure a `.clj-kondo` directory exists, then copy configs from dependencies:  
+   `clj-kondo --lint "$(clojure -Spath)" --copy-configs --skip-lint`  
+   Configs are copied into `.clj-kondo/com/zihao/replicant-main/` and are **auto-loaded** (no `:config-paths` needed).
+3. Enrich the cache: `clj-kondo --lint "$(clojure -Spath)" --dependencies --parallel`
+4. Lint as usual, e.g. `clj-kondo --lint src`.
 
-See [Take your linting game to the next level](https://tonitalksdev.com/take-your-linting-game-to-the-next-level) for the pattern.
+See [Take your linting game to the next level](https://tonitalksdev.com/take-your-linting-game-to-the-next-level) and [clj-kondo: Importing](https://cljdoc.org/d/clj-kondo/clj-kondo/doc/configuration#importing).

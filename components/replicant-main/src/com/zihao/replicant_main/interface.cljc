@@ -53,7 +53,7 @@
   (utils/parse-int s))
 
 (defn is-digit?
-  {:malli/schema [:=> [:cat :any] :boolean]}
+  {:malli/schema [:=> [:cat :string] :boolean]}
   [c]
   (utils/is-digit? c))
 

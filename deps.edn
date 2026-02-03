@@ -27,6 +27,8 @@
                                poly/baml-client {:local/root "components/baml-client"}
                                poly/replicant-component {:local/root "components/replicant-component"}
                                poly/xiangqi {:local/root "components/xiangqi"}
+                               poly/llm-eval {:local/root "components/llm-eval"}
+                               poly/llm-auth {:local/root "components/llm-auth"}
 
                                poly/playground-odoyle-rules {:local/root "components/playground-odoyle-rules"}
                                poly/playground-jsonrpc {:local/root "components/playground-jsonrpc"}

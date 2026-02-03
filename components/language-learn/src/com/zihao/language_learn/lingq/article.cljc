@@ -24,16 +24,14 @@
                  :font-size "1.25rem"
                  :line-height "1.75rem"}}
    (for [token tokens]
-     (do 
-       (println "token" token)
-       (let [rating (word->rating (str/lower-case token))]
-         (if (or (re-matches #"\s+" token)
-                 (re-matches #"[.。,，!！?？;；:：“”'\"\[\]\(\)\{\}<>-]" token)
-                 (re-matches #"\d+" token))
-           token
-           [:span {:class (get-word-class rating)
-                   :on {:click
-                        (if (nil? rating)
-                          [[:lingq/click-unknown-word {:word (str/lower-case token)}]]
-                          [[:store/assoc-in [prefix :selected-word] token]])}}
-            token]))))])
+     (let [rating (word->rating (str/lower-case token))]
+       (if (or (re-matches #"\s+" token)
+               (re-matches #"[.。,，!！?？;；:：“”'\"\[\]\(\)\{\}<>-]" token)
+               (re-matches #"\d+" token))
+         token
+         [:span {:class (get-word-class rating)
+                 :on {:click
+                      (if (nil? rating)
+                        [[:lingq/click-unknown-word {:word (str/lower-case token)}]]
+                        [[:store/assoc-in [prefix :selected-word] token]])}}
+          token])))])

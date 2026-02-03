@@ -60,15 +60,15 @@
   (page-layout
    (lingq-render/main state)))
 
-(defn render-llm-eval-dashboard [state]
+#_(defn render-llm-eval-dashboard [state]
   (page-layout
    (llm-eval/render-dashboard state)))
 
-(defn render-llm-eval-dataset [state]
+#_(defn render-llm-eval-dataset [state]
   (page-layout
    (llm-eval/render-dataset state)))
 
-(defn render-llm-eval-detail [state]
+#_(defn render-llm-eval-detail [state]
   (page-layout
    (llm-eval/render-detail state)))
 
@@ -89,9 +89,9 @@
             :pages/change-password render-change-password
             :pages/language-learn render-language-learn
             :pages/lingq render-lingq
-            :pages/llm-eval-dashboard render-llm-eval-dashboard
-            :pages/llm-eval-dataset render-llm-eval-dataset
-            :pages/llm-eval-detail render-llm-eval-detail
+            ;; :pages/llm-eval-dashboard render-llm-eval-dashboard
+            ;; :pages/llm-eval-dataset render-llm-eval-dataset
+            ;; :pages/llm-eval-detail render-llm-eval-detail
             :pages/llm-eval-workflow render-llm-eval-workflow
             render-not-found)]
     (f state)))

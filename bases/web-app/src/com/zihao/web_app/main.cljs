@@ -11,7 +11,7 @@
    [com.zihao.replicant-component.interface :as replicant-component]
    [com.zihao.xiangqi.actions :as xiangqi-actions]
    [com.zihao.xiangqi.interface :as xiangqi]
-   [com.zihao.llm-eval.interface :as llm-eval]
+   #_[com.zihao.llm-eval.interface :as llm-eval]
    [integrant.core :as ig]
    [dataspex.core :as dataspex]
    [cljs.core.async :as async]))
@@ -26,7 +26,7 @@
                                fsrs-actions/execute-action
                                fsrs-actions/execute-effect
                                lingq-actions/execute-action
-                               llm-eval/execute-action]
+                               #_llm-eval/execute-action]
    :ws/ws-client true
    :ws/ws-handler {:ws-client (ig/ref :ws/ws-client)
                    :ws-event-handlers (ig/ref :ws/event-handlers)

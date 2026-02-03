@@ -11,9 +11,11 @@
    [:h3 {:class ["text-xl" "font-semibold" "mb-2"]} "Input Article Text"]
    [:textarea {:class ["w-full" "h-96" "p-4" "border" "border-gray-300" "rounded-lg" "resize-none" "focus:outline-none" "focus:ring-2" "focus:ring-blue-500"]
                :placeholder "Paste or type your article text here..."
-               :on {:input [[:debug/print :event/target.value]
-                            [:lingq/enter-article {:article :event/target.value}]]}}]
+               :on {:input [[:store/assoc-in [prefix :input-text] :event/target.value]]}}]
    [:div {:class ["flex" "space-x-4"]}
+    [:button {:class ["px-4" "py-2" "bg-green-600" "text-white" "rounded-lg" "hover:bg-green-700" "focus:outline-none" "focus:ring-2" "focus:ring-green-500"]
+              :on {:click [[:lingq/enter-article]]}}
+     "Process Article"]
     [:button {:class ["px-4" "py-2" "bg-blue-600" "text-white" "rounded-lg" "hover:bg-blue-700" "focus:outline-none" "focus:ring-2" "focus:ring-blue-500"]
               :on {:click [[:lingq/clean-text]]}}
      "Clear Text"]]])

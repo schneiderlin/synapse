@@ -5,4 +5,4 @@
         clj-http/clj-http {:mvn/version "3.13.0"}
         hickory/hickory {:mvn/version "0.7.1"}}
  :aliases {:test {:extra-paths ["test"]
-                 :extra-deps {}}}}
+                  :extra-deps {}}}}

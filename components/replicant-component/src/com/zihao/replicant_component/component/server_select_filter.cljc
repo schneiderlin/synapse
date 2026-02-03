@@ -1,7 +1,7 @@
 (ns com.zihao.replicant-component.component.server-select-filter
   (:require
    [clojure.string :as str]
-   [com.zihao.replicant-main.replicant.query :as query]))
+   [com.zihao.replicant-main.interface :as query]))
 
 (def ^:private search-timers (atom {}))
 

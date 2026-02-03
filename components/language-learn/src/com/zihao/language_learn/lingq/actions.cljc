@@ -3,6 +3,7 @@
    [com.zihao.language-learn.lingq.common :refer [prefix]]))
 
 (defn click-unknown-word [_store {:keys [word]}]
+  (println "click-unknown-word" word)
   [[:store/assoc-in [prefix :preview-word] word]
    [:store/assoc-in [prefix :preview-translation] nil]
    [:data/query {:query/kind :query/get-word-translation
@@ -19,20 +20,22 @@
 
 (defn clean-text [_store]
   [[:store/assoc-in [prefix :tokens] []]
-   [:store/assoc-in [prefix :selected-word] nil]])
+   [:store/assoc-in [prefix :selected-word] nil]
+   [:store/assoc-in [prefix :input-text] nil]])
 
-(defn enter-article [_store {:keys [article]}]
-  [[:data/query {:query/kind :query/tokenize-text
-                 :query/data {:language "id"
-                              :text article}}
-    {:on-success [[:data/query {:query/kind :query/get-word-rating}
-                   {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
-                                 [:store/assoc-in [prefix :tokens] :query/result]]}]]}]])
+(defn enter-article [store]
+  (let [article (get-in store [prefix :input-text])]
+    [[:data/query {:query/kind :query/tokenize-text
+                   :query/data {:language "id"
+                                :text article}}
+      {:on-success [[:data/query {:query/kind :query/get-word-rating}
+                     {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
+                                   [:store/assoc-in [prefix :tokens] :query/result]]}]]}]]))
 
 (defn execute-action [{:keys [store]} _event action args]
   (case action
     :lingq/click-unknown-word (click-unknown-word store args)
     :lingq/clean-text (clean-text store)
-    :lingq/enter-article (enter-article store args)
+    :lingq/enter-article (enter-article store)
     :lingq/add-preview-word-to-database (add-preview-word-to-database store)
     nil))

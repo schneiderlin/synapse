@@ -1,7 +1,7 @@
 (ns com.zihao.replicant-main.interface
   "Public API for replicant-main. Functions carry {:malli/schema} for static lint (clj-kondo) and optional runtime checks (malli.dev)."
   (:require
-   #?(:cljs [com.zihao.replicant-main.replicant.actions :as actions])
+   [com.zihao.replicant-main.replicant.actions :as actions]
    #?(:cljs [com.zihao.replicant-main.replicant.ws-client :as ws-client])
    [com.zihao.replicant-main.replicant.query :as query]
    [com.zihao.replicant-main.replicant.utils :as utils]))
@@ -14,8 +14,8 @@
 
    Returns: An execution function that can be used to process actions"
   {:malli/schema [:=> [:cat [:* :any]] :any]}
-  [& _extension-fns]
-  #?(:cljs (apply actions/make-execute-f _extension-fns)))
+  [& extension-fns]
+  (apply actions/make-execute-f extension-fns))
 
 (defn get-result
   "Retrieves query results from the current application state.

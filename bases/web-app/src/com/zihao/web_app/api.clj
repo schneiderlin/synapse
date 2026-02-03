@@ -2,7 +2,6 @@
   (:require
    [ring.adapter.jetty :as jetty]
    [com.zihao.jetty-main.interface :as jm]
-   [com.zihao.jetty-main.ws-server :as ws-server]
    [com.zihao.cljpy-main.interface :as cljpy-main]
    [com.zihao.language-learn.interface :as language-learn]
    [com.zihao.xiangqi.interface :as xiangqi]
@@ -46,7 +45,7 @@
 
 (defmethod ig/init-key :ws/ws-server [_ enabled?]
   (when enabled?
-    (ws-server/make-ws-server)))
+    (jm/make-ws-server)))
 
 (defmethod ig/init-key :ws/event-handler [_ _]
   (fn [event-msg]

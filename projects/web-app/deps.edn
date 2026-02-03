@@ -17,7 +17,9 @@
         poly/baml-client {:local/root "../../components/baml-client"}
         poly/replicant-component {:local/root "../../components/replicant-component"}
         poly/xiangqi {:local/root "../../components/xiangqi"}
-        poly/playground-drawflow {:local/root "../../components/playground-drawflow"}}
+        poly/playground-drawflow {:local/root "../../components/playground-drawflow"}
+        poly/playground-odoyle-rules {:local/root "../../components/playground-odoyle-rules"}
+        }
 
  :aliases {:test {:extra-paths []
                   :extra-deps  {}}

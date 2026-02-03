@@ -4,6 +4,7 @@
 
 (defn click-unknown-word [_store {:keys [word]}]
   [[:store/assoc-in [prefix :preview-word] word]
+   [:store/assoc-in [prefix :preview-translation] nil]
    [:data/query {:query/kind :query/get-word-translation
                  :query/data {:word word}}
     {:on-success [[:store/assoc-in [prefix :preview-translation] :query/result]]}]])

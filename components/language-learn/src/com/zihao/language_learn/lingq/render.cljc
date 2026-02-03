@@ -41,12 +41,11 @@
           [:div
            [:span {:class ["font-medium"]} "原文: "]
            [:span preview-word]]
-          [:div
-           [:span {:class ["font-medium"]} "译文: "]
-           (println "preview-translation" preview-translation)
-           [:span (if (and preview-translation (sequential? preview-translation))
-                    (clojure.string/join ", " preview-translation)
-                    "Loading...")]]
+           [:div
+            [:span {:class ["font-medium"]} "译文: "]
+            [:span (if (and preview-translation (sequential? preview-translation))
+                     (clojure.string/join ", " preview-translation)
+                     "Loading...")]]
           [:button {:class ["mt-4" "px-4" "py-2" "bg-blue-600" "text-white" "rounded-lg" "hover:bg-blue-700" "focus:outline-none" "focus:ring-2" "focus:ring-blue-500"]
                     :on {:click [[:lingq/add-preview-word-to-database]]}}
            "添加到数据库"]]]])

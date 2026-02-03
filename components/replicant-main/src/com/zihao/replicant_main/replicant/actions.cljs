@@ -21,7 +21,7 @@
                  (let [actions (if (fn? on-success)
                                  (on-success result)
                                  (let [result (interpolate result on-success)]
-                                   (println "query result" result)
+                                   #_(println "query result" result)
                                    result))]
                    (execute-actions system nil actions)))))
       (.catch #(swap! store query/receive-response
@@ -44,7 +44,7 @@
                  (let [actions (if (fn? on-success)
                                  (on-success result)
                                  (let [result (interpolate result on-success)]
-                                   (println "command result" result)
+                                   #_(println "command result" result)
                                    result))]
                    (execute-actions system nil actions)))))
       (.catch #(swap! store command/receive-response

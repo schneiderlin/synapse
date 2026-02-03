@@ -78,7 +78,7 @@
   (ig/init config))
 
 (comment
-  (def system (-main))
+  (def system (-main)) 
 
   (def ws-server (:ws/ws-server system))
   (def send-fn (:chsk-send! ws-server))

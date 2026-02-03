@@ -33,7 +33,7 @@
   (fn [{:keys [?data ?reply-fn]}]
     (let [query ?data
           result (query-handler query)]
-      (println "result" query result)
+      #_(println "result" query result)
       (when ?reply-fn
         (?reply-fn result)))))
 

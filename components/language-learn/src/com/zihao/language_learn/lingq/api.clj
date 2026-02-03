@@ -26,7 +26,7 @@
   (case (:query/kind query)
     :query/tokenize-text
     (let [{:keys [language text]} (:query/data query)]
-      (tokenize-text language text)) 
+      (tokenize-text language text))
 
     :query/get-article
     "Judul: Teknologi di Rumahku
@@ -56,8 +56,12 @@
       {:message "Card reviewed successfully"})
 
     :command/add-new-word
-    (let [{:keys [word]} data 
-          en-words (dictionary/get-translations word) 
+    (let [{:keys [word]} data
+          en-words (try
+                     (dictionary/get-translations word)
+                     (catch Exception e
+                        ;; If translation lookup fails, use the word itself as translation
+                       [word]))
           en-text (str/join "," en-words)
           card (template/bhs-indo-card word en-text)]
       (when-not (fsrs-db/by-id-word (:card/id-word card))

@@ -19,14 +19,14 @@
   (get-word-class "known")
   :rcf)
 
-(defn article-ui [{:keys [tokens word->rating] :as state}] 
+(defn article-ui [{:keys [tokens word->rating]}]
   [:div {:style {:white-space "pre-wrap"
                  :font-size "1.25rem"
                  :line-height "1.75rem"}}
    (for [token tokens]
      (let [rating (word->rating (str/lower-case token))]
        (if (or (re-matches #"\s+" token)
-               (re-matches #"[.。,，!！?？;；:：“”'\"\[\]\(\)\{\}<>-]" token)
+               (re-matches #"[.。,，!！?？;；:：「」'\"\[\]\(\)\{\}<>-]" token)
                (re-matches #"\d+" token))
          token
          [:span {:class (get-word-class rating)

@@ -10,7 +10,7 @@
   [[:store/assoc-in [prefix :tokens] []]
    [:store/assoc-in [prefix :selected-word] nil]])
 
-(defn enter-article [store {:keys [article]}]
+(defn enter-article [_store {:keys [article]}]
   [[:data/query {:query/kind :query/tokenize-text
                  :query/data {:language "id"
                               :text article}}
@@ -18,9 +18,9 @@
                    {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
                                  [:store/assoc-in [prefix :tokens] :query/result]]}]]}]])
 
-(defn execute-action [{:keys [store]} event action args]
+(defn execute-action [{:keys [store]} _event action args]
   (case action
     :lingq/click-unknown-word (click-unknown-word store args)
-    :lingq/clean-text (clean-text store) 
+    :lingq/clean-text (clean-text store)
     :lingq/enter-article (enter-article store args)
     nil))

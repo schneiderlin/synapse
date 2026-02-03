@@ -58,8 +58,8 @@
     :command/add-new-word
     (let [{:keys [word]} data
           en-words (try
-                     (dictionary/get-translations word)
-                     (catch Exception e
+                     (dictionary/get-translations word "id" "en")
+                     (catch Exception _
                         ;; If translation lookup fails, use the word itself as translation
                        [word]))
           en-text (str/join "," en-words)

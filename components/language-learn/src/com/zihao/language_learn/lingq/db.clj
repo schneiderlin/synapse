@@ -1,6 +1,6 @@
 (ns com.zihao.language-learn.lingq.db
   (:require
-   [com.zihao.language-learn.fsrs.db :as fsrs-db] 
+   [com.zihao.language-learn.fsrs.db :as fsrs-db]
    [datalevin.core :as d]))
 
 (def conn fsrs-db/conn)
@@ -33,7 +33,7 @@
 
 (defn get-word-ratings []
   (let [results (get-word-infos)]
-    (into {} (map (fn [[word stability difficulty]]
+    (into {} (map (fn [[word stability _difficulty]]
                     [word (stability->rating stability)]) results))))
 
 (comment

@@ -2,7 +2,6 @@
   (:require
    [clojure.string :as str]
    [clojure.java.io :as io]
-   [clojure.edn :as edn]
    [com.zihao.language-learn.fsrs.core :as core]
    [com.zihao.language-learn.fsrs.template :as template]
    [datalevin.core :as d]))
@@ -31,8 +30,7 @@
 (defn save-card! [card]
   (d/transact! conn [card]))
 
-(comment 
-  (require '[com.zihao.language-learn.fsrs.template :as template])
+(comment
   (let [card (template/bhs-indo-card "anjing" "dog")]
     (save-card! card))
   :rcf)
@@ -77,7 +75,7 @@
   :rcf)
 
 (defn by-id-word [id-word]
-  (d/q '[:find ?e . 
+  (d/q '[:find ?e .
          :in $ ?id-word
          :where
          [?e :card/id-word ?id-word]]
@@ -103,13 +101,13 @@
 (comment
   (import-words-file (io/file (io/resource "data/words.txt")))
 
-  (-> (d/q '[:find ?word 
-         :where
-         [?e :card/id-word ?word]]
-       (d/db conn))
-      count) 
-  
-   (by-id-word "Halo")
+  (-> (d/q '[:find ?word
+             :where
+             [?e :card/id-word ?word]]
+           (d/db conn))
+      count)
+
+  (by-id-word "Halo")
   (d/transact! conn [(assoc (d/pull @conn '[*] 151)
                             :card/id-word "Halo")])
   :rcf)
@@ -123,7 +121,6 @@
         cards (d/pull-many @conn '[*] all-ids)]
     (spit output-file (pr-str cards))
     (count cards)))
-
 
 (comment
   (export-all-cards-to-edn "fsrs_cards_export.edn")

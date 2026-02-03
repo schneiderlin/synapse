@@ -1,6 +1,4 @@
-(ns com.zihao.language-learn.fsrs.router
-  (:require
-   [com.zihao.replicant-main.replicant.query :as query]))
+(ns com.zihao.language-learn.fsrs.router)
 
 (def routes
   [[:pages/fsrs [["fsrs"]]]])

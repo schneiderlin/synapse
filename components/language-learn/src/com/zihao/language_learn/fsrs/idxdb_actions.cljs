@@ -18,7 +18,7 @@
 
 ;; Helper: repeat card using IndexedDB
 ;; Similar to issue-command but uses IndexedDB directly
-(defn repeat-card* [{:keys [interpolate execute-actions store] :as system} {:keys [id rating]} & [{:keys [on-success]}]]
+(defn repeat-card* [{:keys [execute-actions] :as system} {:keys [id rating]} & [{:keys [on-success]}]]
   (-> (db/repeat-card! id rating)
       (.then (fn [_result]
                (when on-success
@@ -72,7 +72,7 @@
     :data/idxb-query (apply load-due-cards* system args)
     :data/idxb-command (apply repeat-card* system (first args) (rest args))
     :data/import-edn-file (let [file (first args)
-                                {:keys [store execute-actions]} system]
+                                {:keys [store]} system]
                             (swap! store assoc-in [prefix :loading?] true)
                             (-> (js/Promise.
                                  (fn [resolve reject]
@@ -83,7 +83,7 @@
                                      (set! (.-onerror reader) reject)
                                      (.readAsText reader file))))
                                 (.then (fn [edn-content]
-                                         (db/import-cards-from-edn edn-content))) 
+                                         (db/import-cards-from-edn edn-content)))
                                 (.catch (fn [error]
                                           (swap! store assoc-in [prefix :loading?] false)
                                           (swap! store assoc-in [prefix :import-error?] true)
@@ -97,7 +97,7 @@
     nil))
 
 ;; Action handler that routes actions to effects
-(defn execute-action [{:keys [store] :as system} e action args]
+(defn execute-action [{:keys [store]} _e action args]
   (case action
     :card/load-due-cards (load-due-cards)
     :card/repeat-card (repeat-card store args)

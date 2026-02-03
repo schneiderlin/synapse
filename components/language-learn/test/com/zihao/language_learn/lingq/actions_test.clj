@@ -1,5 +1,5 @@
 (ns com.zihao.language-learn.lingq.actions-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.language-learn.lingq.actions :as actions]))
 
 (deftest execute-action-click-unknown-word-test

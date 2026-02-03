@@ -31,16 +31,24 @@
     :query/get-article
     "Judul: Teknologi di Rumahku
     Artikel pendek – level A2-B1
-    Pagi ini saya bangun bukan karena alarm handphone, tapi karena lampu kamar otomatis menyala. Lampu itu pintar; ia tahu jam enam adalah waktunya bangun. Teknologi ini namanya “lampu cerdas”. Lampu itu terhubung ke aplikasi kecil di handphone saya. Di aplikasi itu saya atur warna dan kecerahan lampu.
-    Di dapur, ibu memakai panci pintar. Panci itu bisa menghitung suhu makanan. Jika nasi sudah matang, panci berbunyi “dit!” dan mati sendiri. Ibu senang karena nasi tidak pernah gosong lagi.
-    Ayah pergi ke kantor dengan mobil listrik. Mobil itu tidak pakai bensin, tapi pakai baterai besar. Di garasi ada “stasiun pengisian” yang berbentuk seperti kotak kecil. Cukup enam jam, baterai penuh lagi. Mobil ini tidak mengeluarkan asap, jadi udaranya tetap bersih.
-    Saya sekolah daring di kamar. Guru mengirim tugas melalui aplikasi “Kelas Digital”. Kami tidak perlu buku tebal; semua ada di tablet. Jika saya tidak mengerti, saya tekan tombol tanda tanya. Lima menit kemudian, robot kecil menjawab dengan suara ramah, “Halo, ada yang bisa dibantu?”
+    Pagi ini saya bangun bukan karena alarm handphone, tapi karena lampu kamar otomatis menyala. Lampu itu pintar; ia tahu jam enam adalah waktunya bangun. Teknologi ini namanya \"lampu cerdas\". Lampu itu terhubung ke aplikasi kecil di handphone saya. Di aplikasi itu saya atur warna dan kecerahan lampu.
+    Di dapur, ibu memakai panci pintar. Panci itu bisa menghitung suhu makanan. Jika nasi sudah matang, panci berbunyi \"dit!\" dan mati sendiri. Ibu senang karena nasi tidak pernah gosong lagi.
+    Ayah pergi ke kantor dengan mobil listrik. Mobil itu tidak pakai bensin, tapi pakai baterai besar. Di garasi ada \"stasiun pengisian\" yang berbentuk seperti kotak kecil. Cukup enam jam, baterai penuh lagi. Mobil ini tidak mengeluarkan asap, jadi udaranya tetap bersih.
+    Saya sekolah daring di kamar. Guru mengirim tugas melalui aplikasi \"Kelas Digital\". Kami tidak perlu buku tebal; semua ada di tablet. Jika saya tidak mengerti, saya tekan tombol tanda tanya. Lima menit kemudian, robot kecil menjawab dengan suara ramah, \"Halo, ada yang bisa dibantu?\"
     Siang hari, robot penyedot debu bekerja. Ia berjalan sendiri di lantai, masuk ke bawah sofa, lalu kembali ke dokingnya untuk mengisi baterai. Seekor kucing kecil saya awalnya takut, tapi sekarang dia tidur di atas robot itu!
-    Malam tiba, kami menonton film dengan “kacamata virtual”. Jika saya pakai kacamata ini, rasanya seperti duduk di bioskop. Layar besar muncul di depan mata, padahal kami hanya di ruang tamu.
+    Malam tiba, kami menonton film dengan \"kacamata virtual\". Jika saya pakai kacamata ini, rasanya seperti duduk di bioskop. Layar besar muncul di depan mata, padahal kami hanya di ruang tamu.
     Teknologi membuat hidup lebih mudah, tapi kami tetap ingat berbicara langsung, bukan hanya chat. Setelah makan malam, kami menutup semua gawai dan bercanda tanpa layar. Teknologi baik, tapi kebersamaan lebih baik."
 
     :query/get-word-rating
     (lingq-db/get-word-ratings)
+
+    :query/get-word-translation
+    (let [{:keys [word]} (:query/data query)]
+      (try
+        (dictionary/get-translations word "id" "en")
+        (catch Exception _
+          ;; If translation lookup fails, use the word itself as translation
+          [word])))
 
     nil))
 

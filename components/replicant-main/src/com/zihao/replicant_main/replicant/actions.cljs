@@ -20,13 +20,15 @@
                (when on-success
                  (let [actions (if (fn? on-success)
                                  (on-success result)
-                                 (interpolate result on-success))]
+                                 (let [result (interpolate result on-success)]
+                                   (println "query result" result)
+                                   result))]
                    (execute-actions system nil actions)))))
       (.catch #(swap! store query/receive-response
                       (js/Date.)
                       query {:error (.-message %)}))))
 
-(defn issue-command [{:keys [_interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
+(defn issue-command [{:keys [interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
   (swap! store command/issue-command (js/Date.) command)
   (-> (js/fetch (str base-url "/api/command")
                 #js {:method "POST"
@@ -35,11 +37,16 @@
                                    "content-type" "application/edn"}})
       (.then #(.text %))
       (.then reader/read-string)
-      (.then (fn [res]
+      (.then (fn [result]
                (swap! store command/receive-response
-                      (js/Date.) command res)
+                      (js/Date.) command result)
                (when on-success
-                 (execute-actions system nil on-success))))
+                 (let [actions (if (fn? on-success)
+                                 (on-success result)
+                                 (let [result (interpolate result on-success)]
+                                   (println "command result" result)
+                                   result))]
+                   (execute-actions system nil actions)))))
       (.catch #(swap! store command/receive-response
                       (js/Date.) command {:error (.-message %)}))))
 

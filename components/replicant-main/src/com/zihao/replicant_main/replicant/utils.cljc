@@ -96,7 +96,7 @@
                        :event/file (or (when-let [files (.-files (.-target event))]
                                          (aget files 0))
                                        :event/file)
-                       :query/result event
+                       :query/result event ;; 也可能是 query / command 的 result, 那边直接用 (interpolate result actions)
                        nil))]
          (if (some? result)
            result

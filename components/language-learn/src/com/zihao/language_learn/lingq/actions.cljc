@@ -3,8 +3,18 @@
    [com.zihao.language-learn.lingq.common :refer [prefix]]))
 
 (defn click-unknown-word [_store {:keys [word]}]
-  [[:data/command {:command/kind :command/add-new-word
-                   :command/data {:word word}}]])
+  [[:store/assoc-in [prefix :preview-word] word]
+   [:data/query {:query/kind :query/get-word-translation
+                 :query/data {:word word}}
+    {:on-success [[:store/assoc-in [prefix :preview-translation] :query/result]]}]])
+
+(defn add-preview-word-to-database [store]
+  (let [word (get-in store [prefix :preview-word])]
+    [[:data/command {:command/kind :command/add-new-word
+                     :command/data {:word word}}
+      {:on-success [[:store/assoc-in [prefix :preview-word] nil]
+                    [:store/assoc-in [prefix :preview-translation] nil]
+                    [:data/query {:query/kind :query/get-word-rating}]]}]]))
 
 (defn clean-text [_store]
   [[:store/assoc-in [prefix :tokens] []]
@@ -23,4 +33,5 @@
     :lingq/click-unknown-word (click-unknown-word store args)
     :lingq/clean-text (clean-text store)
     :lingq/enter-article (enter-article store args)
+    :lingq/add-preview-word-to-database (add-preview-word-to-database store)
     nil))

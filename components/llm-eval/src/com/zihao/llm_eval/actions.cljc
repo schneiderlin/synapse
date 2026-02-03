@@ -18,7 +18,7 @@
                    [[:store/assoc-in [:llm-eval :evaluation-detail] result]])}]
    [:router/navigate [:llm-eval/dataset-detail {:id id}]]])
 
-(defn execute-action [{:keys [store] :as _system} _event action args]
+(defn execute-action [{:keys [_store] :as _system} _event action args]
   (case action
     :llm-eval/fetch-stats (fetch-stats)
     :llm-eval/fetch-score-distributions (fetch-score-distributions)

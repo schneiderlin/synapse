@@ -1,13 +1,13 @@
 (ns com.zihao.jetty-main.core
   (:gen-class)
-  (:require 
-   [com.brunobonacci.mulog :as u] 
+  (:require
+   [com.brunobonacci.mulog :as u]
    [com.zihao.jetty-main.ring-ws :as ring-ws]
-   [clojure.edn :as edn] 
+   [clojure.edn :as edn]
    [cheshire.core :as json]
    [reitit.ring :as ring]
-   [ring.util.response :as response] 
-   [ring.middleware.params :as params] 
+   [ring.util.response :as response]
+   [ring.middleware.params :as params]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.websocket.keepalive :refer [wrap-websocket-keepalive]]
    [ring.middleware.resource :refer [wrap-resource]]
@@ -30,7 +30,7 @@
                           :result result}))))
 
 (defn make-ws-query-handler [query-handler]
-  (fn [{:keys [event uid client-id ?data id ?reply-fn]}]
+  (fn [{:keys [?data ?reply-fn]}]
     (let [query ?data
           result (query-handler query)]
       (println "result" query result)
@@ -45,23 +45,20 @@
                           :result result}))))
 
 (defn make-ws-command-handler [command-handler]
-  (fn [{:keys [event uid client-id ?data id ?reply-fn]}]
+  (fn [{:keys [?data ?reply-fn]}]
     (let [command ?data
           result (command-handler command)]
       (when ?reply-fn
         (?reply-fn result)))))
 
 (defn upload-handler [request]
-  (let [file (get-in request [:multipart-params "file"])
+  (let [_file (get-in request [:multipart-params "file"])
         payload (edn/read-string (get-in request [:multipart-params "payload"]))
-        {:command/keys [kind data]} payload
-        content (slurp (:tempfile file))]
+        {:command/keys [kind]} payload]
     (case kind
       #_#_:command/upload-session
         (do
-          (backend/add-session! backend/conn content)
           (response/response {:success? true})))))
-
 
 (defn my-wrap-cors [handler]
   (wrap-cors handler :access-control-allow-origin [#"http://localhost:8000"]
@@ -78,7 +75,7 @@
     (:ring-ajax-get-or-ws-handshake ws-server) :sente
     :else nil))
 
-(defn make-routes 
+(defn make-routes
   "Creates routes for the web application.
    
    Supports both Sente and Ring WebSocket servers:
@@ -105,25 +102,25 @@
                                                    wrap-session]
                                       :get ring-ajax-get-or-ws-handshake
                                       :post ring-ajax-post}]))
-      
+
       :ring-ws
       (conj common-routes [ws-path {:get (ring-ws/make-ring-ws-handler ws-server)
                                     :post (ring-ws/make-ring-ws-handler ws-server)}])
-      
+
       ;; No WebSocket server
       common-routes)))
 
 (defn make-ws-handler-with-extensions
   "Creates a WebSocket event handler with extension functions.
-   Extension functions are tried first before built-in event handling.
-   Each extension should accept [system event-msg] and return non-nil if handled.
-   System map includes: :chsk-send!, :connected-uids, :ws-server"
+    Extension functions are tried first before built-in event handling.
+    Each extension should accept [system event-msg] and return non-nil if handled.
+    System map includes: :chsk-send!, :connected-uids, :ws-server"
   [& extension-fns]
   (fn [stop-ch {:keys [ch-chsk chsk-send! connected-uids] :as ws-server}]
     (go-loop []
       (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
         (when (= port ch-chsk)
-          (let [{:keys [event uid client-id ?data id ?reply-fn]} event-msg]
+          (let [{:keys [?data id ?reply-fn]} event-msg]
             (try
               ;; Try extension functions first
               (or (some #(when-let [result (% {:chsk-send! chsk-send!
@@ -131,7 +128,7 @@
                                                :ws-server ws-server}
                                               event-msg)]
                            result)
-                       extension-fns)
+                        extension-fns)
                   ;; Fallback to built-in events
                   (case id
                     :chsk/ws-ping nil
@@ -142,11 +139,11 @@
           (recur))))))
 
 (defn make-ws-handler [query-handler command-handler]
-  (fn [stop-ch {:keys [ch-chsk] :as ws-server}]
+  (fn [stop-ch {:keys [ch-chsk]}]
     (go-loop []
       (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
         (when (= port ch-chsk)
-          (let [{:keys [event uid client-id ?data id ?reply-fn]} event-msg]
+          (let [{:keys [?data id ?reply-fn]} event-msg]
             (try
               (case id
                 :chsk/ws-ping nil
@@ -216,7 +213,7 @@
    :broadcast! (fn [event data]
                  (ring-ws/broadcast! ring-ws-server event data))
    :clients (reify clojure.lang.IDeref
-              (deref [_] 
+              (deref [_]
                 (println "[adapter] Checking clients, sockets atom:" (System/identityHashCode sockets) "value:" @sockets)
                 {:any (ring-ws/connected-clients ring-ws-server)}))
    :ch-recv ch-recv
@@ -290,7 +287,7 @@
             (cond
               (= port stop-ch)
               nil  ; Stop heartbeat
-              
+
               :else
               ;; Timeout occurred - send heartbeat
               (do
@@ -299,7 +296,7 @@
                     (u/log ::heartbeat-ping :clients (count connected-clients))
                     (broadcast! :heartbeat/ping {:timestamp (System/currentTimeMillis)})))
                 (recur))))))
-      
+
       ;; Main event loop
       (go-loop []
         (let [[event-msg port] (async/alts! [ch-recv stop-ch] :priority true)]
@@ -312,13 +309,13 @@
                   :ws/close (u/log ::ws-client-disconnected :client-id client-id)
                   :ws/error (u/log ::ws-client-error :client-id client-id :error error)
                   :ws/parse-error (u/log ::ws-parse-error :client-id client-id :error error)
-                  
+
                   ;; Heartbeat pong - log it
                   :heartbeat/pong (u/log ::heartbeat-pong :client-id client-id)
-                  
+
                   ;; Internal pings - ignore silently
                   :chsk/ws-ping nil
-                  
+
                   ;; Business events - pass to handler
                   (let [normalized-msg (normalize-message ws-adapter event-msg)]
                     (handler-fn ws-adapter normalized-msg)))

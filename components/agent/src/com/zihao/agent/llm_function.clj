@@ -26,7 +26,7 @@
     (let [model-dump (py/py. pydantic-model "model_dump")]
       (keywordize-keys (py/->jvm model-dump)))))
 
-(defn choose-tool [ctx message]
+(defn choose-tool [_ctx message]
   (let [sync-client (py/import-module "baml_client.sync_client")
         b (py/py.- sync-client "b")]
     (-> (py/py. b "ChooseTool" (py/->py-dict message))
@@ -42,7 +42,7 @@
    messages: vector of Message objects
    tool: optional map with :name, :args, :result keys
    Returns a Clojure map with :message (may be nil) and :tools (array, may be empty)."
-  [ctx messages tool]
+  [_ctx messages tool]
   (let [sync-client (py/import-module "baml_client.sync_client")
         b (py/py.- sync-client "b")
         messages-list (py/->py-list (map py/->py-dict messages))
@@ -151,6 +151,7 @@
     (process-stream stream stream-callback final-callback)))
 
 (comment
+  #_{:clj-kondo/ignore [:duplicate-require]}
   (require '[com.zihao.agent-eval.interface :as agent-eval])
   (def coll (agent-eval/create-collector {:cljpy/python-env python-env} "chat-agent"))
 
@@ -181,9 +182,9 @@
 (defn llm-caller
   ([ctx function-name args]
    (llm-caller ctx function-name args nil nil))
-  ([ctx function-name args stream-callback]
-   (llm-caller ctx function-name args stream-callback nil))
-  ([ctx function-name args stream-callback final-callback]
+  ([ctx function-name args _stream-callback]
+   (llm-caller ctx function-name args _stream-callback nil))
+  ([ctx function-name args _stream-callback _final-callback]
    (case function-name
      :choose-tool (apply choose-tool ctx args)
      :decide-action (apply decide-action ctx args)

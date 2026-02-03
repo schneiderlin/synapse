@@ -1,5 +1,5 @@
 (ns kill-port
-  (:require [babashka.process :as p :refer [shell pipeline pb]]
+  (:require [babashka.process :as p]
             [clojure.string :as str]))
 
 (defn get-pids

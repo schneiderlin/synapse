@@ -1,5 +1,5 @@
 (ns com.zihao.replicant-component.component.table
-  (:require 
+  (:require
    [clojure.walk :as walk]
    [com.zihao.replicant-component.ui.table :refer [table-ui]]
    [com.zihao.replicant-main.interface :as query]))
@@ -19,10 +19,10 @@
     [[:store/update-in [:tables table-id :selected] concat rows]]
     (clear-selected-ids table-id)))
 
-(defn execute-action [{:keys [store] :as system} _event action args]
-  (case action 
+(defn execute-action [_store _event action args]
+  (case action
     :table/clear-selected-ids (let [[table-id] args]
-                               (clear-selected-ids table-id))
+                                (clear-selected-ids table-id))
     :table/select-row (select-row args)
     :table/toggle-all (toggle-all args)
     nil))
@@ -45,22 +45,22 @@
                             :filter filter}}]
     (query/get-result state query)))
 
-(defn get-selected-rows [state table-id ]
+(defn get-selected-rows [state table-id]
   (get-in state [:tables table-id :selected] #{}))
 
-(defn get-selected-ids [state table-id row->id] 
+(defn get-selected-ids [state table-id row->id]
   (into #{} (map
              row->id
              (get-selected-rows state table-id))))
 
 (defn table-component
   "theads: list of table header name, e.g. [ID, 用户名, 余额]
-   row->tr: a map, key is the same string as theads element, value is the correspond render function
-   routes: global routes
-   location: url location, use for pagination
-   query-kind: query kind to query backend
-   multi-selection?: whether the table supports multi-selection. recommand use with row->id
-   row->id: a function to get the id of a row"
+    row->tr: a map, key is the same string as theads element, value is the correspond render function
+    routes: global routes
+    location: url location, use for pagination
+    query-kind: query kind to query backend
+    multi-selection?: whether the table supports multi-selection. recommand use with row->id
+    row->id: a function to get the id of a row"
   [query-kind theads row->tr & {:keys [on-new
                                        row->id
                                        table-id
@@ -74,7 +74,7 @@
           filter (get-filter state table-id)
           query {:query/kind query-kind
                  :query/data {:page page :size size
-                              :filter filter}} 
+                              :filter filter}}
           rows (get-rows state table-id query-kind)
           go-page (fn [new-page]
                     [[:debug/print table-id new-page (str new-page)]
@@ -100,7 +100,7 @@
                                             actions))])
                                      row->tr))]
       (table-ui {:on-refresh [[:data/query query]
-                              ;; some row may dissapear when refresh, so clear all selected ids
+                               ;; some row may dissapear when refresh, so clear all selected ids
                               [:table/clear-selected-ids table-id]]
                  :on-new on-new
                  :theads theads
@@ -160,12 +160,12 @@
                 :on {:input [[:store/assoc-in [:tables table-id :filters (keyword (str (name filter-key) "-max"))] :event/target.value]]}}]]]]))
 
 (defn- bool-filter [state filter-key label table-id]
-  (let [value (get-in state [:tables table-id :filters filter-key])]
+  (let [_value (get-in state [:tables table-id :filters filter-key])]
     [:div {:class ["form-control"]}
      [:label {:class ["label"]}
       [:span {:class ["label-text"]} label]]
-     [:label {:class ["label"]}
-      [:select {:class ["select" "select-bordered" "w-full" "max-w-xs"] 
+     [:label {:class ["input"]}
+      [:select {:class ["select" "select-bordered" "w-full" "max-w-xs"]
                 :on {:change [[:store/assoc-in
                                [:tables table-id :filters filter-key]
                                :event/target.value]]}}

@@ -56,8 +56,9 @@
                         (let [piece (get-piece board r c)]
                           (or (nil? piece) (= piece :nil)))))))))
 
-(defn check-capture [board row col player]
+(defn check-capture 
   "Check if piece at [row col] should be captured (XOX pattern)"
+  [board row col player]
   (let [piece (get-piece board row col)]
     (when (opponent-piece? piece player)
       (or
@@ -72,8 +73,9 @@
             (player-piece? (get-piece board (dec row) col) player)
             (player-piece? (get-piece board (inc row) col) player))))))
 
-(defn apply-captures [board player]
+(defn apply-captures 
   "Apply all captures for the current player"
+  [board player]
   (reduce (fn [board [row col]]
             (if (check-capture board row col player)
               (set-piece board row col :nil)
@@ -83,13 +85,15 @@
                 col (range 7)]
             [row col])))
 
-(defn move-piece [board from-row from-col to-row to-col]
+(defn move-piece 
   "Move piece from [from-row from-col] to [to-row to-col]"
+  [board from-row from-col to-row to-col]
   (let [piece (get-piece board from-row from-col)]
     (-> board
         (set-piece to-row to-col piece)
         (set-piece from-row from-col :nil))))
 
+#_:clj-kondo/ignore
 (def rules
   (o/ruleset
    {::board-state
@@ -156,8 +160,9 @@
             o/fire-rules)))
 
 ;; Game API functions
-(defn select-piece [row col]
+(defn select-piece 
   "Select a piece at the given position"
+  [row col]
   (swap! *session
          (fn [session]
            (-> session
@@ -165,8 +170,9 @@
                (o/insert ::selected ::col col)
                o/fire-rules))))
 
-(defn move-selected-piece [to-row to-col]
+(defn move-selected-piece 
   "Move the selected piece to the given position"
+  [to-row to-col]
   (swap! *session
          (fn [session]
            (-> session
@@ -174,27 +180,31 @@
                (o/insert ::move ::to-col to-col)
                o/fire-rules))))
 
-(defn get-board []
+(defn get-board 
   "Get the current board state"
+  []
   (->> (o/query-all @*session ::board-state)
        first
        :board))
 
-(defn get-current-turn []
+(defn get-current-turn
   "Get the current player's turn"
+  []
   (->> (o/query-all @*session ::current-turn)
        first
        :current-player))
 
-(defn get-possible-moves []
+(defn get-possible-moves 
   "Get possible moves for the selected piece"
+  []
   (or (->> (o/query-all @*session ::possible-moves)
            first
            :positions)
       []))
 
-(defn reset-game []
+(defn reset-game 
   "Reset the game to initial state"
+  []
   (reset! *session
           (-> (reduce o/add-rule (o/->session) rules) 
               (o/insert ::board ::current init-board)

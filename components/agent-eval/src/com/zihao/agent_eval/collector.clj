@@ -1,15 +1,17 @@
 (ns com.zihao.agent-eval.collector
   (:require [libpython-clj2.python :as py]
             [cheshire.core :as json]
-            [com.zihao.agent-eval.db :as db]))
+            [com.zihao.agent-eval.db :as db]
+            [com.zihao.cljpy-main.interface :as cljpy-main]))
 
 (defn create-collector
   "Create a BAML Collector instance.
    system: map containing :cljpy/python-env key
    name: optional collector name (default 'agent-eval-collector')"
   ([system] (create-collector system "agent-eval-collector"))
-  ([{:keys [cljpy/python-env]} name]
-   (let [baml-py (py/import-module "baml_py")]
+  ([system name]
+   (let [_ (:cljpy/python-env system) ; ensure python-env exists
+         baml-py (py/import-module "baml_py")]
      (py/py. baml-py "Collector" name))))
 
 (defn extract-log-data
@@ -53,10 +55,10 @@
                      :usage (:usage log-data)
                      :id (:id log-data)})]
     (db/insert-log! {:input input-json
-                      :output output-json
-                      :session_id session-id
-                      :extra extra-json
-                      :timestamp timestamp})))
+                     :output output-json
+                     :session_id session-id
+                     :extra extra-json
+                     :timestamp timestamp})))
 
 (comment
   ;; Test creating a collector (requires system map with python-env)

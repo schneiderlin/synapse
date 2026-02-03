@@ -50,8 +50,8 @@
   :rcf)
 
 (defn execute-actions
-  ([ctx actions] (execute-actions nil ctx actions))
-  ([system {:keys [store app] :as ctx} actions]
+  ([_ctx actions] (execute-actions nil _ctx actions))
+  ([system {:keys [store]} actions]
    (doseq [action actions]
      (u/log ::execute-action :data action)
      (let [[action-type & args] action]

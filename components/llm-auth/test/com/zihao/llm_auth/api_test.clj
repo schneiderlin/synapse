@@ -1,7 +1,6 @@
 (ns com.zihao.llm-auth.api-test
-  (:require [clojure.test :refer :all]
-            [com.zihao.llm-auth.api :as api]
-            [com.zihao.llm-auth.db :as db]))
+  (:require [clojure.test :refer [deftest testing is]]
+            [com.zihao.llm-auth.api :as api]))
 
 (deftest command-handler-login-success-test
   (testing "Login with valid credentials returns user data"

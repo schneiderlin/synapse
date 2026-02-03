@@ -2,7 +2,7 @@
   (:require
    [com.zihao.login.db :as db]))
 
-(defn command-handler [system {:command/keys [kind data]}]
+(defn command-handler [_system {:command/keys [kind data]}]
   (case kind
     :command/login
     (let [{:keys [username password]} data

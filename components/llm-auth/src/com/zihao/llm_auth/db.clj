@@ -78,14 +78,11 @@
                       :auth-user/role "agent"
                       :auth-user/preferred-language "en"}]))
 
-(defn init! []
+(defn init! 
   "Initialize database with default users if empty"
+  []
   (when (db-empty?)
     (seed-users!)))
-
-(defn reset! []
-  "Reset database to clean state (for testing)"
-  (seed-users!))
 
 (comment
   (check-credentials "admin" "admin")

@@ -5,5 +5,5 @@
 (defn render-board [state]
   (core/render-board state))
 
-(defn execute-action [{:keys [store] :as system} _e action args] 
+(defn execute-action [{:keys [store] :as _system} _e action args] 
   (actions/execute-action store action args))

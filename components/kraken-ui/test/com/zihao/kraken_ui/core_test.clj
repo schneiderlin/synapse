@@ -1,5 +1,5 @@
 (ns com.zihao.kraken-ui.core-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.kraken-ui.core :as core]))
 
 (deftest piece->text-corner-test

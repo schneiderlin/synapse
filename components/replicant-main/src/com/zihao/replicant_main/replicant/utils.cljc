@@ -5,7 +5,8 @@
   #?(:clj (:import
            [javax.crypto Cipher KeyGenerator SecretKey]
            [javax.crypto.spec SecretKeySpec]
-           [java.security SecureRandom])))
+           [java.security SecureRandom]
+           [java.util Base64])))
 
 #?(:clj
    (defn generate-aes-key []
@@ -14,42 +15,43 @@
        (.generateKey key-gen))))
 
 #?(:clj
-   (defn encrypt 
+   (defn encrypt
      "return base64 string"
      [^SecretKey key ^bytes plaintext]
      (let [cipher (Cipher/getInstance "AES")]
        (.init cipher Cipher/ENCRYPT_MODE key)
-       (let [bytes (.doFinal cipher plaintext)] 
-         (.encodeToString (java.util.Base64/getEncoder) bytes)))))
+       (let [bytes (.doFinal cipher plaintext)]
+         (.encodeToString (Base64/getEncoder) bytes)))))
 
 #?(:clj
    (defn decrypt [^SecretKey key ^String ciphertext]
-     (let [ciphertext (.decode (java.util.Base64/getDecoder) ciphertext)
+     (let [ciphertext (.decode (Base64/getDecoder) ciphertext)
            cipher (Cipher/getInstance "AES")]
        (.init cipher Cipher/DECRYPT_MODE key)
        (let [bytes (.doFinal cipher ciphertext)]
          (String. bytes)))))
 
-(comment
-  (def aes-key (generate-aes-key)) 
-  (def key-str (.encodeToString (java.util.Base64/getEncoder) (.getEncoded aes-key)))
-  (def key-bytes (.decode (java.util.Base64/getDecoder) key-str))
+#?(:clj
+   (comment
+     (def aes-key (generate-aes-key))
+     (def key-str (.encodeToString (Base64/getEncoder) (.getEncoded aes-key)))
+     (def key-bytes (.decode (Base64/getDecoder) key-str))
 
-  (SecretKeySpec. key-bytes "AES")
+     (SecretKeySpec. key-bytes "AES")
 
-  (def encrypted (encrypt aes-key (.getBytes "hello"))) 
-  (def decrypted (decrypt (SecretKeySpec. key-bytes "AES") encrypted)) 
+     (def encrypted (encrypt aes-key (.getBytes "hello")))
+     (def decrypted (decrypt (SecretKeySpec. key-bytes "AES") encrypted))
 
-  :rcf)
-
+     :rcf))
 
 (defn parse-int [s]
   #?(:clj (Integer/parseInt (str s))
      :cljs (js/parseInt s 10)))
 
-(comment
-  (js/parseInt "10" 10)
-  :rcf)
+#?(:cljs
+   (comment
+     (js/parseInt "10" 10)
+     :rcf))
 
 (defn is-digit? [c]
   #?(:clj (Character/isDigit c)

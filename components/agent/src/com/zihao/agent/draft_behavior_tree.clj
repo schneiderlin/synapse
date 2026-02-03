@@ -1,6 +1,5 @@
 (ns com.zihao.agent.draft-behavior-tree
-  (:require [libpython-clj2.python :as py] 
-            [ai.obney.grain.behavior-tree-v2.interface :as bt]
+  (:require [ai.obney.grain.behavior-tree-v2.interface :as bt]
             [com.zihao.agent.tui :as tui]))
 
 (defn st-memory-has-value? [{{:keys [path _schema]} :opts
@@ -15,9 +14,8 @@
   (st-memory-has-value? {:opts {:path [:question]} :st-memory (atom {:question "test"})})
   :rcf)
 
-(defn dspy [{{:keys [id signature operation]} :opts
-             :keys [st-memory]
-             :as context}]
+(defn dspy [{{:keys [id]} :opts
+             :keys [st-memory]}]
   ;; Fake dspy - always succeeds and updates st-memory with a fake answer
   (let [state @st-memory
         question (get state :question)]
@@ -33,9 +31,9 @@
 
 (comment
   (def st-memory (atom {:question "test"}))
-  (dspy {:opts {:id :chat 
-                :signature :chat 
-                :operation :chain-of-thought} 
+  (dspy {:opts {:id :chat
+                :signature :chat
+                :operation :chain-of-thought}
          :st-memory st-memory})
   :rcf)
 
@@ -62,14 +60,14 @@
 
 (comment
 
-  (do 
+  (do
     (def bt (bt/build behavior-tree {}))
-    
+
     ;; 启动 tui
     (tui/tui
      {:handler-fn (partial tui/handle-input {:bt bt})}))
-  
+
   ;; st-memory in bt
   @(get-in bt [:context :st-memory])
-  
+
   :rcf)

@@ -1,5 +1,5 @@
 (ns com.zihao.llm-eval.api-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.llm-eval.api :as api]))
 
 (deftest query-evaluations-test

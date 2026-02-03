@@ -4,7 +4,7 @@
    #?(:clj [com.zihao.llm-auth.db :as db])
    [com.zihao.llm-auth.permissions :as perms]))
 
-(defn prefix
+(def prefix
   "The prefix key used to access llm-auth state in a nested state map"
   :llm-auth)
 
@@ -12,13 +12,13 @@
   "Query handler for llm-auth component"
   [system query]
   #?(:clj (api/query-handler system query)
-     :cljs (throw (ex-info "query-handler only available in Clojure" {}))))
+     :cljs (throw (ex-info "query-handler only available in Clojure" {system query}))))
 
 (defn command-handler
   "Command handler for llm-auth component"
   [system command]
   #?(:clj (api/command-handler system command)
-     :cljs (throw (ex-info "command-handler only available in Clojure" {}))))
+     :cljs (throw (ex-info "command-handler only available in Clojure" {system command}))))
 
 (defn has-permission?
   "Check if a role has a specific permission"

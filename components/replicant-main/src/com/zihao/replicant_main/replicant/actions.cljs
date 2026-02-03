@@ -1,6 +1,6 @@
 (ns com.zihao.replicant-main.replicant.actions
   (:require
-   [clojure.edn :as reader] 
+   [clojure.edn :as reader]
    [com.zihao.replicant-main.replicant.query :as query]
    [com.zihao.replicant-main.replicant.command :as command]
    [com.zihao.replicant-main.replicant.router :as router]
@@ -26,7 +26,7 @@
                       (js/Date.)
                       query {:error (.-message %)}))))
 
-(defn issue-command [{:keys [interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
+(defn issue-command [{:keys [_interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
   (swap! store command/issue-command (js/Date.) command)
   (-> (js/fetch (str base-url "/api/command")
                 #js {:method "POST"
@@ -43,7 +43,7 @@
       (.catch #(swap! store command/receive-response
                       (js/Date.) command {:error (.-message %)}))))
 
-(defn choose-file [{:keys [interpolate execute-actions] :as system} choose-args & [{:keys [on-success]}]]
+(defn choose-file [{:keys [interpolate execute-actions] :as system} _choose-args & [{:keys [on-success]}]]
   (let [input (js/document.createElement "input")]
     (set! (.-type input) "file")
     (set! (.-onchange input)
@@ -56,7 +56,7 @@
                        (execute-actions system nil)))))))
     (.click input)))
 
-(defn upload-file [{:keys [interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
+(defn upload-file [{:keys [_interpolate execute-actions store base-url] :as system} command & [{:keys [on-success]}]]
   (let [file (:command/file command)
         form-data (js/FormData.)]
     (.append form-data "file" file)

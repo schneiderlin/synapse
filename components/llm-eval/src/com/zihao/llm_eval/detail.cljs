@@ -2,7 +2,7 @@
   (:require [com.zihao.llm-eval.stats :as stats]))
 
 (defn evaluation-detail [state]
-  (let [evaluation-id (get-in state [:location :params :id])
+  (let [_evaluation-id (get-in state [:location :params :id])
         evaluation (get-in state [:llm-eval :evaluation-detail])]
     [:div {:class ["container" "mx-auto" "p-6"]}
      [:div {:class ["flex" "items-center" "gap-4" "mb-6"]}

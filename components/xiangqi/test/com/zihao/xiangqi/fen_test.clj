@@ -1,5 +1,5 @@
 (ns com.zihao.xiangqi.fen-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.xiangqi.fen :as fen]))
 
 (deftest fen->state-test

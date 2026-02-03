@@ -7,8 +7,7 @@
 (defn get-terminal-app []
   (tui/get-terminal-app))
 
-(defn tui [terminal-app
-           {:keys [handler-fn conversation-history] :or {conversation-history []} :as opts}]
+(defn tui [terminal-app opts]
   (tui/tui
    terminal-app
    opts))

@@ -68,12 +68,12 @@
         valid-forward (when (and forward-row (<= 0 forward-row 9))
                         [forward-row col])
 
-        ; 过河后可以横向移动
+         ; 过河后可以横向移动
         valid-side (when (and forward-delta (cross-river? row))
                      (->> [[row (dec col)] [row (inc col)]]
                           (filter (fn [[_ c]] (<= 0 c 8)))
-                          (filter (fn [[r c]] (let [target (get-in board [r c])]
-                                                (or (nil? target) (enemy-pieces target)))))))]
+                          (filter (fn [[r c]] (let [_target (get-in board [r c])]
+                                                (or (nil? _target) (enemy-pieces _target)))))))]
 
     (cond-> []
       valid-forward (conj valid-forward)
@@ -115,7 +115,7 @@
                                     (or (< r 0) (> r 9) (< c 0) (> c 8)) moves
 
                                     (not jumped?)
-                                    (if-let [target (get-in board [r c])]
+                                    (if-let [_target (get-in board [r c])]
                                       (recur (+ r dr) (+ c dc) moves true)  ; 遇到第一个棋子，开始寻找跳跃目标
                                       (recur (+ r dr) (+ c dc) (conj moves [r c]) false))
 
@@ -211,17 +211,17 @@
         [row col] [9 1]
         piece (get-in board [row col])
 
-        [enemy? is-knight?] (cond
-                              (= :红马 piece) [#{:黑车 :黑马 :黑象 :黑士 :黑将 :黑炮 :黑卒} true]
-                              (= :黑马 piece) [#{:红车 :红马 :红相 :红士 :红帅 :红炮 :红兵} true]
-                              :else [nil false])
+        [enemy? _is-knight?] (cond
+                               (= :红马 piece) [#{:黑车 :黑马 :黑象 :黑士 :黑将 :黑炮 :黑卒} true]
+                               (= :黑马 piece) [#{:红车 :红马 :红相 :红士 :红帅 :红炮 :红兵} true]
+                               :else [nil false])
 
         [[dr1 dc1] [dr2 dc2]] [[-1 0] [-2 1]]
         block-point [(+ row dr1) (+ col dc1)]
         target-point [(+ row dr2) (+ col dc2)]
-        check1 (and (not (get-in board block-point))
-                    (<= 0 (target-point 0) 9)
-                    (<= 0 (target-point 1) 8))
+        _check1 (and (not (get-in board block-point))
+                     (<= 0 (target-point 0) 9)
+                     (<= 0 (target-point 1) 8))
         check2 (when-let [target-piece (get-in board target-point)]
                  (or (nil? target-piece) (enemy? target-piece)))]
     check2)

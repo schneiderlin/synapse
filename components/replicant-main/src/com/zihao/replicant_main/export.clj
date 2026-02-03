@@ -5,7 +5,7 @@
   (:require
    [clojure.java.io :as io]
    [malli.dev :as dev]
-   [com.zihao.replicant-main.interface :as interface]))
+   com.zihao.replicant-main.interface))
 
 (def export-dir
   "Target path under resources for clj-kondo export. Use namespace as single path segment (com.zihao.replicant-main) so --copy-configs lands at .clj-kondo/imports/com.zihao.replicant-main/ (two levels) and is auto-loaded."

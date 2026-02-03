@@ -1,5 +1,5 @@
 (ns com.zihao.replicant-component.ui.multi-input-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.replicant-component.ui.multi-input :as multi-input]))
 
 (deftest execute-action-paste-value-test

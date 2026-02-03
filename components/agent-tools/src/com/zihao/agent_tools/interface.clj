@@ -2,15 +2,11 @@
   (:require
    [com.zihao.agent-tools.core :as core]))
 
-
-(defn grep-tool-fn [{:keys [pattern path type]
-                     :as args}]
+(defn grep-tool-fn [args]
   (core/grep-tool-fn args))
 
-(defn list-dir-tool-fn [{:keys [target_directory]
-                         :as args}]
+(defn list-dir-tool-fn [args]
   (core/list-dir-tool-fn args))
 
-(defn glob-tool-fn [{:keys [glob_pattern target_directory]
-                     :as args}]
+(defn glob-tool-fn [args]
   (core/glob-tool-fn args))

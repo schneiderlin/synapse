@@ -1,5 +1,5 @@
 (ns com.zihao.kraken-ui.actions-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.kraken-ui.actions :as actions]))
 
 (deftest execute-action-select-piece-test

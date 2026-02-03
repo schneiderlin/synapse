@@ -3,7 +3,7 @@
    [com.zihao.llm-auth.db :as db]
    [com.zihao.llm-auth.permissions :as perms]))
 
-(defn command-handler [system {:command/keys [kind data]}]
+(defn command-handler [_system {:command/keys [kind data]}]
   (case kind
     :llm-auth/login
     (let [{:keys [username password]} data
@@ -33,7 +33,7 @@
 
     nil))
 
-(defn query-handler [system {:query/keys [kind data]}]
+(defn query-handler [_system {:query/keys [kind data]}]
   (case kind
     :llm-auth/navigation
     (let [{:keys [role]} data]

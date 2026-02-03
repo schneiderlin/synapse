@@ -21,6 +21,7 @@
       #_(llm-eval/query-handler system query)))
 
 (defn ws-event-handler [system event-msg]
+  #_:clj-kondo/ignore
   (or (xiangqi/ws-event-handler system event-msg)))
 
 (comment

@@ -1,8 +1,6 @@
-(ns com.zihao.replicant-component.ui.multi-select
-  (:require
-   [clojure.string :as str]))
+(ns com.zihao.replicant-component.ui.multi-select)
 
-(defn execute-action [{:keys [store] :as system} event action args]
+(defn execute-action [_system _event action args]
   (case action
     :multi-select/toggle-selection (let [[selections-path option-value] args]
                                      [[:store/update-in selections-path

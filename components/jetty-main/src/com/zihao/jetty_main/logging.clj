@@ -1,7 +1,5 @@
 (ns com.zihao.jetty-main.logging
-  (:require [com.brunobonacci.mulog :as u]
-            [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require [clojure.java.io :as io]))
 
 (defn ensure-logs-dir []
   (let [logs-dir (io/file "./public/log")
@@ -26,12 +24,12 @@
 (defn init []
   (ensure-logs-dir)
   #_(tel/add-handler!
-   :dispatch-udid-file
-   (fn
-     ([signal]
-      (let [udid (get-in signal [:ctx :udid])]
-        (write-to-file udid (select-keys signal [:level :msg_ :data :ctx :inst])))
-      #_([] (println "handler shutdown"))))))
+     :dispatch-udid-file
+     (fn
+       ([signal]
+        (let [udid (get-in signal [:ctx :udid])]
+          (write-to-file udid (select-keys signal [:level :msg_ :data :ctx :inst])))
+        #_([] (println "handler shutdown"))))))
 
 (comment
   (init)

@@ -3,8 +3,8 @@
    [com.zihao.agent.llm-function :as llm-function]
    [com.brunobonacci.mulog :as u]))
 
-(defn code-act-agent [ctx {:keys [messages code code-result stream-callback final-callback] :as opts}]
-  (llm-function/code-act-agent ctx opts))
+(defn code-act-agent [_ opts]
+  (llm-function/code-act-agent opts))
 
 ;; ============================================================================
 ;; Protocols for Generalization

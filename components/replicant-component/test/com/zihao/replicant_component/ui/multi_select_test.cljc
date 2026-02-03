@@ -1,5 +1,5 @@
 (ns com.zihao.replicant-component.ui.multi-select-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.replicant-component.ui.multi-select :as multi-select]))
 
 (deftest execute-action-toggle-selection-test

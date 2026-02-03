@@ -1,5 +1,5 @@
 (ns com.zihao.replicant-component.component.completion-input-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.replicant-component.component.completion-input :as completion-input]))
 
 (deftest execute-action-input-change-test

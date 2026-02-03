@@ -24,14 +24,14 @@
 
     :query/evaluation-stats
     (let [data (:command/data cmd)
-          filters (:filters data {})]
+          _filters (:filters data {})]
       {:command/kind :data/query-result
        :query-id (:query-id cmd)
        :result (db/get-evaluation-stats)})
 
     :query/score-distributions
     (let [data (:command/data cmd)
-          filters (:filters data {})]
+          _filters (:filters data {})]
       {:command/kind :data/query-result
        :query-id (:query-id cmd)
        :result (db/get-score-distributions)})

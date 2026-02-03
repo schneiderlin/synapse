@@ -3,13 +3,13 @@
    [clojure.string :as str]))
 
 (defn paste-value [items-path value]
-  (let [new-items (mapv str/trim (str/split value #"\n"))] 
+  (let [new-items (mapv str/trim (str/split value #"\n"))]
     [[:store/update-in items-path (fn [items]
                                     (if (nil? items)
                                       (into #{} new-items)
                                       (into items new-items)))]]))
 
-(defn execute-action [{:keys [store] :as system} event action args]
+(defn execute-action [_system _event action args]
   (case action
     :multi-input/paste-value (let [[items-path value] args]
                                (paste-value items-path value))

@@ -1,9 +1,11 @@
 (ns com.zihao.llm-eval.stats)
 
 (defn format-date [date]
-  (if (instance? java.util.Date date)
-    (let [formatter (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm")]
-      (.format formatter date))
+  (if date
+    (let [d (js/Date. date)]
+      (if (js/isNaN (.getTime d))
+        date
+        (.toISOString d)))
     date))
 
 (defn truncate-text [text max-length]
@@ -17,7 +19,7 @@
       (/ total (count scores)))
     0))
 
-(defn bar-chart [{:keys [data max-width height class]}]
+(defn bar-chart [{:keys [data height class]}]
   (let [max-value (if (seq data)
                     (apply max (map :value data))
                     1)
@@ -34,7 +36,7 @@
                         :width (str (min 100 (* 100 (/ value max-value))) "%")}}]])]
      [:div {:class ["text-sm" "font-medium"]} (str max-value)]]))
 
-(defn stats-card [{:keys [title value subtitle icon color]}]
+(defn stats-card [{:keys [title value subtitle icon]}]
   [:div {:class ["card" "bg-base-100" "shadow-sm"]}
    [:div {:class ["card-body" "p-4"]}
     [:div {:class ["flex" "items-center" "justify-between"]}
@@ -61,7 +63,7 @@
 
 (defn score-distribution-bar [{:keys [distribution total]}]
   (let [sorted-distribution (sort-by key distribution)
-        max-count (if (seq sorted-distribution)
+        _max-count (if (seq sorted-distribution)
                     (apply max (vals sorted-distribution))
                     1)]
     [:div {:class ["flex" "items-center" "gap-1" "h-8"]}

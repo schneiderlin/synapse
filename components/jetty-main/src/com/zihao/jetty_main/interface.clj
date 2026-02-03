@@ -1,5 +1,5 @@
 (ns com.zihao.jetty-main.interface
-  (:require 
+  (:require
    [com.zihao.jetty-main.core :as core]
    [com.zihao.jetty-main.ring-ws :as ring-ws]))
 
@@ -7,13 +7,13 @@
 ;; Routes & Handler
 ;; =============================================================================
 
-(defn make-routes 
+(defn make-routes
   "Creates routes for the web application.
-   Supports both Sente and Ring WebSocket servers.
-   
-   Options:
-   - :ws-path - custom path for Ring WS (default: \"/ws\")"
-  [system ws-server query-handler command-handler & {:keys [ws-path] :as opts}]
+    Supports both Sente and Ring WebSocket servers.
+
+    Options:
+    - :ws-path - custom path for Ring WS (default: \"/ws\")"
+  [system ws-server query-handler command-handler & opts]
   (apply core/make-routes system ws-server query-handler command-handler (mapcat identity opts)))
 
 (defn make-handler [routes & {:keys [public-dir]}]
@@ -38,14 +38,14 @@
 
 (defn make-ring-ws-server
   "Creates a Ring WebSocket server state.
-   Returns a map with:
-   - :sockets - atom of {client-id socket}
-   - :ch-recv - core.async channel for incoming messages
-   - :type - :ring-ws
-   
-   Options:
-   - :format - :edn (default) or :json for message serialization"
-  [& {:keys [format] :as config}]
+    Returns a map with:
+    - :sockets - atom of {client-id socket}
+    - :ch-recv - core.async channel for incoming messages
+    - :type - :ring-ws
+
+    Options:
+    - :format - :edn (default) or :json for message serialization"
+  [& config]
   (apply ring-ws/make-ring-ws-server (mapcat identity config)))
 
 (defn ws-adapter
@@ -114,5 +114,5 @@
    (def adapter (jm/ws-adapter ws-server))
    (handler stop-ch adapter)
    ```"
-  [handler-fn & {:keys [heartbeat-enabled? heartbeat-interval-ms] :as opts}]
+  [handler-fn & opts]
   (apply core/make-unified-ws-handler handler-fn (mapcat identity opts)))

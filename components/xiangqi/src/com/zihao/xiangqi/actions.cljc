@@ -8,7 +8,7 @@
 
 (comment
   (some-> 1
-    inc)
+          inc)
   :rcf)
 
 (defn move [store start end]
@@ -34,7 +34,7 @@
      [:store/assoc-in [prefix] (fen/fen->state (:node new-state))]
      [:store/assoc-in [prefix :game-tree] new-game-tree]]))
 
-(defn restart [store]
+(defn restart [_store]
   [[:store/assoc-in [prefix] logic/state]
    [:store/assoc-in [prefix :game-tree] (game-tree/make-zipper (game-tree/create-root logic/state))]])
 
@@ -43,7 +43,7 @@
     [[:data/command {:command/kind :command/export-game-tree
                      :command/data {:game-tree game-tree}}]]))
 
-(defn import-game-tree [store]
+(defn import-game-tree [_store]
   [[:data/query
     {:query/kind :query/import-game-tree}
     {:on-success (fn [result]

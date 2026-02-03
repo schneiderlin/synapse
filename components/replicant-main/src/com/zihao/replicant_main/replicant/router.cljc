@@ -1,9 +1,9 @@
 (ns com.zihao.replicant-main.replicant.router
   (:require
-   [domkm.silk :as silk] 
+   [domkm.silk :as silk]
    [lambdaisland.uri :as uri]))
 
-(defn url->location [routes url] 
+(defn url->location [routes url]
   (let [uri (cond-> url (string? url) uri/uri)]
     (when-let [arrived (silk/arrive routes (:path uri))]
       (let [query-params (uri/query-map uri)
@@ -39,15 +39,15 @@
 
 (defn navigate! [{:keys [store execute-actions routes get-location-load-actions] :as system} new-location]
   (let [current-location (:location @store)
-        url (location->url routes new-location)
+        _url (location->url routes new-location)
         load-actions (get-location-load-actions new-location)]
     (swap! store assoc :location new-location)
-    (when (not (essentially-same? current-location new-location)) 
-      #?(:cljs (.pushState js/history nil "" url))
+    (when (not (essentially-same? current-location new-location))
+      #?(:cljs (.pushState js/history nil "" _url))
       (execute-actions system nil load-actions))))
 
 (defn route-click [e {:keys [routes] :as system}]
-  (let [href (find-target-href e)] 
+  (let [href (find-target-href e)]
     (when-let [location (url->location routes href)]
       (.preventDefault e)
       (navigate! system location))))

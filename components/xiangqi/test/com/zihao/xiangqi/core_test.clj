@@ -1,5 +1,5 @@
 (ns com.zihao.xiangqi.core-test
-  (:require [clojure.test :as test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.xiangqi.core :as core]))
 
 (deftest flip-state-test

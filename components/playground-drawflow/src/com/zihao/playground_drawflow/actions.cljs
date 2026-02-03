@@ -865,7 +865,7 @@
 ;; Main dispatcher
 (defn execute-action
   "Execute canvas-related actions. Returns nil or a vector of actions."
-  [{:keys [store] :as system} event action args]
+  [{:keys [store] :as _system} event action args]
   (case action
     ;; Node actions
     :canvas/add-node (handle-add-node store event args)

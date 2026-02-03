@@ -11,7 +11,7 @@
                                                :sys "sys"}))
   :rcf)
 
-(defn reload 
+(defn reload
   "Reload the Python app module to pick up changes to the TUI."
   []
   (let [importlib (py/import-module "importlib")
@@ -21,7 +21,7 @@
         modules-to-reload (reverse ["app"])]
     (doseq [module-name modules-to-reload]
       (when (get modules module-name)
-        (py/py. importlib "reload" (get modules module-name))))))
+        (py. importlib "reload" (get modules module-name))))))
 
 (defn get-terminal-app []
   (let [app-module (py/import-module "app")]

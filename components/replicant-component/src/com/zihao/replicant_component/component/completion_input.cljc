@@ -1,19 +1,13 @@
-(ns com.zihao.replicant-component.component.completion-input
-  (:require
-   [clojure.string :as str]))
+(ns com.zihao.replicant-component.component.completion-input)
 
 (def options ["apple" "banana" "cherry" "date" "elderberry" "fig" "grape" "honeydew" "kiwi" "lemon" "lime" "mango" "melon" "nectarine" "orange" "pear" "pineapple" "plum" "pomegranate" "raspberry" "strawberry" "tangerine" "watermelon"])
 
-(defn input-change [input-path options-path value]
-  [#_[:store/assoc-in options-path 
-    (if (empty? value)
-      []
-      (filter #(str/includes? (str/lower-case %) (str/lower-case value)) options))]
-   [:data/send {:event-id :event/completion-input-change
+(defn input-change [input-path _options-path value]
+  [[:data/send {:event-id :event/completion-input-change
                 :event-data {:value value}}]
    [:store/assoc-in input-path value]])
 
-(defn execute-action [{:keys [store] :as system} event action args]
+(defn execute-action [_store _event action args]
   (case action
     :completion-input/input-change (let [[input-path options-path value] args]
                                      (input-change input-path options-path value))

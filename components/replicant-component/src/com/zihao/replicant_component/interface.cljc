@@ -25,10 +25,9 @@
 
 (defn table-component
   "Render a table component with pagination, filtering, and selection capabilities"
-  [query-kind theads row->tr & {:keys [on-new row->id table-id multi-selection? select-all?]
-                                :or {table-id query-kind row->id identity}
-                                :as opts}]
-  (table/table-component query-kind theads row->tr opts))
+  [theads row->tr & {:keys [_on-new _row->id _table-id _multi-selection? _select-all?]
+                     :as opts}]
+  (table/table-component theads row->tr opts))
 
 (defn get-page
   "Get the current page number for a table"

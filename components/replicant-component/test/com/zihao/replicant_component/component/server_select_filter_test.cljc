@@ -1,10 +1,10 @@
 (ns com.zihao.replicant-component.component.server-select-filter-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.replicant-component.component.server-select-filter :as server-select-filter]))
 
 (deftest execute-action-server-filter-search-test
   (testing "Routes to server-filter-search action"
-    (let [store (atom {:dispatch (fn [store event] nil)})
+    (let [store (atom {:dispatch (fn [_store _event] nil)})
           action :server-filter-search
           args {:filter-key :test-filter
                 :search-term "test"

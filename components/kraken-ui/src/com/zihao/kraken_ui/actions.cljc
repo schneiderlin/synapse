@@ -17,7 +17,7 @@
   (kraken/move-selected-piece to-row to-col)
   (update-board))
 
-(defn execute-action [store action args]
+(defn execute-action [_store action args]
   (case action 
     :kraken/select-piece (apply select-piece args)
     :kraken/move-selected-piece (apply move-selected-piece args)

@@ -1,6 +1,4 @@
-(ns com.zihao.llm-auth.actions
-  (:require
-   [clojure.string :as str]))
+(ns com.zihao.llm-auth.actions)
 
 (defn login [{:keys [username password]}]
   [[:event/prevent-default]
@@ -42,7 +40,7 @@
      :on-failure [[:store/assoc-in [:llm-auth :error?] true]
                   [:store/assoc-in [:llm-auth :message] "Failed to update role"]]}]])
 
-(defn execute-action [{:keys [store] :as system} event action args]
+(defn execute-action [{:keys [_store] :as _system} _event action args]
   (case action
     :llm-auth/login (login args)
     :llm-auth/logout (logout)

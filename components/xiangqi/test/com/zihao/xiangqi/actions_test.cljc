@@ -1,6 +1,8 @@
 (ns com.zihao.xiangqi.actions-test
-  (:require [clojure.test :refer :all]
-            [com.zihao.xiangqi.actions :as actions]))
+  (:require [clojure.test :refer [deftest is testing]]
+            [com.zihao.xiangqi.actions :as actions]
+            [com.zihao.xiangqi.core :as core]
+            [com.zihao.xiangqi.game-tree :as game-tree]))
 
 (deftest execute-action-move-test
   (testing "Routes to move action"
@@ -15,11 +17,11 @@
 
 (deftest execute-action-go-back-test
   (testing "Routes to go-back action"
-    (let [root (com.zihao.xiangqi.game-tree/create-root com.zihao.xiangqi.core/state)
-          zipper (com.zihao.xiangqi.game-tree/make-zipper root)
-          first-state (com.zihao.xiangqi.core/move com.zihao.xiangqi.core/state [9 0] [8 0])
-          updated-zipper (com.zihao.xiangqi.game-tree/add-move zipper "a0a1" first-state)
-          moved-zipper (com.zihao.xiangqi.game-tree/navigate-to-move updated-zipper "a0a1")
+    (let [root (game-tree/create-root core/state)
+          zipper (game-tree/make-zipper root)
+          first-state (core/move core/state [9 0] [8 0])
+          updated-zipper (game-tree/add-move zipper "a0a1" first-state)
+          moved-zipper (game-tree/navigate-to-move updated-zipper "a0a1")
           store (atom {:xiangqi {:game-tree moved-zipper}})]
       (is (vector? (actions/execute-action {:store store} nil :xiangqi/go-back []))))))
 

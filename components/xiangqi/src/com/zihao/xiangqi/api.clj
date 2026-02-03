@@ -1,7 +1,6 @@
 (ns com.zihao.xiangqi.api
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as str]
    [com.zihao.xiangqi.core :as core]))
 
 (defn query-handler [_system query]
@@ -32,5 +31,5 @@
       (when ?reply-fn
         (let [new-state (core/move core/state from to)]
           (?reply-fn {:success? true
-                     :new-state new-state}))))
+                      :new-state new-state}))))
     nil))

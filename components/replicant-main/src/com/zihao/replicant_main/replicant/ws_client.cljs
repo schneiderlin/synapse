@@ -1,8 +1,8 @@
 (ns com.zihao.replicant-main.replicant.ws-client
   (:require-macros
-   [cljs.core.async.macros :as asyncm :refer [go go-loop]])
-  (:require 
-   [cljs.core.async :as async :refer [<!]]
+   [cljs.core.async.macros :as asyncm :refer [go-loop]])
+  (:require
+   [cljs.core.async :as async]
    [taoensso.sente  :as sente]))
 
 (defn make-ws-client []
@@ -18,11 +18,11 @@
      :chsk-send! send-fn
      :chsk-state state}))
 
-(defn ws-handler [stop-ch {:keys [ch-chsk chsk-send!] :as ws-client}]
+(defn ws-handler [stop-ch {:keys [ch-chsk] :as _ws-client}]
   (go-loop []
     (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
       (when (= port ch-chsk)
-        (let [{:keys [event ?data id send-fn]} event-msg]
+        (let [{:keys [id]} event-msg]
           (try
             (case id
               :chsk/ws-ping nil
@@ -37,16 +37,16 @@
    Extension functions are tried first before built-in event handling.
    Each extension should accept [ws-client event-msg] and return non-nil if handled."
   [& extension-fns]
-  (fn [stop-ch {:keys [ch-chsk chsk-send!] :as ws-client}]
+  (fn [stop-ch {:keys [ch-chsk] :as ws-client}]
     (go-loop []
       (let [[event-msg port] (async/alts! [ch-chsk stop-ch] :priority true)]
         (when (= port ch-chsk)
-          (let [{:keys [event ?data id]} event-msg]
+          (let [{:keys [id]} event-msg]
             (try
               ;; Try extension functions first
               (or (some #(when-let [result (% ws-client event-msg)]
                            result)
-                       extension-fns)
+                        extension-fns)
                   ;; Fallback to built-in events
                   (case id
                     :chsk/ws-ping nil

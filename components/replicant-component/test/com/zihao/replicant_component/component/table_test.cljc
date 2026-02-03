@@ -1,5 +1,5 @@
 (ns com.zihao.replicant-component.component.table-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.replicant-component.component.table :as table]))
 
 (deftest execute-action-clear-selected-ids-test

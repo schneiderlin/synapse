@@ -41,7 +41,7 @@
                   :where [?e :evaluation/id]]
           eval-count (d/q query (d/db conn))]
       (zero? eval-count))
-    (catch Exception e
+    (catch Exception _e
       true)))
 
 (defn create-evaluation! [evaluation]
@@ -59,82 +59,84 @@
     result))
 
 (defn get-evaluations
-  ([filters page size sort-field sort-order
-    (let [conn-db (d/db conn)
+  ([filters page size sort-field sort-order]
+   (let [conn-db (d/db conn)
 
-          {:keys [model-names criterion-name score-min score-max
-                  judge-type date-after date-before search-query]} filters
+         {:keys [model-names criterion-name score-min score-max
+                 judge-type _date-after _date-before search-query]} filters
 
-          base-query '[:find (pull ?e [* {:evaluation/scores [*]}]) .
-                       :where [?e :evaluation/id]]
+         base-query '[:find (pull ?e [* {:evaluation/scores [*]}]) .
+                      :where [?e :evaluation/id]]
 
-          all-evals (d/q base-query conn-db)
+         all-evals (d/q base-query conn-db)
 
-          filtered-evals (filter (fn [eval]
-                                   (and (or (nil? model-names)
-                                            (some #(= % (:evaluation/model-name eval)) model-names))
-                                        (or (nil? search-query)
-                                            (or (.contains (:evaluation/input eval) search-query)
-                                                (.contains (:evaluation/output eval) search-query)))
-                                        (or (nil? criterion-name)
-                                            (some #(and (= criterion-name (:evaluation-score/criterion-name %))
-                                                        (or (nil? score-min)
-                                                            (>= (:evaluation-score/score-value %) score-min))
-                                                        (or (nil? score-max)
-                                                            (<= (:evaluation-score/score-value %) score-max))
-                                                        (or (nil? judge-type)
-                                                            (= judge-type (:evaluation-score/judge-type %))))
-                                                  (:evaluation/scores eval)))))
-                                 all-evals)
+         filtered-evals (filter (fn [eval]
+                                  (and (or (nil? model-names)
+                                           (some #(= % (:evaluation/model-name eval)) model-names))
+                                       (or (nil? search-query)
+                                           (.contains (:evaluation/input eval) search-query)
+                                           (.contains (:evaluation/output eval) search-query))
+                                       (or (nil? criterion-name)
+                                           (some #(and (= criterion-name (:evaluation-score/criterion-name %))
+                                                       (or (nil? score-min)
+                                                           (>= (:evaluation-score/score-value %) score-min))
+                                                       (or (nil? score-max)
+                                                           (<= (:evaluation-score/score-value %) score-max))
+                                                       (or (nil? judge-type)
+                                                           (= judge-type (:evaluation-score/judge-type %))))
+                                                 (:evaluation/scores eval)))))
+                                all-evals)
 
-          total (count filtered-evals)
+         total (count filtered-evals)
 
-          total-pages (Math/ceil (/ total size))
+         total-pages (Math/ceil (/ total size))
 
-          offset (* (dec page) size)
+         offset (* (dec page) size)
 
-          sort-key (case sort-field
-                     :timestamp :evaluation/timestamp
-                     :model-name :evaluation/model-name
-                     :evaluation/timestamp)
+         sort-key (case sort-field
+                    :timestamp :evaluation/timestamp
+                    :model-name :evaluation/model-name
+                    :evaluation/timestamp)
 
-          sort-fn (if (= sort-order :asc)
-                    #(compare (sort-key %1) (sort-key %2))
-                    #(compare (sort-key %2) (sort-key %1)))
+         sort-fn (if (= sort-order :asc)
+                   #(compare (sort-key %1) (sort-key %2))
+                   #(compare (sort-key %2) (sort-key %1)))
 
-          sorted-evals (sort-by sort-key sort-fn filtered-evals)
+         sorted-evals (sort-by sort-key sort-fn filtered-evals)
 
-          paged-evals (take size (drop offset sorted-evals))]
-      {:data paged-evals
-       :total total
-       :page page
-       :size size
-       :total-pages (int total-pages)})]))
+         paged-evals (take size (drop offset sorted-evals))]
+     {:data paged-evals
+      :total total
+      :page page
+      :size size
+      :total-pages (int total-pages)})))
 
 (defn get-evaluation-stats []
   (let [conn-db (d/db conn)
 
         all-evals (d/q '[:find ?e .
-                         :where [?e :evaluation/id]
-                         conn-db])
+                         :where [?e :evaluation/id]]
+                       conn-db)
         total-evaluations (if (sequential? all-evals) (clojure.core/count all-evals) 0)
 
         eval-models (d/q '[:find ?model .
-                           :where [?e :evaluation/model-name ?model]
-                           conn-db])
+                           :where [?e :evaluation/model-name ?model]]
+                         conn-db)
         model-counts (frequencies eval-models)
 
-        all-scores (d/q '[:find ?score .
-                          :where [?s :evaluation-score/score-value ?score]
-                          conn-db])
-        criterion-scores (group-by :evaluation-score/criterion-name all-scores)
-        avg-scores (into {} (for [[criterion scores criterion-scores
-                                   [criterion (/ (reduce + 0 (map :evaluation-score/score-value scores)
-                                                         (count scores)))]]]))
+        all-scores (d/q '[:find [?criterion ?score]
+                          :where [?s :evaluation-score/criterion-name ?criterion]
+                          [?s :evaluation-score/score-value ?score]]
+                        conn-db)
+        criterion-scores (group-by first all-scores)
+        avg-scores (into {}
+                         (for [[criterion scores] criterion-scores]
+                           [criterion (/ (reduce + 0 (map second scores))
+                                         (count scores))]))
 
         eval-timestamps (d/q '[:find ?ts .
-                               :where [?e :evaluation/timestamp ?ts]
-                               conn-db])
+                               :where [?e :evaluation/timestamp ?ts]]
+                             conn-db)
         [earliest latest] (if (sequential? eval-timestamps)
                             [(apply min eval-timestamps) (apply max eval-timestamps)]
                             [(java.util.Date.) (java.util.Date.)])]
@@ -147,22 +149,21 @@
 (defn get-score-distributions []
   (let [conn-db (d/db conn)
 
-        score-counts (d/q '[:find ?criterion ?judge (count ?s) .
-                            :where [?s :evaluation-score/criterion-name ?criterion
-                                    [?s :evaluation-score/judge-type ?judge]
-                                    [?s :evaluation-score/score-value ?score]]
-                            conn-db])
+        score-counts (d/q '[:find [?criterion ?judge (count ?s)]
+                            :where [?s :evaluation-score/criterion-name ?criterion]
+                            [?s :evaluation-score/judge-type ?judge]]
+                          conn-db)
 
-        all-scores (d/q '[:find ?criterion ?judge ?score ?s .
-                          :where [?s :evaluation-score/criterion-name ?criterion
-                                  [?s :evaluation-score/judge-type ?judge]
-                                  [?s :evaluation-score/score-value ?score]]
-                          conn-db])
+        _all-scores (d/q '[:find [?criterion ?judge ?score ?s]
+                          :where [?s :evaluation-score/criterion-name ?criterion]
+                          [?s :evaluation-score/judge-type ?judge]
+                          [?s :evaluation-score/score-value ?score]]
+                        conn-db)
 
         grouped (reduce (fn [acc [criterion judge score count]]
                           (let [key [criterion judge]]
-                            (update-in acc [key :total] (fnil + 0) count)
-                            (update-in acc [key :sum] (fnil + 0.0) (* score count))
+                            #_(update-in acc [key :total] (fnil + 0) count)
+                            #_(update-in acc [key :sum] (fnil + 0.0) (* score count))
                             (update-in acc [key :distribution] (fnil assoc {}) score count)))
                         {}
                         score-counts)
@@ -210,7 +211,7 @@
               timestamp (java.util.Date. (- (.getTime now) (* i 3600000)))
               input (nth sample-inputs (mod i (count sample-inputs)))
               output (nth sample-outputs (mod i (count sample-outputs)))
-              prompt-metadata (str "{\"template\":\"standard_prompt\",\"variables\":{\"temperature\":0.7,\"max_tokens\":500},\"data_source\":\"sample_dataset_v1\"}")
+              prompt-metadata "{\"template\":\"standard_prompt\",\"variables\":{\"temperature\":0.7,\"max_tokens\":500},\"data_source\":\"sample_dataset_v1\"}"
 
               scores (for [criterion criteria
                            judge ["human" "llm"]]

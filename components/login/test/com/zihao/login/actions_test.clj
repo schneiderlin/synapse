@@ -1,5 +1,5 @@
 (ns com.zihao.login.actions-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.login.actions :as actions]))
 
 (deftest login-action-test

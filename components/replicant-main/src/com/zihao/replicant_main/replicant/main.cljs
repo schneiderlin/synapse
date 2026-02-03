@@ -1,12 +1,12 @@
 (ns com.zihao.replicant-main.replicant.main
-  (:require 
+  (:require
    [replicant.dom :as r]
    [replicant.alias :as alias]
   ;;  [com.zihao.replicant-main.replicant.utils :refer [interpolate]]
-   [com.zihao.replicant-main.replicant.ws-client :as ws-client] 
+   [com.zihao.replicant-main.replicant.ws-client :as ws-client]
    [clojure.core.async :as async]
    [taoensso.truss :refer [have]]
-   [com.zihao.replicant-main.replicant.timer :as timer] 
+   [com.zihao.replicant-main.replicant.timer :as timer]
    [com.zihao.replicant-main.replicant.router :as router]
    [com.zihao.replicant-main.replicant.hash-router :as hash-router]))
 
@@ -45,9 +45,9 @@
 (defn init-el [_ el]
   (js/document.getElementById el))
 
-(defn init-render-loop [render {:keys [store el 
+(defn init-render-loop [render {:keys [store el
                                        execute-actions interpolate
-                                       routes get-location-load-actions 
+                                       routes get-location-load-actions
                                        hash-router?] :as system}]
   ;; must have all these keys
   (have identity store el execute-actions interpolate routes get-location-load-actions)
@@ -60,14 +60,15 @@
    timer/!timers :timers
    (fn [_ _ old-timers new-timers]
      (when (not= (keys old-timers) (keys new-timers))
-       #_(timer/start-timer store))))
+       ;; TODO: implement timer/start-timer when needed
+       nil)))
 
   (r/set-dispatch!
    (fn [{:keys [replicant/dom-event]} actions]
      (->> actions
           (interpolate dom-event)
           (execute-actions system dom-event))))
-  
+
   (js/document.body.addEventListener
    "click"
    (if hash-router?

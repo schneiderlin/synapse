@@ -1,7 +1,7 @@
 (ns com.zihao.agent-tools.core
   (:require
    [babashka.fs :as fs]
-   [babashka.process :refer [process shell]]
+   [babashka.process :refer [process]]
    [clojure.string :as str]
    [cheshire.core :as json]))
 
@@ -46,8 +46,7 @@
                   (str/replace "\\" ""))
      :isError false}))
 
-(defn grep-tool-fn [{:keys [pattern path type]
-                     :as args}]
+(defn grep-tool-fn [{:keys [pattern path type]}]
   (try
     (let [base-path (fs/path workspace-root)
           search-path (if path
@@ -57,7 +56,7 @@
                         base-path)
           search-path-str (str search-path)
           ;; Build ripgrep command with JSON output for reliable parsing
-          rg-args (cond-> ["rg" 
+          rg-args (cond-> ["rg"
                            "-M" 200 ;; max line length
                            "--max-columns-preview"
                            "--json" pattern]
@@ -67,15 +66,15 @@
                     true (conj search-path-str))
           ;; Execute ripgrep - use string path for :dir to avoid coercion issues
           result (try
-                  (let [proc (process rg-args
-                                      {:dir base-path
-                                       :out :string
-                                       :err :string})]
-                    @proc)
-                  (catch Exception e
-                    {:exit -1
-                     :out nil
-                     :err (str "Failed to execute ripgrep: " (.getMessage e) " (class: " (class e) ")")})) 
+                   (let [proc (process rg-args
+                                       {:dir base-path
+                                        :out :string
+                                        :err :string})]
+                     @proc)
+                   (catch Exception e
+                     {:exit -1
+                      :out nil
+                      :err (str "Failed to execute ripgrep: " (.getMessage e) " (class: " (class e) ")")}))
           output (:out result)
           exit-code (:exit result)]
       (cond
@@ -83,19 +82,19 @@
         (or (= exit-code 1) (str/blank? output))
         {:content [{:type "text" :text (str "No matches found for pattern: " pattern)}]
          :isError false}
-        
+
         ;; Error occurred
         (not= exit-code 0)
         (let [err-msg (try
-                       (cond
-                        (string? (:err result)) (:err result)
-                        (nil? (:err result)) "No error message available"
-                        :else (pr-str (:err result)))
+                        (cond
+                          (string? (:err result)) (:err result)
+                          (nil? (:err result)) "No error message available"
+                          :else (pr-str (:err result)))
                         (catch Exception e
                           (str "Error getting error message: " (.getMessage e))))]
           {:content [{:type "text" :text (str "Error during grep (exit code " exit-code "): " err-msg)}]
            :isError true})
-        
+
         ;; Success - parse ripgrep JSON output
         :else (parse-rg-result output)))
     (catch Exception e
@@ -104,17 +103,15 @@
 
 (comment
   (-> (grep-tool-fn {:pattern "TODO"
-                 :path nil
-                 :type nil})
-      :content 
+                     :path nil
+                     :type nil})
+      :content
       type
       #_(json/encode {:escape-non-ascii false})
-      #_(str/replace "\\" "") 
-      )
+      #_(str/replace "\\" ""))
   :rcf)
 
-(defn list-dir-tool-fn [{:keys [target_directory]
-                         :as args}]
+(defn list-dir-tool-fn [{:keys [target_directory]}]
   (try
     (if-let [safe-path (ensure-safe-path (or target_directory "."))]
       (if (fs/exists? safe-path)
@@ -148,8 +145,7 @@
   (list-dir-tool-fn {:target_directory "."})
   :rcf)
 
-(defn glob-tool-fn [{:keys [glob_pattern target_directory]
-                     :as args}]
+(defn glob-tool-fn [{:keys [glob_pattern target_directory]}]
   (try
     (let [base-path (fs/path workspace-root)
           search-path (if target_directory

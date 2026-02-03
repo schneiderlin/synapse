@@ -1,5 +1,5 @@
 (ns com.zihao.xiangqi.interface-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.xiangqi.interface :as xiangqi]))
 
 (deftest ws-event-handler-frontend-game-state-update-test

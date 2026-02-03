@@ -61,15 +61,15 @@
 
 (defn make-ring-ws-handler
   "Creates a Ring handler for WebSocket upgrade requests.
-   
-   Arguments:
-   - ws-server: the server state from make-ring-ws-server
-   
-   The handler:
-   - Upgrades HTTP requests to WebSocket connections
-   - Tracks connected clients in the :sockets atom
-   - Puts received messages onto :ch-recv channel as normalized events"
-  [{:keys [sockets ch-recv format] :or {format :edn} :as ws-server}]
+
+    Arguments:
+    - ws-server: the server state from make-ring-ws-server
+
+    The handler:
+    - Upgrades HTTP requests to WebSocket connections
+    - Tracks connected clients in the :sockets atom
+    - Puts received messages onto :ch-recv channel as normalized events"
+  [{:keys [sockets ch-recv format] :or {format :edn}}]
   (println "[ring-ws] Creating handler with format:" format "sockets atom:" (System/identityHashCode sockets))
   (fn [request]
     (println "[ring-ws] Request to /ws, upgrade?" (ws/upgrade-request? request))
@@ -85,7 +85,7 @@
             (async/put! ch-recv {:id :ws/open
                                  :client-id client-id
                                  :socket socket}))
-          
+
           :on-message
           (fn [socket message]
             (try
@@ -101,7 +101,7 @@
                                      :client-id client-id
                                      :raw-message message
                                      :error e}))))
-          
+
           :on-close
           (fn [_socket status-code reason]
             (swap! sockets dissoc client-id)
@@ -109,7 +109,7 @@
                                  :client-id client-id
                                  :status-code status-code
                                  :reason reason}))
-          
+
           :on-error
           (fn [_socket error]
             (swap! sockets dissoc client-id)

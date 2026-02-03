@@ -1,6 +1,4 @@
-(ns com.zihao.login.actions
-  (:require
-   [clojure.string :as str]))
+(ns com.zihao.login.actions)
 
 (defn login [{:keys [username password]}]
   [[:event/prevent-default]
@@ -23,7 +21,7 @@
      :on-failure [[:store/assoc-in [:change-password :error?] true]
                   [:store/assoc-in [:change-password :message] "旧密码错误"]]}]])
 
-(defn execute-action [{:keys [store] :as system} event action args]
+(defn execute-action [{:keys [_store] :as _system} _event action args]
   (case action
     :login/login (login args)
     :login/change-password (change-password args)

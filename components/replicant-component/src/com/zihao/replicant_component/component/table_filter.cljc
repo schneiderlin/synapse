@@ -1,8 +1,4 @@
-(ns com.zihao.replicant-component.component.table-filter
-  (:require
-   [clojure.walk :as walk]
-   [com.zihao.replicant-component.ui.table :refer [table-ui]]
-   [com.zihao.replicant-main.replicant.query :as query]))
+(ns com.zihao.replicant-component.component.table-filter)
 
 (defn get-filter-operators
   "Get available filter operators based on field type"
@@ -21,9 +17,9 @@
              {:value "<" :label "<"}
              {:value "<=" :label "<="}]
     #_#_:date [{:value "is" :label "is"}
-           {:value "is not" :label "is not"}
-           {:value "before" :label "before"}
-           {:value "after" :label "after"}]
+               {:value "is not" :label "is not"}
+               {:value "before" :label "before"}
+               {:value "after" :label "after"}]
     []))
 
 (defn filter-config-modal
@@ -64,7 +60,7 @@
         "Apply Filter"]]]]))
 
 (defn filter-dropdown
-  [{:keys [fields is-open? 
+  [{:keys [fields is-open?
            open-field]}]
   [:div {:class ["relative" "flex" "items-start"]}
    ;; Left side - Dropdown trigger and menu

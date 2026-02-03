@@ -5,18 +5,18 @@
 
 (def ^:private search-timers (atom {}))
 
-(defn- throttle-search 
+(defn- throttle-search
   "Throttle search action to avoid too many server requests"
   [filter-key delay-ms dispatch-fn]
-  (when-let [timer (get @search-timers filter-key)]
-    #?(:cljs (js/clearTimeout timer)))
-  
-  (let [timer #?(:cljs (js/setTimeout 
+  (when-let [_timer (get @search-timers filter-key)]
+    #?(:cljs (js/clearTimeout _timer)))
+
+  (let [timer #?(:cljs (js/setTimeout
                         (fn []
-                           (swap! search-timers dissoc filter-key)
-                           (dispatch-fn))
+                          (swap! search-timers dissoc filter-key)
+                          (dispatch-fn))
                         delay-ms)
-                 :clj (future 
+                 :clj (future
                         (Thread/sleep delay-ms)
                         (swap! search-timers dissoc filter-key)
                         (dispatch-fn)))]
@@ -33,7 +33,7 @@
       (when-not (empty? search-term)
         ;; The throttle function will handle the delay and execute the action
         (throttle-search filter-key throttle-delay
-                         (fn [] 
+                         (fn []
                            (let [execute-action-f (:dispatch @store)]
                              (execute-action-f store nil [[:data/query query]]))))))
     nil))
@@ -95,8 +95,7 @@
                                                     :search-term :event/target.value
                                                     :query query
                                                     :throttle-ms throttle-ms}]]
-                     :focus [[:store/assoc-in [prefix :dropdown-open] true]]
-                      }}]
+                    :focus [[:store/assoc-in [prefix :dropdown-open] true]]}}]
       [:button {:type "button"
                 :class ["absolute" "inset-y-0" "right-0" "flex" "items-center" "pr-3"]
                 :on {:click [[:store/assoc-in [prefix :dropdown-open] (not is-open)]]}}
@@ -115,11 +114,11 @@
                     :class ["relative" "py-2" "pl-3" "pr-9" "cursor-pointer" "hover:bg-gray-100"
                             (when (= selected-value (search-option->value option)) " bg-blue-50")]
                     :on {:click (let [base [[:store/assoc-in [prefix :value] (search-option->value option)]
-                                                     [:store/assoc-in [prefix :search] ""]
-                                                     [:store/assoc-in [prefix :dropdown-open] false]]]
-                                       (if on-select
-                                         (concat base on-select)
-                                         base))}}
+                                            [:store/assoc-in [prefix :search] ""]
+                                            [:store/assoc-in [prefix :dropdown-open] false]]]
+                                  (if on-select
+                                    (concat base on-select)
+                                    base))}}
               [:span {:class ["block" "truncate" (when (= selected-value (search-option->value option)) " font-medium")]}
                (search-option->label option)]]))])]]))
 

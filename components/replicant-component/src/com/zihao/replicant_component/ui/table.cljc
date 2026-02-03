@@ -5,15 +5,15 @@
 
 (defn table-ui
   "Modern table component with daisyUI styling.
-   - :on-refresh: A handler for the refresh button, e.g., [[:data/query query]].
-   - :on-new: An optional handler for the 'New' button. If provided, the button is displayed.
-   - :theads: A list of table header names, e.g., [\"ID\", \"Username\", \"Balance\"].
-   - :rows: A list of data for the table rows.
-   - :row->tr: A map where keys are header names and values are functions to render the cell content.
-   - :page: The current page number.
-   - :total-pages: The total number of pages available.
-   - :go-page: A function that takes a page number and returns a handler for pagination.
-   - :multi-selection?: A boolean to enable/disable row selection checkboxes."
+    - :on-refresh: A handler for the refresh button, e.g., [[:data/query query]].
+    - :on-new: An optional handler for the 'New' button. If provided, the button is displayed.
+    - :theads: A list of table header names, e.g., [\"ID\", \"Username\", \"Balance\"].
+    - :rows: A list of data for the table rows.
+    - :row->tr: A map where keys are header names and values are functions to render the cell content.
+    - :page: The current page number.
+    - :total-pages: The total number of pages available.
+    - :go-page: A function that takes a page number and returns a handler for pagination.
+    - :multi-selection?: A boolean to enable/disable row selection checkboxes."
   [{:keys [on-refresh on-new
            theads
            rows row->tr row->id
@@ -21,12 +21,12 @@
            multi-selection?
            select-all?
            table-id
-           size]
+           _size]
     :or {on-refresh []
          multi-selection? false
          select-all? false
          page 1
-         size 20
+         ;; unused default, _size 20
          rows []
          row->tr identity
          go-page (fn [p]

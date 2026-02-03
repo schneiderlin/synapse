@@ -1,14 +1,14 @@
 (ns com.zihao.agent.draft-action-dispatch
   (:require
-   [com.zihao.agent.interface :refer [IContext execute-actions ctx->actions agent-step]]
-   [com.zihao.baml-client.interface :as baml-client] 
+   [com.zihao.agent.interface :refer [IContext execute-actions agent-step]]
+   [com.zihao.baml-client.interface :as baml-client]
    [com.zihao.agent.llm-function :as llm-function]))
 
 (comment
   (baml-client/reload)
   :rcf)
 
-(defn get-actions [{:keys [store llm-caller] :as ctx}]
+(defn get-actions [{:keys [store llm-caller]}]
   (let [state @store
         {:keys [tool-call msgs]} state
         last-msg (last msgs)
@@ -24,12 +24,12 @@
       ;; Add action if there's a tool result - call LLM with tool info
       (and llm-caller
            has-tool-result)
-      (conj [:llm-call :decide-action 
+      (conj [:llm-call :decide-action
              [msgs
               {:name (name (:tool tool-call))
                :args (pr-str (:args tool-call))
                :result (pr-str (:result tool-call))}]
-             (fn [ctx response]
+             (fn [_ctx response]
                ;; Clear the tool-call since we've processed it
                ;; response is {:message {...} :tools [...]}
                (let [actions [[:dissoc-in [:tool-call]]]]
@@ -54,7 +54,7 @@
            (not has-pending-tool-call)
            (not has-tool-result))
       (conj [:llm-call :decide-action [msgs nil]
-             (fn [ctx response]
+             (fn [_ctx response]
                ;; response is {:message {...} :tools [...]}
                (let [actions []]
                  (cond-> actions
@@ -164,16 +164,15 @@
                         llm-function/llm-caller)
       #_(ctx->actions)
       (agent-step))
-  
+
   ;; call LLM again with tool result
   (-> (ToolCallContext. store
                         tools
                         llm-function/llm-caller)
       #_(ctx->actions)
-      (agent-step)) 
-  
+      (agent-step))
 
-  ;; bug? 
+;; bug? 
   :rcf)
 
 ;; skills

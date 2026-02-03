@@ -2,7 +2,6 @@
   (:gen-class)
   (:require
    [com.brunobonacci.mulog :as u]
-   [clojure.core.async :as async]
    [jsonrpc4clj.coercer :as coercer]
    [jsonrpc4clj.io-server :as io-server]
    [jsonrpc4clj.server :as server]))

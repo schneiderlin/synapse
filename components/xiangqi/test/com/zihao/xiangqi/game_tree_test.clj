@@ -1,5 +1,5 @@
 (ns com.zihao.xiangqi.game-tree-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.xiangqi.game-tree :as gt]
             [com.zihao.xiangqi.core :as core]
             [clojure.zip :as zip]))

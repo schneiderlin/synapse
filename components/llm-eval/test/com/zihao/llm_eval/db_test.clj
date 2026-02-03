@@ -1,5 +1,5 @@
 (ns com.zihao.llm-eval.db-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.llm-eval.db :as db]))
 
 (deftest get-evaluations-test

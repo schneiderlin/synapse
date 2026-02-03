@@ -33,5 +33,5 @@
    - java.io.FileNotFoundException if file doesn't exist
    - Exception if file read fails"
   [path & [line-range]]
-  (let [read-file-impl (require '[com.zihao.baml-client.tools.read-file :as read-file])]
-    ((resolve 'read-file/invoke-read-file-or-throw) path line-range)))
+  (require '[com.zihao.baml-client.tools.read-file :as read-file])
+  ((resolve 'read-file/invoke-read-file-or-throw) path line-range))

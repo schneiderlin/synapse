@@ -1,5 +1,5 @@
 (ns com.zihao.playground-drawflow.actions-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest testing is]]
             [com.zihao.playground-drawflow.actions :as actions]))
 
 ;; Node actions tests

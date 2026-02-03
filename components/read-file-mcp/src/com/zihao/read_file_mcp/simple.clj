@@ -143,16 +143,16 @@
     (println (str "Starting MCP server on port " port))
     (try
       (mcp/run-http! {:port port})
-      (catch java.net.BindException e
+      (catch java.net.BindException _e
         (println (str "ERROR: Port " port " is already in use. Try a different port:"))
-        (println (str "  Set MCP_PORT environment variable: $env:MCP_PORT=4001"))
-        (println (str "  Or pass as argument: clj -M -m com.zihao.read-file-mcp.simple 4001"))
+        (println "  Set MCP_PORT environment variable: $env:MCP_PORT=4001")
+        (println "  Or pass as argument: clj -M -m com.zihao.read-file-mcp.simple 4001")
         (System/exit 1)))))
 
 (defn stdio []
   (mcp/run-stdio! {}))
 
-(defn -main [& args]
+(defn -main [& _args]
   (http)
   #_(stdio))
 

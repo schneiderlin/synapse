@@ -1,5 +1,4 @@
-(ns com.zihao.llm-eval.router
-  (:require [com.zihao.replicant-main.replicant.query :as query]))
+(ns com.zihao.llm-eval.router)
 
 (def routes
   [[:pages/llm-eval-dashboard [["dashboard"]]]

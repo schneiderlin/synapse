@@ -40,6 +40,8 @@
       ;; Initial state: no tokens (textarea shown)
       (let [state @store
             result (render/main state)]
+        ;; ofc result is a vector, result is hiccup
+        ;; should check if the desired element is in the result
         (is (vector? result)))
 
       ;; After enter-article: tokens present (article shown)

@@ -9,7 +9,7 @@
         com.taoensso/sente {:mvn/version "1.21.0"
                             :exclusions [com.taoensso/encore]}
         com.brunobonacci/mulog {:mvn/version "0.10.0"}}
- :aliases {:test {:extra-paths ["test"]
-                  :extra-deps {}}
+  :aliases {:test {:extra-paths ["test"]
+                   :extra-deps {metosin/malli {:mvn/version "0.13.0"}}}
            :export {:extra-deps {metosin/malli {:mvn/version "0.13.0"}}
                     :main-opts ["-e" "(require 'com.zihao.replicant-main.export) (com.zihao.replicant-main.export/export-types)"]}}}

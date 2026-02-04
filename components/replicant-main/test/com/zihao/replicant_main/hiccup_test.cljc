@@ -1,6 +1,11 @@
 (ns com.zihao.replicant-main.hiccup-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [malli.core :as m]))
+  (:require
+   [clojure.test :as t :refer [deftest is testing]]
+   [malli.core :as m]
+   [com.zihao.replicant-main.hiccup-test-helper :refer [contains-element?
+                                                        contains-element-with-attr?
+                                                        contains-element-with-content?
+                                                        contains-hiccup?]]))
 
 ;; A simple Malli schema for validating hiccup-like data structures.
 ;; This schema accepts:
@@ -13,66 +18,13 @@
 ;; - [:tag {:attr "value"} child1 child2 ...] (tag with attributes and multiple children)
 (def HiccupElement
   [:or :keyword
-       [:cat :keyword]
-       [:cat :keyword [:* :any]]
-       [:cat :keyword :map [:* :any]]])
+   [:cat :keyword]
+   [:cat :keyword [:* :any]]
+   [:cat :keyword :map [:* :any]]])
 
-;; Walk a hiccup structure and return true if any element matches the predicate
-(defn walk-hiccup
-  [hiccup pred]
-  (cond
-    ;; If the element itself matches, return true
-    (pred hiccup) true
-
-    ;; If it's a vector (hiccup element), walk its children
-    (vector? hiccup)
-    (some #(walk-hiccup % pred) hiccup)
-
-    ;; Otherwise, it's a leaf node, no match
-    :else false))
-
-;; Check if hiccup contains an element with a specific tag
-(defn contains-element?
-  "Check if hiccup contains an element with the given tag at any nesting level."
-  [hiccup tag]
-  (walk-hiccup hiccup #(and (vector? %)
-                            (keyword? (first %))
-                            (= (first %) tag))))
-
-;; Check if hiccup contains an element with specific attributes
-(defn contains-element-with-attr?
-  "Check if hiccup contains an element with the given attributes at any nesting level.
-   attrs can be a map or a predicate function."
-  [hiccup attrs]
-  (let [attr-pred (if (map? attrs)
-                    #(and (map? %) (every? (fn [[k v]] (= (get % k) v)) attrs))
-                    attrs)]
-    (walk-hiccup hiccup #(and (vector? %)
-                              (> (count %) 1)
-                              (map? (second %))
-                              (attr-pred (second %))))))
-
-;; Check if hiccup contains an element with specific content
-(defn contains-element-with-content?
-  "Check if hiccup contains an element containing the given content at any nesting level.
-   content can be a value or a predicate function."
-  [hiccup content]
-  (let [content-pred (if (fn? content) content #(= % content))]
-    (walk-hiccup hiccup content-pred)))
-
-;; Check if hiccup contains a specific pattern
-(defn contains-hiccup?
-  "Check if hiccup contains an element matching the given pattern at any nesting level.
-   Pattern can be:
-   - A keyword tag: check for element with that tag
-   - A predicate function: check for element matching the predicate
-   - A map of attributes: check for element with those attributes"
-  [hiccup pattern]
-  (cond
-    (keyword? pattern) (contains-element? hiccup pattern)
-    (fn? pattern) (walk-hiccup hiccup pattern)
-    (map? pattern) (contains-element-with-attr? hiccup pattern)
-    :else (throw (ex-info "Invalid pattern" {:pattern pattern}))))
+(comment
+  (t/run-test hiccup-test)
+  :rcf)
 
 (deftest hiccup-test
   (testing "valid hiccup elements"
@@ -99,7 +51,11 @@
     (is (contains-element? [:div [:button "Click"]] :button))
     (is (contains-element? [:div [:div [:button "Click"]]] :button))
     (is (contains-element? [:div [:div [:div [:button "Click"]]]] :button))
-    (is (not (contains-element? [:div [:span "Click"]] :button))))
+    (is (not (contains-element? [:div [:span "Click"]] :button)))
+    ;; list-wrapped children (e.g. from map over buttons) are still traversed
+    (is (contains-element? [:div {:class ["flex" "space-x-2"]}
+                           ([:button "again"] [:button "hard"])]
+                         :button)))
 
   (testing "contains-element-with-attr? finds elements with specific attributes"
     (is (contains-element-with-attr? [:div [:button {:id "submit"} "Click"]] {:id "submit"}))
@@ -109,7 +65,11 @@
   (testing "contains-element-with-content? finds elements with specific content"
     (is (contains-element-with-content? [:div [:button "Click me"]] "Click me"))
     (is (contains-element-with-content? [:div [:div [:button "Click me"]]] "Click me"))
-    (is (not (contains-element-with-content? [:div [:button "Click"]] "Click me"))))
+    (is (not (contains-element-with-content? [:div [:button "Click"]] "Click me")))
+    ;; partial match (optional :partial true)
+    (is (contains-element-with-content? [:div [:button "Click me"]] "Click" :partial true))
+    ;; case-insensitive (optional :case-insensitive true)
+    (is (contains-element-with-content? [:div [:button "Click Me"]] "click me" :case-insensitive true)))
 
   (testing "contains-hiccup? with keyword finds elements by tag"
     (is (contains-hiccup? [:div [:button "Click"]] :button))

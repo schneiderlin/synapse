@@ -20,19 +20,20 @@
   :rcf)
 
 (defn article-ui [{:keys [tokens word->rating]}]
-  [:div {:style {:white-space "pre-wrap"
-                 :font-size "1.25rem"
-                 :line-height "1.75rem"}}
-   (for [token tokens]
-     (let [token-str (if (string? token) token (str token))
-           rating (word->rating (str/lower-case token-str))]
-       (if (or (re-matches #"\s+" token-str)
-               (re-matches #"[.。,，!！?？;；:：「」'\"\[\]\(\)\{\}<>-]" token-str)
-               (re-matches #"\d+" token-str))
-         token-str
-         [:span {:class (get-word-class rating)
-                 :on {:click
-                      (if (nil? rating)
-                        [[:lingq/click-unknown-word {:word (str/lower-case token-str)}]]
-                        [[:store/assoc-in [prefix :selected-word] token-str]])}}
-          token-str])))])
+  (let [word->rating (or word->rating {})]  ;; Ensure word->rating is a map even if nil
+    [:div {:style {:white-space "pre-wrap"
+                   :font-size "1.25rem"
+                   :line-height "1.75rem"}}
+     (for [token tokens]
+       (let [token-str (if (string? token) token (str token))
+             rating (get word->rating (str/lower-case token-str))]
+         (if (or (re-matches #"\s+" token-str)
+                 (re-matches #"[.。,，!！?？;；:：「」'\"\[\]\(\)\{\}<>-]" token-str)
+                 (re-matches #"\d+" token-str))
+           token-str
+           [:span {:class (get-word-class rating)
+                   :on {:click
+                        (if (nil? rating)
+                          [[:lingq/click-unknown-word {:word (str/lower-case token-str)}]]
+                          [[:store/assoc-in [prefix :selected-word] token-str]])}}
+            token-str])))]))

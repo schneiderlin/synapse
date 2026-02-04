@@ -239,7 +239,256 @@
 
 ### 3. 集成测试
 
-#### 3.1 完整的文章输入流程
+#### 3.1 UI 状态转换测试
+
+**测试原则**:
+- 使用 `hiccup-test-helper` 中的辅助函数来检查渲染结果
+- **不要**只断言结果是一个 vector `(is (vector? result))` - 这是无用的测试
+- **应该**检查特定元素的存在、内容、属性
+- 验证不同状态下的 UI 渲染是否符合预期
+
+**可用的测试辅助函数**:
+```clojure
+[com.zihao.replicant-main.hiccup-test-helper :refer
+ [contains-element?               ; 检查是否包含特定标签元素
+  contains-element-with-attr?      ; 检查是否包含特定属性的元素
+  contains-element-with-content?    ; 检查是否包含特定文本内容
+  contains-hiccup?]]             ; 通用的元素搜索函数
+```
+
+**好的测试示例 - `ui-state-transition-textarea-to-article`**:
+
+✅ 这个测试是好的，因为它：
+- 检查了特定元素的存在（`:textarea`）
+- 检查了按钮文本内容
+- 验证了状态转换后的 UI 变化
+
+```clojure
+(deftest ui-state-transition-textarea-to-article
+  (testing "UI state transition: textarea to article"
+    (let [store (atom {})]
+
+      ;; Initial state: no tokens (textarea shown)
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain textarea element
+        (is (contains-element? result :textarea))
+        ;; Should contain "Process Article" button
+        (is (contains-element-with-content? result "Process Article"))
+        ;; Should NOT contain "Clear Article" button
+        (is (not (contains-element-with-content? result "Clear Article"))))
+
+      ;; After enter-article: tokens present (article shown)
+      (swap! store assoc-in [prefix :tokens] ["Halo" " " "dunia"])
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain "Clear Article" button
+        (is (contains-element-with-content? result "Clear Article"))
+        ;; Should NOT contain textarea element (article view is shown instead)
+        (is (not (contains-element? result :textarea))))))
+```
+
+**需要改进的测试 - `ui-state-transition-show-preview`**:
+
+❌ 当前实现只检查了 result 是 vector，这是无用的：
+
+```clojure
+(deftest ui-state-transition-show-preview
+  (testing "UI state transition: Show preview panel"
+    (let [store (atom {})]
+      ;; Initial state
+      (let [state @store
+            result (render/main state)]
+        (is (vector? result)))  ; ❌ 无用的断言
+
+      ;; Click unknown word
+      (swap! store assoc-in [prefix :preview-word] "test")
+      (swap! store assoc-in [prefix :preview-translation] ["translation"])
+      (let [state @store
+            result (render/main state)]
+        (is (vector? result))))))  ; ❌ 无用的断言
+```
+
+**应该改进为**:
+
+```clojure
+(deftest ui-state-transition-show-preview
+  (testing "UI state transition: Show preview panel"
+    (let [store (atom {})]
+
+      ;; Initial state: no preview (preview panel not shown)
+      (let [state @store
+            result (render/main state)]
+        ;; Should NOT contain preview panel elements
+        (is (not (contains-element-with-content? result "Word Preview")))
+        (is (not (contains-element-with-content? result "原文:")))
+        (is (not (contains-element-with-content? result "译文:")))
+
+      ;; Click unknown word: preview panel shown
+      (swap! store assoc-in [prefix :preview-word] "anjing")
+      (swap! store assoc-in [prefix :preview-translation] ["calm", "peaceful"])
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain preview panel header
+        (is (contains-element-with-content? result "Word Preview"))
+        ;; Should contain the preview word
+        (is (contains-element-with-content? result "anjing"))
+        ;; Should contain translations
+        (is (contains-element-with-content? result "原文:"))
+        (is (contains-element-with-content? result "译文:"))
+        (is (contains-element-with-content? result "calm"))
+        ;; Should contain "添加到数据库" button
+        (is (contains-element-with-content? result "添加到数据库")))))
+```
+
+**需要改进的测试 - `ui-state-transition-show-rating`**:
+
+❌ 当前实现只检查了 result 是 vector，这是无用的：
+
+```clojure
+(deftest ui-state-transition-show-rating
+  (testing "UI state transition: Show rating panel"
+    (let [store (atom {})]
+      ;; Click known word (with tokens and selected-word)
+      (swap! store assoc-in [prefix :tokens] ["test"])
+      (swap! store assoc-in [prefix :selected-word] "test")
+      (let [state @store
+            result (render/main state)]
+        (is (vector? result)))))  ; ❌ 无用的断言
+```
+
+**应该改进为**:
+
+```clojure
+(deftest ui-state-transition-show-rating
+  (testing "UI state transition: Show rating panel"
+    (let [store (atom {})]
+
+      ;; Initial state: no selection (rating panel not shown)
+      (let [state @store
+            result (render/main state)]
+        ;; Should NOT contain rating buttons
+        (is (not (contains-element-with-content? result "again")))
+        (is (not (contains-element-with-content? result "hard")))
+        (is (not (contains-element-with-content? result "good")))
+        (is (not (contains-element-with-content? result "easy")))
+
+      ;; Click known word: rating panel shown
+      (swap! store assoc-in [prefix :tokens] ["anjing"])
+      (swap! store assoc-in [prefix :selected-word] "anjing")
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain all rating buttons
+        (is (contains-element-with-content? result "again"))
+        (is (contains-element-with-content? result "hard"))
+        (is (contains-element-with-content? result "good"))
+        (is (contains-element-with-content? result "easy"))
+        ;; Should contain button elements
+        (is (contains-element? result :button))
+        ;; Should have exactly 4 rating buttons
+        (is (= 4 (count (filter #(= :button (first %))
+                                (tree-seq vector? seq result))))))))
+```
+
+**UI 状态转换测试的最佳实践**:
+
+1. **初始状态验证**: 在任何状态改变之前，验证初始 UI 状态
+2. **状态改变**: 通过 `swap!` 或 `execute-f` 改变 store 状态
+3. **断言 UI 变化**: 使用 `contains-element?` 等函数验证 UI 元素的出现/消失
+4. **断言内容正确**: 使用 `contains-element-with-content?` 验证文本内容
+5. **断言属性正确**: 使用 `contains-element-with-attr?` 验证元素属性
+
+避免的常见错误：
+- ❌ 只检查 `(is (vector? result))` - 这没有验证任何有用的东西
+- ❌ 只检查 `(some? result)` - 这也没有验证任何有用的东西
+- ❌ 硬编码整个 hiccup 结构进行精确匹配 - 这使测试变得脆弱
+
+**好的测试示例 - `ui-state-transition-textarea-to-article`**:
+
+✅ 这个测试是好的，因为它：
+- 检查了特定元素的存在（`:textarea`）
+- 检查了按钮文本内容
+- 验证了状态转换后的 UI 变化
+
+```clojure
+(deftest ui-state-transition-textarea-to-article
+  (testing "UI state transition: textarea to article"
+    (let [store (atom {})]
+
+      ;; Initial state: no tokens (textarea shown)
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain textarea element
+        (is (contains-element? result :textarea))
+        ;; Should contain "Process Article" button
+        (is (contains-element-with-content? result "Process Article"))
+        ;; Should NOT contain "Clear Article" button
+        (is (not (contains-element-with-content? result "Clear Article"))))
+
+      ;; After enter-article: tokens present (article shown)
+      (swap! store assoc-in [prefix :tokens] ["Halo" " " "dunia"])
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain "Clear Article" button
+        (is (contains-element-with-content? result "Clear Article"))
+        ;; Should NOT contain textarea element (article view is shown instead)
+        (is (not (contains-element? result :textarea))))))
+```
+
+**需要改进的测试 - `ui-state-transition-show-preview`**:
+
+❌ 当前实现只检查了 result 是 vector，这是无用的：
+
+```clojure
+(deftest ui-state-transition-show-preview
+  (testing "UI state transition: Show preview panel"
+    (let [store (atom {})]
+      ;; Initial state
+      (let [state @store
+            result (render/main state)]
+        (is (vector? result)))  ; ❌ 无用的断言
+
+      ;; Click unknown word
+      (swap! store assoc-in [prefix :preview-word] "test")
+      (swap! store assoc-in [prefix :preview-translation] ["translation"])
+      (let [state @store
+            result (render/main state)]
+        (is (vector? result))))))  ; ❌ 无用的断言
+```
+
+**应该改进为**:
+
+```clojure
+(deftest ui-state-transition-show-preview
+  (testing "UI state transition: Show preview panel"
+    (let [store (atom {})]
+
+      ;; Initial state: no preview (preview panel not shown)
+      (let [state @store
+            result (render/main state)]
+        ;; Should NOT contain preview panel elements
+        (is (not (contains-element-with-content? result "Word Preview")))
+        (is (not (contains-element-with-content? result "原文:")))
+        (is (not (contains-element-with-content? result "译文:")))
+
+      ;; Click unknown word: preview panel shown
+      (swap! store assoc-in [prefix :preview-word] "anjing")
+      (swap! store assoc-in [prefix :preview-translation] ["calm", "peaceful"])
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain preview panel header
+        (is (contains-element-with-content? result "Word Preview"))
+        ;; Should contain the preview word
+        (is (contains-element-with-content? result "anjing"))
+        ;; Should contain translations
+        (is (contains-element-with-content? result "原文:"))
+        (is (contains-element-with-content? result "译文:"))
+        (is (contains-element-with-content? result "calm"))
+        ;; Should contain "添加到数据库" button
+        (is (contains-element-with-content? result "添加到数据库"))))))
+```
+
+#### 3.2 完整的文章输入流程
 
 **测试场景**:
 1. 用户输入文章文本
@@ -312,6 +561,86 @@
 
 ## 测试工具和 Fixture
 
+### Hiccup Test Helpers
+
+**位置**: `components/replicant-main/test/com/zihao/replicant_main/hiccup_test_helper.cljc`
+
+这些辅助函数用于在测试中验证 hiccup 结构：
+
+```clojure
+(ns your-test-ns
+  (:require [com.zihao.replicant-main.hiccup-test-helper
+             :refer [contains-element?
+                      contains-element-with-attr?
+                      contains-element-with-content?
+                      contains-hiccup?]]))
+
+;; 检查是否包含特定标签元素
+(is (contains-element? result :button))
+(is (contains-element? result :textarea))
+
+;; 检查是否包含特定文本内容
+(is (contains-element-with-content? result "Process Article"))
+(is (contains-element-with-content? result "Word Preview"))
+
+;; 检查是否包含特定属性的元素
+(is (contains-element-with-attr? result {:href "/home"}))
+(is (contains-element-with-attr? result {:class "btn-primary"}))
+
+;; 使用谓词函数查找元素
+(is (contains-hiccup? result
+                        #(and (vector? %)
+                              (= :button (first %))
+                              (-> second :on first first (= :lingq/enter-article)))))
+```
+
+### Malli Hiccup Schema
+
+**位置**: `components/replicant-main/test/com/zihao/replicant_main/hiccup_test.cljc`
+
+可以使用 Malli 来验证数据结构是否符合 hiccup 格式：
+
+```clojure
+(ns your-test-ns
+  (:require [malli.core :as m])
+
+;; Malli hiccup schema
+(def HiccupElement
+  [:or :keyword
+       [:cat :keyword]
+       [:cat :keyword [:* :any]]
+       [:cat :keyword :map [:* :any]]])
+
+;; 验证数据结构是否是有效的 hiccup
+(is (m/validate HiccupElement [:div]))
+(is (m/validate HiccupElement [:div "hello"]))
+(is (m/validate HiccupElement [:div {:class "my-class"} "content"]))
+(is (m/validate HiccupElement [:div [:p "text1"] [:p "text2"]]))
+
+;; 无效的 hiccup
+(is (false? (m/validate HiccupElement ["not-a-keyword"])))
+(is (false? (m/validate HiccupElement nil)))
+(is (false? (m/validate HiccupElement [])))
+```
+
+**何时使用哪个工具？**
+
+- **Malli schema**: 用于验证数据结构格式是否正确（类型检查）
+- **Hiccup test helpers**: 用于验证特定的 UI 元素是否存在（行为检查）
+
+通常，在 UI 测试中两者结合使用：
+```clojure
+(deftest render-test
+  (let [state {:data "test"}
+        result (render/main state)]
+    ;; 1. 验证返回值格式正确
+    (is (m/validate HiccupElement result))
+
+    ;; 2. 验证特定的 UI 元素
+    (is (contains-element? result :div))
+    (is (contains-element-with-content? result "test"))))
+```
+
 ### Event Fixtures
 
 ```clojure
@@ -375,6 +704,9 @@
 
 ### Phase 3: 集成测试
 
+- [x] `ui-state-transition-textarea-to-article` - ✅ 好的测试实现，使用 hiccup helper 检查 UI 元素
+- [ ] `ui-state-transition-show-preview` - ⚠️ 需要改进，当前只检查 vector，应该使用 hiccup helper 检查实际 UI 元素
+- [ ] `ui-state-transition-show-rating` - ⚠️ 需要改进，当前只检查 vector，应该使用 hiccup helper 检查评分面板元素
 - [ ] 完整的文章输入流程
 - [ ] 单词学习流程
 - [ ] Edge cases 测试
@@ -421,6 +753,17 @@ clj -M:test
 7. **不要测试 Action 转换**: ❌ 不要直接调用 action 函数并断言返回的 actions（例如断言 `enter-article` 返回 `[:data/query ...]`）。这些转换是显而易见的，不包含业务逻辑。✅ 应该使用 `execute-f` 执行 actions，并验证 store 的最终状态。
 
 8. **测试行为而非实现**: 关注"系统做了什么"（行为），而不是"系统如何做"（实现细节）。状态断言是测试行为的最佳方式。
+
+9. **不要只测试返回值类型**: ❌ 不要在 UI 测试中只写 `(is (vector? result))` 或 `(is (some? result))`。这些断言没有验证任何有用的东西。✅ 应该使用 `hiccup-test-helper` 中的函数检查实际的 UI 元素。
+
+10. **使用 Hiccup Test Helpers**: 在测试 view function 的输出时，使用 `contains-element?`、`contains-element-with-content?`、`contains-element-with-attr?` 等函数来验证特定元素的存在、内容和属性。
+
+11. **UI 状态转换测试**: 在测试 UI 状态转换时，应该验证：
+    - 状态改变前：确认初始 UI 状态（哪些元素应该/不应该存在）
+    - 状态改变后：确认 UI 正确切换（新元素出现，旧元素消失）
+    - 内容正确性：验证文本内容、属性等细节
+
+12. **使用 Malli Schema 进行类型检查**: Malli 的 `HiccupElement` schema 可以用于验证数据结构的格式，但这只是基本的类型检查。真正的行为验证需要使用 hiccup test helpers。
 
 ## 持续改进
 

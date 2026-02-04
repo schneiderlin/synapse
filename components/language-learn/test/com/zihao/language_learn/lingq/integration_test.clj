@@ -1,10 +1,8 @@
 (ns com.zihao.language-learn.lingq.integration-test
   (:require [clojure.test :refer [deftest is testing]]
-            [com.zihao.replicant-main.interface :as rm]
-            [com.zihao.language-learn.lingq.actions :as actions]
             [com.zihao.language-learn.lingq.render :as render]
-            [com.zihao.language-learn.lingq.article :as article]
-            [com.zihao.language-learn.lingq.common :refer [prefix]]))
+            [com.zihao.language-learn.lingq.common :refer [prefix]]
+            [com.zihao.replicant-main.hiccup-test-helper :refer [is-in-hiccup is-not-in-hiccup]]))
 
 ;; =============================================================================
 ;; Complete Article Input Flow Tests
@@ -32,7 +30,6 @@
 ;; UI State Transitions Tests
 ;; =============================================================================
 
-;; TODO: 这也不是好的 test, 不应该直接 swap store, 应该通过 execute-f
 (deftest ui-state-transition-textarea-to-article
   (testing "UI state transition: textarea to article"
     (let [store (atom {})]
@@ -40,39 +37,72 @@
       ;; Initial state: no tokens (textarea shown)
       (let [state @store
             result (render/main state)]
-        ;; ofc result is a vector, result is hiccup
-        ;; should check if the desired element is in the result
-        (is (vector? result)))
+        ;; Should contain textarea element
+        (is-in-hiccup result :textarea)
+        ;; Should contain "Process Article" button
+        (is-in-hiccup result "Process Article")
+        ;; Should NOT contain "Clear Article" button
+        (is-not-in-hiccup result "Clear Article"))
 
       ;; After enter-article: tokens present (article shown)
       (swap! store assoc-in [prefix :tokens] ["Halo" " " "dunia"])
       (let [state @store
             result (render/main state)]
-        (is (vector? result))))))
+        ;; Should contain "Clear Article" button
+        (is-in-hiccup result "Clear Article")
+        ;; Should NOT contain textarea element (article view is shown instead)
+        (is-not-in-hiccup result :textarea)))))
 
 
 (deftest ui-state-transition-show-preview
   (testing "UI state transition: Show preview panel"
     (let [store (atom {})]
-      ;; Initial state
-      (let [state @store
-            result (render/main state)]
-        (is (vector? result)))
 
-      ;; Click unknown word
-      (swap! store assoc-in [prefix :preview-word] "test")
-      (swap! store assoc-in [prefix :preview-translation] ["translation"])
+      ;; Initial state: no preview (preview panel not shown)
       (let [state @store
             result (render/main state)]
-        (is (vector? result))))))
+        ;; Should NOT contain preview panel elements
+        (is-not-in-hiccup result "Word Preview")
+        (is-not-in-hiccup result "原文:")
+        (is-not-in-hiccup result "译文:"))
+
+      ;; Click unknown word: preview panel shown
+      (swap! store assoc-in [prefix :preview-word] "anjing")
+      (swap! store assoc-in [prefix :preview-translation] ["calm" "peaceful"])
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain preview panel header
+        (is-in-hiccup result "Word Preview")
+        ;; Should contain the preview word
+        (is-in-hiccup result "anjing")
+        ;; Should contain translations (note: the translations are joined with ", " when rendered)
+        (is-in-hiccup result "原文: ")
+        (is-in-hiccup result "译文: ")
+        (is-in-hiccup result "calm, peaceful")
+        ;; Should contain "添加到数据库" button
+        (is-in-hiccup result "添加到数据库")))))
 
 
 (deftest ui-state-transition-show-rating
   (testing "UI state transition: Show rating panel"
     (let [store (atom {})]
-      ;; Click known word (with tokens and selected-word)
-      (swap! store assoc-in [prefix :tokens] ["test"])
-      (swap! store assoc-in [prefix :selected-word] "test")
+
+      ;; Initial state: no selection (rating panel not shown)
       (let [state @store
             result (render/main state)]
-        (is (vector? result))))))
+        ;; Should NOT contain rating buttons
+        (is-not-in-hiccup result "again")
+        (is-not-in-hiccup result "hard")
+        (is-not-in-hiccup result "good")
+        (is-not-in-hiccup result "easy"))
+
+        ;; Click known word: rating panel shown
+      (swap! store assoc-in [prefix :tokens] ["anjing"])
+      (swap! store assoc-in [prefix :selected-word] "anjing")
+      (let [state @store
+            result (render/main state)]
+        ;; Should contain all 4 rating buttons
+        (is-in-hiccup result "again")
+        (is-in-hiccup result "hard")
+        (is-in-hiccup result "good")
+        (is-in-hiccup result "easy")))))

@@ -2,6 +2,8 @@
   (:require [clojure.test :refer [deftest is testing]]
             [com.zihao.language-learn.lingq.render :as render]
             [com.zihao.language-learn.lingq.common :refer [prefix]]
+            [com.zihao.language-learn.lingq.actions :as actions]
+            [com.zihao.replicant-main.interface :as rm]
             [com.zihao.replicant-main.hiccup-test-helper :refer [is-in-hiccup is-not-in-hiccup]]))
 
 ;; =============================================================================
@@ -32,7 +34,9 @@
 
 (deftest ui-state-transition-textarea-to-article
   (testing "UI state transition: textarea to article"
-    (let [store (atom {})]
+    (let [store (atom {})
+          system {:store store}
+          execute-f (apply rm/make-execute-f [actions/execute-action])]
 
       ;; Initial state: no tokens (textarea shown)
       (let [state @store
@@ -44,8 +48,8 @@
         ;; Should NOT contain "Clear Article" button
         (is-not-in-hiccup result "Clear Article"))
 
-      ;; After enter-article: tokens present (article shown)
-      (swap! store assoc-in [prefix :tokens] ["Halo" " " "dunia"])
+      ;; After enter-article: tokens present (article shown) - use higher-level action
+      (execute-f system nil [[:lingq/set-tokens {:tokens ["Halo" " " "dunia"]}]])
       (let [state @store
             result (render/main state)]
         ;; Should contain "Clear Article" button
@@ -56,7 +60,9 @@
 
 (deftest ui-state-transition-show-preview
   (testing "UI state transition: Show preview panel"
-    (let [store (atom {})]
+    (let [store (atom {})
+          system {:store store}
+          execute-f (apply rm/make-execute-f [actions/execute-action])]
 
       ;; Initial state: no preview (preview panel not shown)
       (let [state @store
@@ -66,9 +72,8 @@
         (is-not-in-hiccup result "原文:")
         (is-not-in-hiccup result "译文:"))
 
-      ;; Click unknown word: preview panel shown
-      (swap! store assoc-in [prefix :preview-word] "anjing")
-      (swap! store assoc-in [prefix :preview-translation] ["calm" "peaceful"])
+      ;; Click unknown word: preview panel shown - use higher-level action
+      (execute-f system nil [[:lingq/set-preview {:word "anjing" :translation ["calm" "peaceful"]}]])
       (let [state @store
             result (render/main state)]
         ;; Should contain preview panel header
@@ -85,7 +90,9 @@
 
 (deftest ui-state-transition-show-rating
   (testing "UI state transition: Show rating panel"
-    (let [store (atom {})]
+    (let [store (atom {})
+          system {:store store}
+          execute-f (apply rm/make-execute-f [actions/execute-action])]
 
       ;; Initial state: no selection (rating panel not shown)
       (let [state @store
@@ -96,9 +103,9 @@
         (is-not-in-hiccup result "good")
         (is-not-in-hiccup result "easy"))
 
-        ;; Click known word: rating panel shown
-      (swap! store assoc-in [prefix :tokens] ["anjing"])
-      (swap! store assoc-in [prefix :selected-word] "anjing")
+      ;; Click known word: rating panel shown - use higher-level actions
+      (execute-f system nil [[:lingq/set-tokens {:tokens ["anjing"]}]
+                             [:lingq/select-word {:word "anjing"}]])
       (let [state @store
             result (render/main state)]
         ;; Should contain all 4 rating buttons

@@ -32,10 +32,24 @@
                      {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
                                    [:store/assoc-in [prefix :tokens] :query/result]]}]]}]]))
 
+(defn set-tokens
+  [_store {:keys [tokens]}]
+  [[:store/assoc-in [prefix :tokens] tokens]])
+
+(defn set-preview [_store {:keys [word translation]}] 
+  [[:store/assoc-in [prefix :preview-word] word]
+   [:store/assoc-in [prefix :preview-translation] translation]])
+
+(defn select-word [_store {:keys [word]}] 
+  [[:store/assoc-in [prefix :selected-word] word]])
+
 (defn execute-action [{:keys [store]} _event action args]
   (case action
-    :lingq/click-unknown-word (click-unknown-word store args)
+    :lingq/click-unknown-word (click-unknown-word store (first args))
     :lingq/clean-text (clean-text store)
     :lingq/enter-article (enter-article store)
     :lingq/add-preview-word-to-database (add-preview-word-to-database store)
+    :lingq/set-tokens (set-tokens store (first args))
+    :lingq/set-preview (set-preview store (first args))
+    :lingq/select-word (select-word store (first args))
     nil))

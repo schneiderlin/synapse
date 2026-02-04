@@ -1,7 +1,11 @@
 (ns com.zihao.jetty-main.interface
   (:require
+   [com.zihao.jetty-main.ws-server :as ws-server]
    [com.zihao.jetty-main.core :as core]
    [com.zihao.jetty-main.ring-ws :as ring-ws]))
+
+(defn make-ws-server []
+  (ws-server/make-ws-server))
 
 ;; =============================================================================
 ;; Routes & Handler

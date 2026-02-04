@@ -7,3 +7,4 @@ after change the test code. reload file to take effect.
 # lint
 `clj-kondo --lint components` or `clj-kondo --lint bases`
 or just one components `clj-kondo --lint components/language-learn`
+normally you should just lint the folder you touched.

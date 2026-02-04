@@ -77,3 +77,8 @@
   [& _extension-fns]
   #?(:cljs (apply ws-client/make-ws-handler-with-extensions _extension-fns)
      :clj (throw (ex-info "make-ws-handler-with-extensions only available in ClojureScript" {}))))
+
+(defmacro defaction
+  "Like defn; used to test :action-defined-by linter param."
+  [name & body]
+  `(defn ~name ~@body))

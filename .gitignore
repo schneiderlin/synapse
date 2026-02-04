@@ -14,7 +14,7 @@ node_modules
 **/public/output.css
 **/public/portfolio-output.css
 
-.lsp
+.lsp/.cache
 target
 __pycache__
 

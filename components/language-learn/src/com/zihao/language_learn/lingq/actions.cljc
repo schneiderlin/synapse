@@ -1,5 +1,6 @@
 (ns com.zihao.language-learn.lingq.actions
   (:require
+   [com.zihao.replicant-main.interface :refer [defaction]]
    [com.zihao.language-learn.lingq.common :refer [prefix]]))
 
 (defn click-unknown-word [_store {:keys [word]}]
@@ -34,15 +35,15 @@
                      {:on-success [[:debug/print "word rating" :query/result]
                                    [:store/assoc-in [prefix :word->rating] :query/result]]}]]}]]))
 
-(defn set-tokens
+(defaction set-tokens
   [_store {:keys [tokens]}]
   [[:store/assoc-in [prefix :tokens] tokens]])
 
-(defn set-preview [_store {:keys [word translation]}] 
+(defaction set-preview [_store {:keys [word translation]}] 
   [[:store/assoc-in [prefix :preview-word] word]
    [:store/assoc-in [prefix :preview-translation] translation]])
 
-(defn select-word [_store {:keys [word]}] 
+(defaction select-word [_store {:keys [word]}] 
   [[:store/assoc-in [prefix :selected-word] word]])
 
 (defn execute-action [{:keys [store]} _event action args]

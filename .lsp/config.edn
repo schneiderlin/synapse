@@ -1,0 +1,4 @@
+ {:linters
+ {:custom
+  {example.test-only-actions-linter/lint
+   {:level :warning}}}}

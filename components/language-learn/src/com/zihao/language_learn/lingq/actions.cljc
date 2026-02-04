@@ -11,7 +11,7 @@
     {:on-success [[:store/assoc-in [prefix :preview-translation] :query/result]]}]])
 
 (defn add-preview-word-to-database [store]
-  (let [word (get-in store [prefix :preview-word])]
+  (let [word (get-in @store [prefix :preview-word])]
     [[:data/command {:command/kind :command/add-new-word
                      :command/data {:word word}}
       {:on-success [[:store/assoc-in [prefix :preview-word] nil]
@@ -24,13 +24,15 @@
    [:store/assoc-in [prefix :input-text] nil]])
 
 (defn enter-article [store]
-  (let [article (get-in store [prefix :input-text])]
+  (let [article (get-in @store [prefix :input-text])]
     [[:data/query {:query/kind :query/tokenize-text
                    :query/data {:language "id"
                                 :text article}}
-      {:on-success [[:data/query {:query/kind :query/get-word-rating}
-                     {:on-success [[:store/assoc-in [prefix :word->rating] :query/result]
-                                   [:store/assoc-in [prefix :tokens] :query/result]]}]]}]]))
+      {:on-success [[:debug/print "tokenized text" :query/result]
+                    [:store/assoc-in [prefix :tokens] :query/result]
+                    [:data/query {:query/kind :query/get-word-rating}
+                     {:on-success [[:debug/print "word rating" :query/result]
+                                   [:store/assoc-in [prefix :word->rating] :query/result]]}]]}]]))
 
 (defn set-tokens
   [_store {:keys [tokens]}]

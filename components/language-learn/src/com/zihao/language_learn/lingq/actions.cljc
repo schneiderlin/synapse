@@ -1,7 +1,9 @@
 (ns com.zihao.language-learn.lingq.actions
   (:require
    [com.zihao.replicant-main.interface :refer [defaction]]
-   [com.zihao.language-learn.lingq.common :refer [prefix]]))
+   [com.zihao.language-learn.lingq.common :refer [prefix]])
+  ;; ClojureScript loads macros via :require-macros; Clojure gets defaction from :refer above.
+  #?(:cljs (:require-macros [com.zihao.replicant-main.interface :refer [defaction]])))
 
 (defn click-unknown-word [_store {:keys [word]}]
   (println "click-unknown-word" word)

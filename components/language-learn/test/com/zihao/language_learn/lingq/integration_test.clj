@@ -1,7 +1,6 @@
 (ns com.zihao.language-learn.lingq.integration-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest testing]]
             [com.zihao.language-learn.lingq.render :as render]
-            [com.zihao.language-learn.lingq.common :refer [prefix]]
             [com.zihao.language-learn.lingq.actions :as actions]
             [com.zihao.replicant-main.interface :as rm]
             [com.zihao.replicant-main.hiccup-test-helper :refer [is-in-hiccup is-not-in-hiccup]]))

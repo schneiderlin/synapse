@@ -1,8 +1,8 @@
 (ns com.zihao.replicant-main.replicant.actions
   (:require
-   [clojure.edn :as reader]
-   [com.zihao.replicant-main.replicant.query :as query]
-   [com.zihao.replicant-main.replicant.command :as command]
+   #?(:cljs [clojure.edn :as reader])
+   #?(:cljs [com.zihao.replicant-main.replicant.query :as query])
+   #?(:cljs [com.zihao.replicant-main.replicant.command :as command])
    [com.zihao.replicant-main.replicant.router :as router]
    [com.zihao.replicant-main.replicant.hash-router :as hash-router]))
 
